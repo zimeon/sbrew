@@ -26,5 +26,5 @@ class Quantity:
         else:
             return(str(self.value) + str(self.unit))
 
-    def set(self,str):
-        if (
+#    def set(self,str):
+#        if (
