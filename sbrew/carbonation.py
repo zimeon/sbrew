@@ -11,6 +11,9 @@ def psi_required(temp, vol):
 
    where T is degrees F and Vol is volumes of CO2 you want. but I 
    do agree that that is just a best fit equation.
+
+   This formula agrees with the value in the table on p184 of Papazian,
+   The Home Brewer's Companion.
    """
    t=temp.to('F').value
    v=vol.value
