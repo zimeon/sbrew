@@ -1,4 +1,4 @@
-print "loaded " + __name__ + "\n"
+#print "loaded " + __name__ + "\n"
 
 def mix_two_temp(temp_1, heat_capacity_1, temp_2, heat_capacity_2):
     """Calculate temperature resulting from mix of two things.

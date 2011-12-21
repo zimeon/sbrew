@@ -9,14 +9,14 @@ class Temp(Quantity):
         pass
 
     def to(self, unit):
+        """Override simple conversions in Quantity
+
+        """
         if (unit == self.unit):
-            pass
+            return(self.value)
         elif (self.unit == 'F' and unit == 'C'):
-            self.value=(self.value-32.0)*5.0/9.0
-            self.unit='C'
+            return((self.value-32.0)*5.0/9.0)
         elif (self.unit == 'C' and unit == 'F'):
-            self.value=(self.value*9.0/5.0)+32.0
-            self.unit='F'
+            return((self.value*9.0/5.0)+32.0)
         else:
-            pass
-        return(self)
+            raise LookupExcpetion("unknown temperatre conversion")
