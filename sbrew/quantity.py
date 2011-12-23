@@ -1,8 +1,13 @@
 import re
 
-conversions = { 'oz'  : { 'lb' : 1.0/16.0 } ,
-                'gal' : { 'pt' : 8 }
+conversions = { 'oz'  : { 'lb' : 1.0/16.0 },
+                'gal' : { 'pt' : 8.0 },
+                'J'   : { 'Joule' : 1.0,
+                          'kJ' : 0.001,
+                          'Btu' : 0.0009478 },
+                'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
               }
+
 
 class Quantity:
     """Base class for all quantities.
@@ -15,7 +20,7 @@ class Quantity:
             self.unit = unit
         elif (unit is None):
             # try to parse value and unit from string
-            m = re.match('\s*([-+]?\d+(\.\d*)?)\s*(\w+)\s*$', value)
+            m = re.match('\s*([-+]?\d+(\.\d*)?)\s*([\w/]+)\s*$', value)
             if (m):
                 self.value=float(m.group(1))
                 self.unit=m.group(3)
