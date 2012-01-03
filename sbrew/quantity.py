@@ -16,8 +16,20 @@ class Quantity:
     """
 
     def __init__(self, value=None, unit=None):
+        """Create a Quantity
+
+        May be initialized in a number of ways:
+        1) empty: qty = Quantity()
+        2) copy: qty2 = Quantity(qty1) #creates new object with same value and unit
+        3) split: qty = Quantity(value, unit)
+        4) unit only: qty = Quanityt(None, unit)
+        5) string: qyt = Quantity('1gal')
+        """
         if (value is None):
             self.unit = unit
+        elif (isinstance(value, Quantity)):
+            self.value = value.value
+            self.unit = value.unit
         elif (unit is None):
             # try to parse value and unit from string
             m = re.match('\s*([-+]?\d+(\.\d*)?)\s*([\w/]+)\s*$', value)
