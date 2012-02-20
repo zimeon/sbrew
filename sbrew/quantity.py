@@ -26,13 +26,14 @@ class Quantity:
         5) string: qyt = Quantity('1gal')
         """
         if (value is None):
+            self.value = None
             self.unit = unit
         elif (isinstance(value, Quantity)):
             self.value = value.value
             self.unit = value.unit
         elif (unit is None):
             # try to parse value and unit from string
-            m = re.match('\s*([-+]?\d+(\.\d*)?)\s*([\w/]+)\s*$', value)
+            m = re.match('\s*([-+]?\d+(\.\d*)?)\s*([\w/%]+)\s*$', value)
             if (m):
                 self.value=float(m.group(1))
                 self.unit=m.group(3)
@@ -45,7 +46,7 @@ class Quantity:
 
     def __str__(self):
         if (self.value is None):
-            return("QuantityNotDefiend")
+            return("QuantityNotDefined")
         elif (self.unit is None):
             return(str(self.value) + " (dimensionless)")
         else:

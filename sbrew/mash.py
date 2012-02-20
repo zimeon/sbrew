@@ -4,7 +4,7 @@ from mass import Mass
 from quantity import Quantity
 
 class Mash(Recipe):
-    """A mash is a simlpe recipe with no sub-steps.
+    """A mash is a simple recipe with no sub-steps.
 
     m =  Mash()
     m.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
@@ -30,7 +30,7 @@ class Mash(Recipe):
         return( self.subname if self.subname else 'mash')
 
     def total_type(self, type, unit=None):
-        """Return total quantity of ingrdient with given type
+        """Return total quantity of ingredient with given type
 
         Will use the units of the first ingredient of the given 
         type found. Will return None is there are no ingredients
@@ -45,9 +45,25 @@ class Mash(Recipe):
                     total=Quantity(ingredient.quantity)
         return total
 
-    def total_grains(self):
+    def total_grains(self, total_mass=None):
         """Return total mass of grains
         """
+        if (total_mass):
+            # Want to set total mass, are all grains set as pct?
+            num_not_pct=0
+            for ingredient in self.ingredients:
+                if (ingredient.type == 'grain'):
+            	    if (ingredient.quantity.unit != '%'):
+			num_not_pct+=1
+            if (num_not_pct>0):
+		print "can't set total as not all pct"
+            else:
+          	for ingredient in self.ingredients:
+                    if (ingredient.type == 'grain'):
+                        ingredient.quantity.unit = total_mass.unit
+                        ingredient.pct = ingredient.quantity.value
+		        ingredient.quantity.value = total_mass.value * ingredient.quantity.value / 100.0		
+        # Now return total mass
         mass = self.total_type('grain')
         return( mass if mass else Mass('0lb'))
 
