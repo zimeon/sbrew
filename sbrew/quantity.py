@@ -5,6 +5,7 @@ conversions = { 'oz'  : { 'lb' : 1.0/16.0 },
                 'J'   : { 'Joule' : 1.0,
                           'kJ' : 0.001,
                           'Btu' : 0.0009478 },
+                'points' : { },
                 'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
               }
 

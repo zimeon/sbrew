@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+
 from sbrew import *
 
 r = Recipe()
-r.name="Warner Weise"
-m = Decoction_Mash()
+r.name="Warner Weisse"
+m = DecoctionMash()
 m.ingredient(Ingredient('grain','marris otter (tf)','63%'))
 m.ingredient(Ingredient('grain','wheat malt (tf)','37%'))
 m.add_step('infuse',volume='3.6gal',temp='106F')
@@ -21,8 +23,7 @@ m.add_step('rest',time='13min')
 m.add_step('infuse',temp='170F',infusion_tem='212F',volume='1.2gal',time='5min')
 r.add(m)
 
-s = Recipe()
-s.subname = "sparge"
+s = Lauter()
 r.add(s)
 
 b = Recipe()

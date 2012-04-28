@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from sbrew import *
 
 r = Recipe()
@@ -23,17 +25,19 @@ t_strike=Quantity( (((hc_water+hc_rest).value*152 - hc_rest.value*64) / hc_water
 print "Total grains = " + str(mass_grain)
 print "V_strike     = " + str(volume_water)
 print "T_strike     = " + str(t_strike)
+m.ingredient(Ingredient('water','',volume_water,temp=t_strike))
 r.add(m)
 
-s = Recipe()
-s.subname = "sparge"
+s = BatchSparge()
+s.wort_volume=Quantity('6.5gal')
 r.add(s)
 
 b = Recipe()
 b.subname = "boil"
-b.ingredient(Ingredient('hops','stryian goldings','1oz'))
-b.ingredient(Ingredient('hops','stryian goldings','1oz'))
-b.ingredient(Ingredient('misc','irish moss','1tsp'))
+b.time=Quantity('60min')
+b.ingredient(Ingredient('hops','stryian goldings','1oz',time=Quantity('60min')))
+b.ingredient(Ingredient('hops','stryian goldings','1oz',time=Quantity('15min')))
+b.ingredient(Ingredient('misc','irish moss','1tsp',time=Quantity('15min')))
 r.add(b)
 
 f = Recipe()

@@ -13,21 +13,11 @@ class Mash(Recipe):
     print m
     """
 
-    def __init__(self, name=None):
+    def __init__(self, subname=None):
         self.name=None
         self.steps=[]
-        self.subname=( name if name else 'mash' )
+        self.subname=( subname if subname else 'mash' )
         self.ingredients=[]
-
-    def name_with_default(self):
-        """Return self.name with defaul of '' if None
-        """
-        return( self.name if self.name else '')
-
-    def subname_with_default(self):
-        """Return self.subname with defaul of 'mash' if None
-        """
-        return( self.subname if self.subname else 'mash')
 
     def total_type(self, type, unit=None):
         """Return total quantity of ingredient with given type
@@ -96,4 +86,11 @@ class Mash(Recipe):
                 self.ingredients.remove(ingredient)
         self.ingredient( Ingredient('water','',water_total) )
 
- 
+    def end_state(self):
+        return({ 'total_water' : self.total_water(),
+                 'total_grain' : self.total_grains(),
+                 'total_points': Quantity('99points') })
+
+    def end_state_str(self):
+        s = self.end_state()
+        return('{0:s} grain, {1:s} water, {2:s}\n'.format(s['total_grain'],s['total_water'],s['total_points']))

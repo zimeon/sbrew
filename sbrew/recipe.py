@@ -5,19 +5,23 @@ class Recipe(object):
 
     The notion of a recipe does not cater for things done in parallel, the
     steps are a simple sequence.
-
-    r = Recipe("mash")
-    r.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
-    r.ingredient( Ingredient('grain','caravieene belgian','1.25lb') )
-    r.ingredient( Ingredient('grain','clear candi sugar','0.87lb') )
-    print r
     """
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, subname=None, **kwargs):
         self.name=name
         self.steps=[]
-        self.subname=None
+        self.subname=subname
         self.ingredients=[]
+
+    def name_with_default(self):
+        """Return self.name with default of '' if None
+        """
+        return( self.name if self.name else '')
+
+    def subname_with_default(self):
+        """Return self.subname with defaul of 'mash' if None
+        """
+        return( self.subname if self.subname else 'mash')
 
     def __str__(self, **kwargs):
         str_list = []
@@ -30,6 +34,9 @@ class Recipe(object):
             str_list.append("= " + self.subname + " =\n")
         for ingredient in self.ingredients:
             str_list.append('' + str(ingredient) + "\n")
+        end_str = self.end_state_str()
+        if (end_str is not None):
+            str_list.append(' -> '+end_str)
         return(''.join(str_list))
 
     def __add__(self, other):
@@ -53,3 +60,7 @@ class Recipe(object):
         """
         self.steps.append(step)
      
+    def end_state_str(self):
+        """String describing the end state of this recipe step
+        """
+        return(None)

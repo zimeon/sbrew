@@ -4,10 +4,10 @@ from sbrew_error import SbrewError
 #from brewtime import BrewTime
 from datetime import timedelta
 
-class Decoction_Mash(Mash):
+class DecoctionMash(Mash):
     """A decoction mash, derived from a simple mash.
 
-    m =  Mash()
+    m =  DecoctionMash()
     m.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
     m.ingredient( Ingredient('grain','caravieene belgian','1.25lb') )
     m.ingredient( Ingredient('grain','clear candi sugar','0.87lb') )
@@ -33,7 +33,7 @@ class Decoction_Mash(Mash):
         elif (type == 'adjust'):
             self.steps.append(extra)
         elif (type == 'split'):
-            decoction = Decoction_Mash()
+            decoction = DecoctionMash()
             extra['decoction']=decoction
             self.steps.append(extra)
             return(decoction)     
@@ -49,10 +49,9 @@ class Decoction_Mash(Mash):
     def add_rest(self,time):
 	return add_step('rest',time=time)
  
-
     def __str__(self):
-        # Use superclass str(0 but don't try to render steps
-        s = super(Decoction_Mash,self).__str__(skip_steps=1)
+        # Use superclass str() but don't try to render steps
+        s = super(DecoctionMash,self).__str__(skip_steps=1)
         # Now render the steps in our own special way
         s += '***steps***\n'
         s += self.steps_str()
@@ -96,7 +95,7 @@ class Decoction_Mash(Mash):
                 state = ''
 		if (stages_next[mash]):
                     if (stages_next[mash]['time']<=t):
-                        state = "{0:s} @ {1:s} ".format(stages_next[mash]['volume'],stages_next[mash]['temp'])
+                        state = self.stage_state_str(stages_next[mash])
                         stages_started[mash]+=1
                         try:
                             stages_next[mash]=stages_iter[mash].next()
@@ -118,6 +117,10 @@ class Decoction_Mash(Mash):
             if (not_none==0):
                 break
         return(s)
+
+    def stage_state_str(self,stage):
+        str = "{0:s} @ {1:s} ".format(stage['volume'],stage['temp'])
+        return(str)
 
     def find_stages(self, stages, mash_name='_main', start_time=timedelta()):
         # Create list for this mash's stages in main stages dict, clear
@@ -152,7 +155,7 @@ class Decoction_Mash(Mash):
                 mix_time = t + step['decoction'].total_time()
                 decoction_name = ( step['name'] if ('name' in step) else 'decoction' )      
                 step['decoction'].find_stages(stages, decoction_name, t)
-        # no return val, data in stages  
+        # no return val, data left in stages  
 
     def parsetime(self, tstr):
         tqty = Quantity(tstr)
