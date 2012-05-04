@@ -1,6 +1,14 @@
 import re
 
-conversions = { 'oz'  : { 'lb' : 1.0/16.0 },
+class Quantity:
+    """Base class for all quantities.
+
+    All quantities have a value and a unit.
+    """
+
+    conversions = { 'oz'  : { 'lb' : 1.0/16.0,
+                          'kg' : 0.0283495231,
+                          'g'  : 28.3495231 },
                 'gal' : { 'pt' : 8.0 },
                 'J'   : { 'Joule' : 1.0,
                           'kJ' : 0.001,
@@ -9,12 +17,7 @@ conversions = { 'oz'  : { 'lb' : 1.0/16.0 },
                 'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
               }
 
-
-class Quantity:
-    """Base class for all quantities.
-
-    All quantities have a value and a unit.
-    """
+    all_conv = None
 
     def __init__(self, value=None, unit=None):
         """Create a Quantity
@@ -75,16 +78,15 @@ class Quantity:
         """
         if (self.unit==new_unit):
             return(self.value)
-        elif (self.unit in conversions and
-                new_unit in conversions[self.unit]):
-            return(self.value*conversions[self.unit][new_unit])
-        elif (new_unit in conversions and
-                self.unit in conversions[new_unit]):
+        elif (self.unit in Quantity.conversions and
+                new_unit in Quantity.conversions[self.unit]):
+            return(self.value*Quantity.conversions[self.unit][new_unit])
+        elif (new_unit in Quantity.conversions and
+                self.unit in Quantity.conversions[new_unit]):
             #inverse
-            return(self.value/conversions[new_unit][self.unit])
+            return(self.value/Quantity.conversions[new_unit][self.unit])
         else:
-            raise LookupError('unknown conversion requested from ' + 
-                              self.unit + ' to ' + new_unit)
+            return(self.value * findall_conversion(self.unit,new_unit))
 
     def convert_to(new_unit):
         """Convert internal value to the new unit
@@ -108,5 +110,46 @@ class Quantity:
         sum=self.value-other.to(self.unit)
         return(Quantity(sum,self.unit))
 
-#    def set(self,str):
-#        if (
+    @staticmethod
+    def find_conversion(from_unit,to_unit):
+        """Function to see whether we can fo from_unit->to_unit
+
+        Raises and exception if not, otherwise returns factor that the value
+        in from_unit is multiplied by to get a value in to_unit"""
+        if (from_unit==to_unit):
+            return(1.0);
+        if (Quantity.all_conv is None):
+            Quantity.build_all_conv()
+        if (not (from_unit in Quantity.all_conv)):
+            raise LookupError('unknown unit in conversion requested from ' + from_unit)
+        if (not (to_unit in Quantity.all_conv)):
+            raise LookupError('unknown unit in conversion requested to ' + to_unit)
+        if (not (to_unit in Quantity.all_conv[from_unit])):
+            raise LookupError('unknown conversion requested from ' + from_unit + ' to ' + to_unit)
+        return(Quantity.all_conv[from_unit][to_unit])
+
+    def test_find_conversion():
+        assert Quantity.find_conversion('kg','g') == 0.001
+
+    @staticmethod
+    def build_all_conv():
+        # Expand tree of all conversions (include sanity check to 
+        # avoid possible cycles)
+        #
+        # Build local self.conv with data from Quantity.conversions and inverses
+        Quantity.all_conv={}
+        for f in Quantity.conversions:
+            Quantity.all_conv[f]={}
+            for t in Quantity.conversions[f]:
+                Quantity.all_conv[f][t]=Quantity.conversions[f][t]
+                if (not (t in Quantity.conversions)):
+                    Quantity.all_conv[t]={}
+                if (not (f in Quantity.all_conv[t])):
+                    Quantity.all_conv[t][f]= 1.0 / Quantity.all_conv[f][t] #inverse
+        # Now expand tree by repeatedly adding two-step paths as one
+        for s in Quantity.all_conv.keys():
+            for m in Quantity.all_conv[s].keys():
+                for e in Quantity.all_conv[m]:
+                    if (not (e in Quantity.all_conv[s])):
+                        Quantity.all_conv[s][e] = Quantity.all_conv[s][m] * Quantity.all_conv[m][e]
+                        Quantity.all_conv[e][s] = 1.0 / Quantity.all_conv[s][e]
