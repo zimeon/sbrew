@@ -48,5 +48,7 @@ r.add(f)
 
 print r
 
-
-
+carb_temp=Quantity('68F')
+carb_vols=Quantity('3volumes')
+psi = psi_required(carb_temp,carb_vols)
+print "Carbonation: %s @ %s requires %s CO2" % (carb_vols,carb_temp,psi)

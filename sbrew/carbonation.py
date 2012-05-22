@@ -15,7 +15,7 @@ def psi_required(temp, vol):
    This formula agrees with the value in the table on p184 of Papazian,
    The Home Brewer's Companion.
    """
-   t=temp.to('F').value
+   t=temp.to('F')
    v=vol.value
    p=(-16.6999 - 0.0101059*t + 0.00116512*t*t + \
       0.173354*t*v + 4.24267*v - 0.0684226*v*v)
