@@ -3,6 +3,7 @@ from temp import Temp
 from mass import Mass
 from gravity import Gravity
 from ingredient import Ingredient
+from property import Property
 from recipe import Recipe
 from mash import Mash
 from infusion_mash import InfusionMash

@@ -1,4 +1,5 @@
 from ingredient import Ingredient
+from property import Property
 
 class Recipe(object):
     """Representation of a complete or partial recipe as a set of steps
@@ -12,6 +13,7 @@ class Recipe(object):
         self.steps=[]
         self.subname=subname
         self.ingredients=[]
+        self.properties={}
 
     def name_with_default(self):
         """Return self.name with default of '' if None
@@ -32,8 +34,14 @@ class Recipe(object):
                 str_list.append(str(step))
         if (self.subname):
             str_list.append("= " + self.subname + " =\n")
-        for ingredient in self.ingredients:
-            str_list.append('' + str(ingredient) + "\n")
+        if (len(self.ingredients)>0):
+            str_list.append("Ingredients:\n")
+            for ingredient in self.ingredients:
+                str_list.append(' ' + str(ingredient) + "\n")
+        if (len(self.properties)>0):
+            str_list.append("Properties:\n")
+            for name in sorted(self.properties.keys()):
+                str_list.append(' ' + str(self.properties[name]) + "\n")
         end_str = self.end_state_str()
         if (end_str is not None):
             str_list.append(' -> '+end_str)
@@ -48,12 +56,37 @@ class Recipe(object):
         sum.name= self.name + " + " + other.name
         sum.ingredients+=self.ingredients
         sum.ingredients+=other.ingredients
+        sum.properties+=self.properties
+        sum.properties+=other.properties
         return(sum)
 
-    def ingredient(self,i):
+    def ingredient(self,i,name=None,quantity=None,unit=None):
         """Add ingredient to this recipe.
         """
+        if (not isinstance(i,Ingredient)):
+            i = Ingredient(i,name,quantity,unit)
         self.ingredients.append(i)
+
+    def property(self,p,quantity=None,unit=None):
+        """Add/get property to this recipe.
+
+        This is getter and setter for the property p. Perhaps not
+        properly pythonic but p=Property of quantity!=None implies set,
+        otherwise get.
+
+        Returns None is there is no such property.
+        """
+        if (not isinstance(p,Property)):
+            if (quantity is None):
+                # get quantity of this property (else None)
+                return(self.properties.get(p))
+            else:
+                # set with values given
+                name = p
+                p = Property(name,quantity,unit)
+        else:
+            name = p.name
+        self.properties[name]=p
 
     def add(self,step):
         """Add a step to this recipe
