@@ -28,6 +28,7 @@ class Recipe(object):
     def __str__(self, **kwargs):
         str_list = []
         if (self.name):
+            str_list.append("\n")
             str_list.append("== " + self.name + " ==\n")
         if (not ('skip_steps' in kwargs)):
             for step in self.steps:
@@ -62,9 +63,18 @@ class Recipe(object):
 
     def ingredient(self,i,name=None,quantity=None,unit=None):
         """Add ingredient to this recipe.
+
+        r.ingredient(
         """
         if (not isinstance(i,Ingredient)):
-            i = Ingredient(i,name,quantity,unit)
+            if (quantity is None):
+                # Find ingredient matching, return quantity
+                for ing in self.ingredients:
+                    if (ing.type==i and ing.name==name):
+                        return(ing.quantity)
+                raise ValueError("Failed to find ingredient '%s', '%s'" % (i,name) )
+            else:
+                i = Ingredient(i,name,quantity,unit)
         self.ingredients.append(i)
 
     def property(self,p,quantity=None,unit=None):

@@ -15,15 +15,15 @@ m.property('temp','122F')
 m.property('t_mashtun','70F')
 m.solve()
 r.add(m)
-print m
 
 m2 = InfusionMash(start=m)
+m2.subname = 'second mash temp'
+m2.ingredient('water','strike','2.5gal')
 m2.property('temp','152F')
 m2.solve()
 r.add(m2)
 
-s = Recipe()
-s.subname = "sparge"
+s = Lauter(type='batch', mash=m2)
 r.add(s)
 
 b = Recipe()
@@ -31,7 +31,6 @@ b.subname = "boil"
 b.ingredient(Ingredient('hops','hallertau','3oz'))
 b.ingredient(Ingredient('hops','saaz','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))
-b.ingredient(Ingredient('misc','tarragon(fresh)','120g'))
 b.ingredient(Ingredient('sugar','cane sugar','1.1lb'))
 r.add(b)
 

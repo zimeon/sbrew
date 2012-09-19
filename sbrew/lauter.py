@@ -12,10 +12,23 @@ class Lauter(Recipe):
     def __init__(self, **kwargs):
         print "Lauter.__init__" + str(kwargs)
         super(Lauter, self).__init__(**kwargs)
-        self.name='lauter'
         # Lauter specific things
+        if (self.subname is None):
+            self.subname='lauter'
+        if ('type' in kwargs):
+            self.type = kwargs['type']
+            self.subname += ' (%s)' % self.type
         self.wort_volume=None
         self.wort_gravity=1.0
+        if ('mash' in kwargs):
+            m = kwargs['mash']
+            self.property('grain',m.total_grains())
+            self.property('water',m.total_water())
+
+    def __str2__(self):
+        s = ""
+        s += "grain %s, water %s" % (self.property('grain'), self.property('water')) 
+        return(s)
 
     def end_state_str(self):
         if (self.wort_volume is not None):
