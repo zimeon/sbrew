@@ -14,10 +14,8 @@ class Mash(Recipe):
     """
 
     def __init__(self, subname=None):
-        self.name=None
-        self.steps=[]
+        super(Mash,self).__init__()
         self.subname=( subname if subname else 'mash' )
-        self.ingredients=[]
 
     def total_type(self, type, unit=None):
         """Return total quantity of ingredient with given type

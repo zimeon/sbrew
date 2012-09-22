@@ -18,22 +18,23 @@ r.add(m)
 print m
 
 m2 = InfusionMash(start=m)
+m2.subname = 'second infusion'
+m2.ingredient('water','strike','2.5gal')
 m2.property('temp','152F')
 m2.solve()
 r.add(m2)
 
-s = Recipe()
-s.subname = "sparge"
+s = BatchSparge()
 r.add(s)
 
-b = Recipe()
-b.subname = "boil"
+b = Boil(duration='60min')
 b.ingredient(Ingredient('hops','hallertau','3oz'))
 b.ingredient(Ingredient('hops','saaz','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))
 b.ingredient(Ingredient('misc','tarragon(fresh)','120g'))
 b.ingredient(Ingredient('sugar','cane sugar','1.1lb'))
 r.add(b)
+
 
 f = Recipe()
 f.subname = "ferment"

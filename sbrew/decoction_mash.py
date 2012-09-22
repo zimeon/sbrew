@@ -15,6 +15,7 @@ class DecoctionMash(Mash):
     """
 
     def __init__(self, name=None):
+        super(DecoctionMash,self).__init__()
         self.name=None
         self.steps=[]
         self.subname=( name if name else 'decoction_mash' )

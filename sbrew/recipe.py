@@ -21,9 +21,9 @@ class Recipe(object):
         return( self.name if self.name else '')
 
     def subname_with_default(self):
-        """Return self.subname with defaul of 'mash' if None
+        """Return self.subname with default of 'recipe' if None
         """
-        return( self.subname if self.subname else 'mash')
+        return( self.subname if self.subname else 'recipe')
 
     def __str__(self, **kwargs):
         str_list = []
