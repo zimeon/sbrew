@@ -6,16 +6,26 @@ class Quantity:
     All quantities have a value and a unit.
     """
 
-    conversions = { 'oz'  : { 'lb' : 1.0/16.0,
-                          'kg' : 0.0283495231,
-                          'g'  : 28.3495231 },
-                'gal' : { 'pt' : 8.0 },
-                'J'   : { 'Joule' : 1.0,
-                          'kJ' : 0.001,
-                          'Btu' : 0.0009478 },
-                'points' : { },
-                'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
-              }
+    conversions = { 
+        'oz'  : { 'lb' : 1.0/16.0,
+                  'kg' : 0.0283495231,
+                  'g'  : 28.3495231 },
+        'gal' : { 'pt' : 8.0 },
+        'J'   : { 'Joule' : 1.0,
+                  'kJ' : 0.001,
+                  'Btu' : 0.0009478 },
+        'points' : { },
+        'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
+        }
+
+    display_fmt = {
+        'F' : '%.1f',
+        'Btu/F' : '%.2f',
+        'psi' : '%.1f',
+        'points' : '%.1f',
+        'sg' : '%.3f',
+        'gal' : '%.2f',
+        }
 
     all_conv = None
 
@@ -29,6 +39,7 @@ class Quantity:
         4) unit only: qty = Quanityt(None, unit)
         5) string: qyt = Quantity('1gal')
         """
+        #
         if (value is None):
             self.value = None
             self.unit = unit
@@ -53,6 +64,8 @@ class Quantity:
             return("QuantityNotDefined")
         elif (self.unit is None):
             return(str(self.value) + " (dimensionless)")
+        elif (self.unit in Quantity.display_fmt):
+            return( (Quantity.display_fmt[self.unit] % self.value) + " " + str(self.unit))
         else:
             return(str(self.value) + " " + str(self.unit))
 
@@ -86,7 +99,7 @@ class Quantity:
             #inverse
             return(self.value/Quantity.conversions[new_unit][self.unit])
         else:
-            return(self.value * findall_conversion(self.unit,new_unit))
+            return(self.value * self.find_conversion(self.unit,new_unit))
 
     def convert_to(new_unit):
         """Convert internal value to the new unit
@@ -121,11 +134,11 @@ class Quantity:
         if (Quantity.all_conv is None):
             Quantity.build_all_conv()
         if (not (from_unit in Quantity.all_conv)):
-            raise LookupError('unknown unit in conversion requested from ' + from_unit)
+            raise LookupError('unknown original unit in conversion requested from %s to %s' % (from_unit, to_unit))
         if (not (to_unit in Quantity.all_conv)):
-            raise LookupError('unknown unit in conversion requested to ' + to_unit)
+            raise LookupError('unknown destination unit in conversion requested from %s to %s' % (from_unit,to_unit))
         if (not (to_unit in Quantity.all_conv[from_unit])):
-            raise LookupError('unknown conversion requested from ' + from_unit + ' to ' + to_unit)
+            raise LookupError('unknown conversion requested from %s to %s' % (from_unit,to_unit))
         return(Quantity.all_conv[from_unit][to_unit])
 
     def test_find_conversion():

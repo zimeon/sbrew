@@ -32,7 +32,7 @@ class Mash(Recipe):
                 else:
                     total=Quantity(ingredient.quantity)
         return total
-
+ 
     def total_grains(self, total_mass=None):
         """Return total mass of grains
         """
@@ -54,6 +54,17 @@ class Mash(Recipe):
         # Now return total mass
         mass = self.total_type('grain')
         return( mass if mass else Mass('0lb'))
+
+    def total_points(self):
+        """Return total number of points estimated to be in grains if fully converted
+
+        FIXME - currently dumb, uses 35.11ppg for MO for all
+        """
+        total_points = 0.0
+        for ingredient in self.ingredients:
+            if (ingredient.type == 'grain'):
+                total_points += ingredient.quantity.to('lb') * 35.11
+        return( Quantity(total_points,'points') )
 
     def total_water(self):
         """Return total volume of water
@@ -84,11 +95,15 @@ class Mash(Recipe):
                 self.ingredients.remove(ingredient)
         self.ingredient( Ingredient('water','',water_total) )
 
-    def end_state(self):
-        return({ 'total_water' : self.total_water(),
-                 'total_grain' : self.total_grains(),
-                 'total_points': Quantity('99points') })
+    def solve(self):
+        print "mash.solve"
+        self.property('total_water', self.total_water())
+        self.property('total_grain', self.total_grains())
+        self.property('total_points', self.total_points())
 
     def end_state_str(self):
-        s = self.end_state()
-        return('{0:s} grain, {1:s} water, {2:s}\n'.format(s['total_grain'],s['total_water'],s['total_points']))
+        self.solve()
+        return('%s, %s, %s\n' %
+               (self.property('total_grain'),
+                self.property('total_water'),
+                self.property('total_points') ))

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from sbrew import *
 
 r = Recipe()

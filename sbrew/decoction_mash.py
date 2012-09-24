@@ -49,6 +49,16 @@ class DecoctionMash(Mash):
 
     def add_rest(self,time):
 	return add_step('rest',time=time)
+
+    def total_water(self):
+        """Add up all water to return total volume"""
+        total_water = Quantity('0.0gal')
+        for step in self.steps:
+            if ('type' in step and step['type']=='infuse' and
+                'volume' in step):
+                total_water += Quantity(step['volume'])
+        return(total_water)
+        
  
     def __str__(self):
         # Use superclass str() but don't try to render steps

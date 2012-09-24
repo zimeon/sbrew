@@ -15,7 +15,6 @@ m.property('temp','122F')
 m.property('t_mashtun','70F')
 m.solve()
 r.add(m)
-print m
 
 m2 = InfusionMash(start=m)
 m2.subname = 'second infusion'
@@ -24,14 +23,15 @@ m2.property('temp','152F')
 m2.solve()
 r.add(m2)
 
-s = BatchSparge()
+s = BatchSparge(mash=m2)
+s.property('v_boil','6.5gal')
+s.solve()
 r.add(s)
 
 b = Boil(duration='60min')
 b.ingredient(Ingredient('hops','hallertau','3oz'))
 b.ingredient(Ingredient('hops','saaz','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))
-b.ingredient(Ingredient('misc','tarragon(fresh)','120g'))
 b.ingredient(Ingredient('sugar','cane sugar','1.1lb'))
 r.add(b)
 

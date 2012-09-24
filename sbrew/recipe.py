@@ -1,6 +1,11 @@
 from ingredient import Ingredient
 from property import Property
 
+class NoProperty(object):
+    """Class used to represent 'no property' default"""
+    def __str__(self):
+        return('NoProperty')
+
 class Recipe(object):
     """Representation of a complete or partial recipe as a set of steps
 
@@ -18,16 +23,27 @@ class Recipe(object):
     def name_with_default(self):
         """Return self.name with default of '' if None
         """
-        return( self.name if self.name else '')
+        return( self.name if self.name else '' )
 
     def subname_with_default(self):
         """Return self.subname with default of 'recipe' if None
         """
-        return( self.subname if self.subname else 'recipe')
+        return( self.subname if self.subname else 'recipe' )
+
+    def fullname(self):
+        """Return best name we can get for this recipe
+        """
+        if ( self.name is None ):
+            return(self.subname_with_default())
+        elif ( self.subname is None ):
+            return(self.name)
+        else:
+            return(self.name + '(' + self.subname + ')')
 
     def __str__(self, **kwargs):
         str_list = []
         if (self.name):
+            str_list.append("\n")
             str_list.append("== " + self.name + " ==\n")
         if (not ('skip_steps' in kwargs)):
             for step in self.steps:
@@ -62,24 +78,41 @@ class Recipe(object):
 
     def ingredient(self,i,name=None,quantity=None,unit=None):
         """Add ingredient to this recipe.
+
+        r.ingredient(
         """
         if (not isinstance(i,Ingredient)):
-            i = Ingredient(i,name,quantity,unit)
+            if (quantity is None):
+                # Find ingredient matching, return quantity
+                for ing in self.ingredients:
+                    if (ing.type==i and ing.name==name):
+                        return(ing.quantity)
+                raise ValueError("Failed to find ingredient '%s', '%s'" % (i,name) )
+            else:
+                i = Ingredient(i,name,quantity,unit)
         self.ingredients.append(i)
 
-    def property(self,p,quantity=None,unit=None):
+    def property(self,p,quantity=None,unit=None,default=NoProperty):
         """Add/get property to this recipe.
 
         This is getter and setter for the property p. Perhaps not
         properly pythonic but p=Property of quantity!=None implies set,
         otherwise get.
 
-        Returns None is there is no such property.
+        Returns None or the value of default is there is no such property.
+        If default is not set the a message is printed.
         """
         if (not isinstance(p,Property)):
             if (quantity is None):
-                # get quantity of this property (else None)
-                return(self.properties.get(p))
+                q = self.properties.get(p)
+                if (q is None):
+                    if (default == NoProperty):
+                        print "%s has no property %s (has %s)" % (self.fullname(),p,self.properties.keys())
+                        return(None)
+                    else:
+                        # get quantity of this property (else None)
+                        return(default)
+                return(q)
             else:
                 # set with values given
                 name = p

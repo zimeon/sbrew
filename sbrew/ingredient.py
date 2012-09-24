@@ -25,7 +25,7 @@ class Ingredient:
         Default form is "type name quantity" but also will append information
         from some extra parameters: pct,
         """
-        s = "{0:10s}  {1:30s}   {2:10s}".format(self.type,self.name,str(self.quantity))
+        s = "{0:15s}  {1:30s}   {2:10s}".format(self.type,self.name,str(self.quantity))
 	if (self.pct):
 	    s += "   ({0:5.1f}%)".format(self.pct)
         if (self.extra):
