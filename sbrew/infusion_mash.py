@@ -33,7 +33,7 @@ class InfusionMash(Mash):
         t_mash = self.property('temp').quantity.to('F')
         #
         shc_water=Quantity("1Btu/lb/F")
-        if (self.property('hc_initial') is not None):
+        if (self.property('hc_initial',default=None) is not None):
             # starting from a prior mash
             volume_water=self.ingredient('water','strike')
             hc_initial=self.property('hc_initial').quantity
