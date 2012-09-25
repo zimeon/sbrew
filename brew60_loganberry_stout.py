@@ -28,7 +28,7 @@ s.property('v_boil','6.5gal')
 s.solve()
 r.add(s)
 
-b = Boil(duration='60min')
+b = Boil(duration='60min', lauter=s)
 b.ingredient(Ingredient('hops','hallertau','3oz'))
 b.ingredient(Ingredient('hops','saaz','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))

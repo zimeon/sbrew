@@ -52,5 +52,6 @@ class BatchSparge(Lauter):
              ((p_first+p_second) * 100.0) )
         # final values
         self.wort_gravity = 1.0 + 0.001 * (p_first+p_second) * t_points / v_wort
-        self.wort_gravity=Quantity(self.wort_gravity,'sg')
+        self.property('wort_gravity', Quantity(self.wort_gravity,'sg'))
+        self.property('wort_volume', Quantity(v_first+v_second,'gal'))
 

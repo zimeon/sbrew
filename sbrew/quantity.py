@@ -16,6 +16,8 @@ class Quantity:
                   'Btu' : 0.0009478 },
         'points' : { },
         'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
+        'h'   : { 'min' : 60,
+                  's'   : 3600 },
         }
 
     display_fmt = {

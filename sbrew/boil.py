@@ -14,19 +14,29 @@ class Boil(Recipe):
     def __init__(self, subname=None, duration=None, **kwargs):
         super(Boil, self).__init__(**kwargs)        
         self.subname=( subname if subname else 'boil' )
-        self.duration = None
+        self.property( 'boil_rate', Quantity('0.5gal/h') )
+        self.property( 'dead_space', Quantity('0.5gal') )
         if (duration is not None):
-            self.duration=Property('duration',duration)
+            self.property( 'duration', Quantity(duration) )
+        if ('lauter' in kwargs):
+            l = kwargs['lauter']
+            self.property('v_boil', l.property('wort_volume'))
+            self.property('start_gravity', l.property('wort_gravity'))
 
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil """
-        pass #FIXME
-
-    def end_state(self):
-        self.solve()
-        return({ 'wort_volume' : Quantity('9999gal'),
-                 'IBU'         : Quantity('9999IBU') })
+        v_end_boil = self.property('v_boil').to('gal') - \
+                      self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
+        self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
+        sg = (self.property('start_gravity').to('sg') - 1.0)
+        print "sg: %f" % sg
+        self.property('OG', 1.0 + ( sg * self.property('v_boil').to('gal') / v_end_boil ), 'sg')
+        self.property('IBU', Quantity('39.39IBU') )
 
     def end_state_str(self):
-        s = self.end_state()
-        return('{0:s} with {1:s}\n'.format(s['wort_volume'],s['IBU']))
+        self.solve()
+        return('%s @ %s with %s\n' % (self.property('wort_volume').quantity,
+                                      self.property('OG').quantity,
+                                      self.property('IBU').quantity) )
+                                      
+

@@ -7,6 +7,8 @@ class Lauter(Recipe):
     """Lauter process: start with mash, extract wort
 
     l = Lauter()
+
+    At the end of the lauter the key properties are wort_volume and wort_gravity
     """
 
     def __init__(self, **kwargs):
