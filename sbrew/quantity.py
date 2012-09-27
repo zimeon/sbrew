@@ -7,6 +7,7 @@ class Quantity:
     """
 
     conversions = { 
+        '%ABW' : { '%ABV' : 1.25 },
         'oz'  : { 'lb' : 1.0/16.0,
                   'kg' : 0.0283495231,
                   'g'  : 28.3495231 },
@@ -21,13 +22,15 @@ class Quantity:
         }
 
     display_fmt = {
-        'F' : '%.1f',
+        '%ABV' : '%.1f',
+        '%ABW' : '%.1f',
         'Btu/F' : '%.2f',
+        'F' : '%.1f',
+        'gal' : '%.2f',
         'psi' : '%.1f',
         'points' : '%.1f',
-        'sg' : '%.3f',
-        'gal' : '%.2f',
         'min' : '%d',
+        'sg' : '%.3f',
         }
 
     all_conv = None
@@ -131,7 +134,8 @@ class Quantity:
         """Function to see whether we can fo from_unit->to_unit
 
         Raises and exception if not, otherwise returns factor that the value
-        in from_unit is multiplied by to get a value in to_unit"""
+        in from_unit is multiplied by to get a value in to_unit
+        """
         if (from_unit==to_unit):
             return(1.0);
         if (Quantity.all_conv is None):

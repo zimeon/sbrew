@@ -27,7 +27,9 @@ class Property:
     def short_str(self):
         """Short human readable string representation, exlcuding extra info"""
         s = ""
-        if (self.name != 'time' and self.name != self.quantity.unit):
+        if (self.name != 'time' and 
+            self.name != 'AA' and
+            self.name != self.quantity.unit):
             s += self.name + " "
         s += str(self.quantity)
         return(s)

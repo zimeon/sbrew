@@ -59,7 +59,7 @@ class Recipe(object):
             for name in sorted(self.properties.keys()):
                 str_list.append(' ' + str(self.properties[name]) + "\n")
         end_str = self.end_state_str()
-        if (end_str is not None):
+        if (end_str is not None and end_str != ''):
             str_list.append(' -> '+end_str)
         return(''.join(str_list))
 

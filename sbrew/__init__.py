@@ -1,3 +1,8 @@
+"""Initialization for sbrew code
+
+Simply loads everything at present
+"""
+
 from quantity import Quantity
 from temp import Temp
 from mass import Mass
@@ -12,7 +17,8 @@ from lauter import Lauter
 from batch_sparge import BatchSparge
 from boil import Boil
 from carbonation import *
+from ferment import Ferment
 from wort import *
 from mix import *
 
-print "Loaded sbrew.__init__"
+#print "Loaded sbrew.__init__"

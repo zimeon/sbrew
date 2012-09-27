@@ -96,7 +96,6 @@ class Mash(Recipe):
         self.ingredient( Ingredient('water','',water_total) )
 
     def solve(self):
-        print "mash.solve"
         self.property('total_water', self.total_water())
         self.property('total_grain', self.total_grains())
         self.property('total_points', self.total_points())
@@ -104,6 +103,6 @@ class Mash(Recipe):
     def end_state_str(self):
         self.solve()
         return('%s, %s, %s\n' %
-               (self.property('total_grain'),
-                self.property('total_water'),
-                self.property('total_points') ))
+               (self.property('total_grain').short_str(),
+                self.property('total_water').short_str(),
+                self.property('total_points').short_str() ))

@@ -23,23 +23,25 @@ m2.property('temp','152F')
 m2.solve()
 r.add(m2)
 
-s = BatchSparge(mash=m2)
+s = BatchSparge(start=m2)
 s.property('v_boil','6.5gal')
 s.solve()
 r.add(s)
 
 b = Boil(duration='60min', lauter=s)
-b.ingredient(Ingredient('hops','hallertau','3oz',time='60min'))
-b.ingredient(Ingredient('hops','saaz','1oz',time='15min'))
+b.ingredient(Ingredient('hops','hallertau','3oz',time='60min',AA='4.3%AA'))
+b.ingredient(Ingredient('hops','saaz','1oz',time='15min',AA='3.9%AA'))
 b.ingredient(Ingredient('misc','irish moss','1tsp',time='15min'))
 b.ingredient(Ingredient('sugar','cane sugar','1.1lb',time='15min'))
 b.solve()
 r.add(b)
 
 
-f = Recipe()
+f = Ferment(start=b)
 f.subname = "ferment"
 f.ingredient(Ingredient('yeast','white labs WLP550 Belgian Ale','1vial'))
+f.property('temp','68F')
+f.property('FG','1.012sg')
 r.add(f)
 
 print r

@@ -46,7 +46,7 @@ class Boil(Recipe):
                 else:
                     print "Warning  - no AA specified for %s hops, assuming %s" % (i.name,aa)
                 ibu = self.ibu_from_addition(aa,t)
-                i.properties['%AA']=Property('%AA',Quantity(aa,'IBU'))
+                i.properties['AA']=Property('AA',Quantity(aa,'IBU'))
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu,'IBU') )
 

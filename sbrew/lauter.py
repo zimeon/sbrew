@@ -23,8 +23,8 @@ class Lauter(Recipe):
         self.wort_volume=None
         self.wort_gravity=1.0
         self.extra_info=None # extra info for end_state_str
-        if ('mash' in kwargs):
-            m = kwargs['mash']
+        if ('start' in kwargs):
+            m = kwargs['start']
             self.property('grain',m.property('total_grain'))
             self.property('water',m.property('total_water'))
             self.property('total_points',m.property('total_points'))
