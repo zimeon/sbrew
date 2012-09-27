@@ -27,6 +27,7 @@ class Quantity:
         'points' : '%.1f',
         'sg' : '%.3f',
         'gal' : '%.2f',
+        'min' : '%d',
         }
 
     all_conv = None

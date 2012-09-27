@@ -11,11 +11,11 @@ class BatchSparge(Lauter):
         """
 
         Parameters required:
+           wort_volume - the desired wort volume
         """
         print "batch sparge __init__" + str(kwargs)
         super(BatchSparge, self).__init__(**kwargs)
         self.name='batch sparge'
-        self.wort_volume = Quantity('6.75gal')
         self.wort_gravity = None #don't know yet
         self.v_dead = Quantity('0.25gal')
         self.grain_water_retention = Quantity('0.55qt/lb') # qt/lb
@@ -37,7 +37,10 @@ class BatchSparge(Lauter):
 
         Also give size and gravity of the two runnings.
         """
-        v_wort = self.wort_volume.to('gal')
+        wort_volume = self.property('v_boil').to('gal') - self.v_dead.to('gal')
+        self.property('wort_volume',wort_volume,'gal')
+        # calculate sparge
+        v_wort = wort_volume
         v_water = self.property('water').to('gal')
         v_in_grain = self.property('grain').to('lb') *\
                      self.grain_water_retention.to('qt/lb') / 4.0

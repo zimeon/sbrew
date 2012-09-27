@@ -25,13 +25,33 @@ class Boil(Recipe):
 
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil """
+        # Volume
         v_end_boil = self.property('v_boil').to('gal') - \
-                      self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
+                     self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
         self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
         sg = (self.property('start_gravity').to('sg') - 1.0)
-        print "sg: %f" % sg
         self.property('OG', 1.0 + ( sg * self.property('v_boil').to('gal') / v_end_boil ), 'sg')
-        self.property('IBU', Quantity('39.39IBU') )
+        # Bitterness
+        total_ibu = 0.0
+        for i in self.ingredients:
+            if (i.type == 'hops'):
+                t = Quantity('60min')
+                if ('time' in i.properties):
+                    t = i.properties['time'].quantity
+                else:
+                    print "Warning  - no time specified for %s hops, assuming %s" % (i.name,t)
+                aa = Quantity('5%AA')
+                if ('AA' in i.properties):
+                    aa = i.properties['AA'].quantity
+                else:
+                    print "Warning  - no AA specified for %s hops, assuming %s" % (i.name,aa)
+                ibu = self.ibu_from_addition(aa,t)
+                i.properties['%AA']=Property('%AA',Quantity(aa,'IBU'))
+                total_ibu += ibu
+        self.property('IBU', Quantity(total_ibu,'IBU') )
+
+    def ibu_from_addition(self, aa, time):
+        return(1.2)
 
     def end_state_str(self):
         self.solve()

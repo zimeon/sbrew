@@ -1,4 +1,5 @@
 from quantity import Quantity
+from property import Property
 import re
 
 class Ingredient:
@@ -8,12 +9,16 @@ class Ingredient:
     i = Ingredient('grain','belgian pilsner',9.75,'lb')
     """
 
-    def __init__(self, type, name, quantity, unit=None, **extra):
+    def __init__(self, type, name, quantity, unit=None, *properties, **properties_kv):
         self.type = type
         self.name = name
         self.pct = None
-        self.extra = {}
-        self.extra.update(extra)
+        self.properties = {}
+        for p in properties:
+            self.properties[p.name] = p
+        for k in properties_kv.keys():
+            p = Property(k,properties_kv[k])
+            self.properties[k] = p
         if (isinstance(quantity, Quantity)):
             self.quantity = quantity
         else:
@@ -23,12 +28,14 @@ class Ingredient:
         """Human readable string version of object
 
         Default form is "type name quantity" but also will append information
-        from some extra parameters: pct,
+        from pct and properties
         """
         s = "{0:15s}  {1:30s}   {2:10s}".format(self.type,self.name,str(self.quantity))
 	if (self.pct):
 	    s += "   ({0:5.1f}%)".format(self.pct)
-        if (self.extra):
-            for e in sorted(self.extra.keys()):
-		s += "  ({0:6s})".format(self.extra[e])
+        if (len(self.properties)>0):
+            prop_strs = []
+            for e in sorted(self.properties.keys()):
+   	        prop_strs.append(self.properties[e].short_str())
+            s += "  (" + ", ".join(prop_strs) + ")"
         return s

@@ -36,8 +36,12 @@ class Lauter(Recipe):
 
     def end_state_str(self):
         s = ''
-        if (self.wort_volume is not None):
-            s += '{0:s} wort at {1:s}'.format(str(self.wort_volume),str(self.wort_gravity))
+        wv = self.property('wort_volume')
+        if (wv is not None):
+            s += str(wv.quantity) + ' wort'
+        wg = self.property('wort_gravity')
+        if (wg is not None):
+            s += ' at ' + str(wg.quantity)
         if (self.extra_info is not None):
             s += ' (' + self.extra_info + ')'
         if (s != ''):
