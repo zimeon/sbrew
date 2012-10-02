@@ -7,6 +7,7 @@ class Quantity:
     """
 
     conversions = { 
+        '%ABW' : { '%ABV' : 1.25 },
         'oz'  : { 'lb' : 1.0/16.0,
                   'kg' : 0.0283495231,
                   'g'  : 28.3495231 },
@@ -16,12 +17,20 @@ class Quantity:
                   'Btu' : 0.0009478 },
         'points' : { },
         'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
+        'h'   : { 'min' : 60,
+                  's'   : 3600 },
         }
 
     display_fmt = {
-        'F' : '%.1f',
+        '%ABV' : '%.1f',
+        '%ABW' : '%.1f',
         'Btu/F' : '%.2f',
+        'F' : '%.1f',
+        'gal' : '%.2f',
         'psi' : '%.1f',
+        'points' : '%.1f',
+        'min' : '%d',
+        'sg' : '%.3f',
         }
 
     all_conv = None
@@ -125,17 +134,18 @@ class Quantity:
         """Function to see whether we can fo from_unit->to_unit
 
         Raises and exception if not, otherwise returns factor that the value
-        in from_unit is multiplied by to get a value in to_unit"""
+        in from_unit is multiplied by to get a value in to_unit
+        """
         if (from_unit==to_unit):
             return(1.0);
         if (Quantity.all_conv is None):
             Quantity.build_all_conv()
         if (not (from_unit in Quantity.all_conv)):
-            raise LookupError('unknown unit in conversion requested from ' + from_unit)
+            raise LookupError('unknown original unit in conversion requested from %s to %s' % (from_unit, to_unit))
         if (not (to_unit in Quantity.all_conv)):
-            raise LookupError('unknown unit in conversion requested to ' + to_unit)
+            raise LookupError('unknown destination unit in conversion requested from %s to %s' % (from_unit,to_unit))
         if (not (to_unit in Quantity.all_conv[from_unit])):
-            raise LookupError('unknown conversion requested from ' + from_unit + ' to ' + to_unit)
+            raise LookupError('unknown conversion requested from %s to %s' % (from_unit,to_unit))
         return(Quantity.all_conv[from_unit][to_unit])
 
     def test_find_conversion():

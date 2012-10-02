@@ -7,7 +7,7 @@ from mash import Mash
 class InfusionMash(Mash):
     """A single step infusion mash
 
-    m =  Mash()
+    m =  InfusionMash()
     m.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
     m.ingredient( Ingredient('grain','caravieene belgian','1.25lb') )
     m.ingredient( Ingredient('grain','clear candi sugar','0.87lb') )
@@ -15,7 +15,7 @@ class InfusionMash(Mash):
     """
 
     def __init__(self, **kwargs):
-        super(Mash, self).__init__(**kwargs)
+        super(InfusionMash, self).__init__()
         #self.subname=( name if name else 'mash' )
         if ('start' in kwargs):
             # Initialize from previous mash step
@@ -33,7 +33,7 @@ class InfusionMash(Mash):
         t_mash = self.property('temp').quantity.to('F')
         #
         shc_water=Quantity("1Btu/lb/F")
-        if (self.property('hc_initial') is not None):
+        if (self.property('hc_initial',default=None) is not None):
             # starting from a prior mash
             volume_water=self.ingredient('water','strike')
             hc_initial=self.property('hc_initial').quantity
@@ -59,3 +59,8 @@ class InfusionMash(Mash):
         t_strike=Quantity( ((hc_total.value*t_mash - hc_initial.value*t_initial.to('F')) / hc_water.value), 'F')
         self.property('t_strike',t_strike,'F')
         self.property('hc_total',hc_total)
+
+        # set output values
+        self.property('total_water', self.total_water())
+        self.property('total_grain', self.total_grains())
+        self.property('total_points', self.total_points())

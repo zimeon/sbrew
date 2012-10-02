@@ -7,6 +7,8 @@ class Lauter(Recipe):
     """Lauter process: start with mash, extract wort
 
     l = Lauter()
+
+    At the end of the lauter the key properties are wort_volume and wort_gravity
     """
 
     def __init__(self, **kwargs):
@@ -20,10 +22,12 @@ class Lauter(Recipe):
             self.subname += ' (%s)' % self.type
         self.wort_volume=None
         self.wort_gravity=1.0
-        if ('mash' in kwargs):
-            m = kwargs['mash']
-            self.property('grain',m.total_grains())
-            self.property('water',m.total_water())
+        self.extra_info=None # extra info for end_state_str
+        if ('start' in kwargs):
+            m = kwargs['start']
+            self.property('grain',m.property('total_grain'))
+            self.property('water',m.property('total_water'))
+            self.property('total_points',m.property('total_points'))
 
     def __str2__(self):
         s = ""
@@ -31,6 +35,15 @@ class Lauter(Recipe):
         return(s)
 
     def end_state_str(self):
-        if (self.wort_volume is not None):
-          return('{0:s} wort at {1:s}\n'.format(str(self.wort_volume),str(self.wort_gravity)))
-        return(None)
+        s = ''
+        wv = self.property('wort_volume')
+        if (wv is not None):
+            s += str(wv.quantity) + ' wort'
+        wg = self.property('wort_gravity')
+        if (wg is not None):
+            s += ' at ' + str(wg.quantity)
+        if (self.extra_info is not None):
+            s += ' (' + self.extra_info + ')'
+        if (s != ''):
+            s += "\n"
+        return(s)

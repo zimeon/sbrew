@@ -20,6 +20,8 @@ shc_stainless=Quantity("0.120Btu/lb/F")
 mass_mashtun=Quantity("9.5lb")
 hc_mashtun=Quantity(mass_mashtun.to('lb')*shc_stainless.to('Btu/lb/F'),'Btu/F')
 hc_rest=hc_grain+hc_mashtun
+m.property('temp','150F')
+m.property('t_mashtun','70F')
 t_strike=Quantity( (((hc_water+hc_rest).value*150 - hc_rest.value*70) / hc_water.value), 'F')
 print "V_strike     = " + str(volume_water)
 print "T_strike     = " + str(t_strike)
@@ -28,8 +30,9 @@ print m
 r.add(m)
 print "Total grains = " + str(m.total_grains())
 
-s = Recipe()
-s.subname = "sparge"
+s = BatchSparge(mash=m)
+s.property('v_boil','6.5gal')
+s.solve()
 r.add(s)
 
 b = Recipe()

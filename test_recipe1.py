@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from sbrew import *
 
 r = Recipe()
@@ -9,8 +11,8 @@ m.ingredient(Ingredient('grain','caravienne','1.25lb'))
 m.ingredient(Ingredient('grain','candy sugar','0.87lb'))
 r.add(m)
 
-s = Recipe()
-s.subname = "sparge"
+s = BatchSparge()
+s.property('v_boil','6.5gal')
 r.add(s)
 
 b = Recipe()
