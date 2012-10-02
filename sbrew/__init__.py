@@ -14,4 +14,4 @@ from carbonation import *
 from wort import *
 from mix import *
 
-print "Loaded sbrew.__init__"
+#print "Loaded sbrew.__init__"
