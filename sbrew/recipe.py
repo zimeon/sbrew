@@ -76,7 +76,7 @@ class Recipe(object):
         sum.properties+=other.properties
         return(sum)
 
-    def ingredient(self,i,name=None,quantity=None,unit=None):
+    def ingredient(self,i,name=None,quantity=None,unit=None,*properties,**kv_properties):
         """Add ingredient to this recipe.
 
         r.ingredient(
@@ -89,7 +89,7 @@ class Recipe(object):
                         return(ing.quantity)
                 raise ValueError("Failed to find ingredient '%s', '%s'" % (i,name) )
             else:
-                i = Ingredient(i,name,quantity,unit)
+                i = Ingredient(i,name,quantity,unit,*properties,**kv_properties)
         self.ingredients.append(i)
 
     def property(self,p,quantity=None,unit=None,default=NoProperty):
