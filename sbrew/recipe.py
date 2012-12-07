@@ -9,6 +9,9 @@ class NoProperty(object):
 class Recipe(object):
     """Representation of a complete or partial recipe as a set of steps
 
+    A recipe has a set of ingredients (real stuff: grain, water, etc.) 
+    and properties (temperature, etc.). It also has a set of steps that
+    are undertaken to complete the recipe. Each step is itself a recipe.
     The notion of a recipe does not cater for things done in parallel, the
     steps are a simple sequence.
     """
