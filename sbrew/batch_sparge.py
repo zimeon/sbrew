@@ -10,8 +10,12 @@ class BatchSparge(Lauter):
     def __init__(self, **kwargs):
         """
 
-        Parameters required:
+        Key properties required:
            wort_volume - the desired wort volume
+           
+        Relies on parameters of the system:
+           v_dead - dead volume in tun when draining
+           grain_water_retention 
         """
         print "batch sparge __init__" + str(kwargs)
         super(BatchSparge, self).__init__(**kwargs)
