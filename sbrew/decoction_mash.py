@@ -1,7 +1,6 @@
 from mash import Mash
 from quantity import Quantity
 from sbrew_error import SbrewError
-#from brewtime import BrewTime
 from datetime import timedelta
 
 class DecoctionMash(Mash):
@@ -39,8 +38,6 @@ class DecoctionMash(Mash):
             self.steps.append(extra)
             return(decoction)     
         elif (type == 'mix'):
-            self.steps.append(extra)
-        elif (type == 'heat'):
             self.steps.append(extra)
         elif (type == 'heat'):
             self.steps.append(extra)
