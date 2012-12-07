@@ -54,7 +54,7 @@ class Quantity:
             self.unit = value.unit
         elif (unit is None):
             # try to parse value and unit from string
-            m = re.match('\s*([-+]?\d+(\.\d*)?)\s*([A-Za-z][\w*/%]+)\s*$', value)
+            m = re.match('\s*([-+]?\d+(\.\d*)?)\s*([A-Za-z][\w/%]*)\s*$', value)
             if (m):
                 self.value=float(m.group(1))
                 self.unit=m.group(3)

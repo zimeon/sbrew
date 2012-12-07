@@ -7,6 +7,13 @@ from sbrew.quantity import Quantity
 class TestAll(unittest.TestCase):
 
     def test_parse(self):
+        self.assertEqual( Quantity("50F").value, 50.0 )
+        self.assertEqual( Quantity("50F").unit, "F" )
+        self.assertEqual( Quantity("1.2lb").value, 1.2 )
+        self.assertEqual( Quantity("1.lb").value, 1.0 )
+        self.assertEqual( Quantity("1lb").value, 1.0 )
+
+    def test_parse_value(self):
         self.assertEqual( Quantity("0").value, 0.0 )
         self.assertEqual( Quantity("2").value, 2.0 )
         self.assertEqual( Quantity("2.0").value, 2.0 )
