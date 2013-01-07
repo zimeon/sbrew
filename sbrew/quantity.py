@@ -24,6 +24,7 @@ class Quantity:
     display_fmt = {
         '%ABV' : '%.1f',
         '%ABW' : '%.1f',
+        '%atten' : '%.1f',
         'Btu/F' : '%.2f',
         'F' : '%.1f',
         'gal' : '%.2f',

@@ -14,8 +14,8 @@ class Boil(Recipe):
     def __init__(self, subname=None, duration=None, **kwargs):
         super(Boil, self).__init__(**kwargs)        
         self.subname=( subname if subname else 'boil' )
-        self.property( 'boil_rate', Quantity('0.5gal/h') )
-        self.property( 'dead_space', Quantity('0.5gal') )
+        self.property( 'boil_rate', Quantity('0.5gal/h'), type='system' )
+        self.property( 'dead_space', Quantity('0.5gal'), type='system' )
         if (duration is not None):
             self.property( 'duration', Quantity(duration) )
         if ('lauter' in kwargs):

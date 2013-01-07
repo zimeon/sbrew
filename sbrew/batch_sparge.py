@@ -3,7 +3,29 @@ from quantity import Quantity
 from lauter import Lauter
 
 class BatchSparge(Lauter):
-    """Batch sparge, a special type of lauter
+    """Batch sparge, a special type of lauter with two extracts
+
+    There are two properties that are essential to calculating
+    how a batch sparge will work:
+
+    v_dead - dead volume of mach tun. This is the volume of of fluid
+      that is left if the mash tun is drained in the absence
+      of any grain. This can be measured by filling the tun
+      with water, draining it, and then measuring the quanity
+      that remains (either by depth or draining via some other means).
+
+    grain_water_retention - the volume of water, per unit mass of grain, 
+      that is left in the grain when the water is drained from a mash.
+      The usual first approximation is 0.5qt/lb.
+      
+    Provides a means to calculate backwards or forwards. Going 
+    from desired outcome we have:
+
+    wort_volume - volume of the combined wort extract from the
+      two runnings of the batch sparge.
+
+    wort_gravity - gravity of the combined wort extracted from the
+      two runnings of the batch sparge.
 
     """
 
@@ -13,10 +35,9 @@ class BatchSparge(Lauter):
         Parameters required:
            wort_volume - the desired wort volume
         """
-        print "batch sparge __init__" + str(kwargs)
+        #print "batch sparge __init__" + str(kwargs)
         super(BatchSparge, self).__init__(**kwargs)
         self.subname='batch sparge'
-        self.wort_gravity = None #don't know yet
         self.v_dead = Quantity('0.25gal')
         self.grain_water_retention = Quantity('0.55qt/lb') # qt/lb
         
@@ -33,6 +54,16 @@ class BatchSparge(Lauter):
         return( p_first, p_second, v_second )
 
     def solve(self):
+        """Solve based on what is known
+        """
+        if (self.has_properties('grain','water','total_points') and
+            (self.has_property('wort_volume') or 
+             self.has_property('v_boil'))):
+            return( self.solve_from_mash_and_desired_volume() )
+        else:
+            raise("Bad properties to solve batch sparge")
+     
+    def solve_2(self):
         """Solve to get size and gravity of extracted wort
 
         Also give size and gravity of the two runnings.
@@ -54,7 +85,41 @@ class BatchSparge(Lauter):
              Quantity(v_second,'gal'),Quantity(1.0 + 0.001 * p_second * t_points / v_second, 'sg'),\
              ((p_first+p_second) * 100.0) )
         # final values
-        self.wort_gravity = 1.0 + 0.001 * (p_first+p_second) * t_points / v_wort
-        self.property('wort_gravity', Quantity(self.wort_gravity,'sg'))
+        wort_gravity = 1.0 + 0.001 * (p_first+p_second) * t_points / v_wort
+        self.property('wort_gravity', Quantity(wort_gravity,'sg'))
+        self.property('wort_volume', Quantity(v_first+v_second,'gal'))
+
+    def solve_from_mash_and_desired_volume(self):
+        """Solve to get gravity of extracted wort
+
+        Must know the results of the mash (volume and total points)
+        and also the desired volume (wort_volume). Will assume an 
+        equal volume in first and second runnings.
+        """
+        if (self.has_property('wort_volume')):
+            wort_volume = self.property('wort_volume').to('gal')
+        elif (self.has_property('v_boil')):
+            # FIXME, this seems wrong
+            wort_volume = self.property('v_boil').to('gal') - self.v_dead.to('gal')
+            self.property('wort_volume',wort_volume,'gal')
+        else:
+            raise('bwaa')
+        # calculate sparge
+        v_wort = wort_volume
+        v_water = self.property('water').to('gal')
+        v_in_grain = self.property('grain').to('lb') *\
+                     self.grain_water_retention.to('qt/lb') / 4.0
+        v_first = v_water - v_in_grain
+        v_stuck = v_in_grain + self.v_dead.to('gal')
+        p_first, p_second, v_second = self.extraction(v_wort,v_stuck,v_first)
+        # description of process
+        t_points = self.property('total_points').to('points')
+        self.extra_info = 'first runnings: %s at %s; second runnings %s at %s; efficiency %.1f%%' %\
+            (Quantity(v_first,'gal'),Quantity(1.0 + 0.001 * p_first * t_points / v_first, 'sg'),\
+             Quantity(v_second,'gal'),Quantity(1.0 + 0.001 * p_second * t_points / v_second, 'sg'),\
+             ((p_first+p_second) * 100.0) )
+        # final values
+        wort_gravity = 1.0 + 0.001 * (p_first+p_second) * t_points / v_wort
+        self.property('wort_gravity', Quantity(wort_gravity,'sg'))
         self.property('wort_volume', Quantity(v_first+v_second,'gal'))
 

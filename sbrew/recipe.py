@@ -57,7 +57,9 @@ class Recipe(object):
         if (len(self.properties)>0):
             str_list.append("Properties:\n")
             for name in sorted(self.properties.keys()):
-                str_list.append(' ' + str(self.properties[name]) + "\n")
+                if ('type' not in self.properties[name].extra or
+                    self.properties[name].extra['type']!='system'):
+                    str_list.append(' ' + str(self.properties[name]) + "\n")
         end_str = self.end_state_str()
         if (end_str is not None and end_str != ''):
             str_list.append(' -> '+end_str)
@@ -76,7 +78,7 @@ class Recipe(object):
         sum.properties+=other.properties
         return(sum)
 
-    def ingredient(self,i,name=None,quantity=None,unit=None):
+    def ingredient(self,i,name=None,quantity=None,unit=None,*args,**kwargs):
         """Add ingredient to this recipe.
 
         r.ingredient(
@@ -89,10 +91,10 @@ class Recipe(object):
                         return(ing.quantity)
                 raise ValueError("Failed to find ingredient '%s', '%s'" % (i,name) )
             else:
-                i = Ingredient(i,name,quantity,unit)
+                i = Ingredient(i,name,quantity,unit,*args,**kwargs)
         self.ingredients.append(i)
 
-    def property(self,p,quantity=None,unit=None,default=NoProperty):
+    def property(self,p,quantity=None,unit=None,default=NoProperty,**kwargs):
         """Add/get property to this recipe.
 
         This is getter and setter for the property p. Perhaps not
@@ -116,10 +118,21 @@ class Recipe(object):
             else:
                 # set with values given
                 name = p
-                p = Property(name,quantity,unit)
+                p = Property(name,quantity,unit,**kwargs)
         else:
             name = p.name
         self.properties[name]=p
+
+    def has_properties(self,*args):
+        """True if recipe has the properties listed, else false"""
+        for property in args:
+            if (property not in self.properties):
+                return(False)
+        return(True)
+
+    def has_property(self,*arg):
+        """Another name for has_properties()"""
+        return(self.has_properties(*arg))        
 
     def add(self,step):
         """Add a step to this recipe

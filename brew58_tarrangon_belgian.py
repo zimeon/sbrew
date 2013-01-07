@@ -26,22 +26,22 @@ t_strike=Quantity( (((hc_water+hc_rest).value*150 - hc_rest.value*70) / hc_water
 print "V_strike     = " + str(volume_water)
 print "T_strike     = " + str(t_strike)
 print m
-
+m.solve()
 r.add(m)
 print "Total grains = " + str(m.total_grains())
 
-s = BatchSparge(mash=m)
+s = BatchSparge(start=m)
 s.property('v_boil','6.5gal')
 s.solve()
 r.add(s)
 
 b = Recipe()
 b.subname = "boil"
-b.ingredient(Ingredient('hops','hallertau','3oz'))
-b.ingredient(Ingredient('hops','saaz','1oz'))
-b.ingredient(Ingredient('misc','irish moss','1tsp'))
-b.ingredient(Ingredient('misc','tarragon(fresh)','120g'))
-b.ingredient(Ingredient('sugar','cane sugar','1.1lb'))
+b.ingredient('hops','hallertau','3oz')
+b.ingredient('hops','saaz','1oz')
+b.ingredient('misc','irish moss','1tsp')
+b.ingredient('misc','tarragon(fresh)','120g')
+b.ingredient('sugar','cane sugar','1.1lb')
 r.add(b)
 
 f = Recipe()

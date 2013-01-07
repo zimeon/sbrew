@@ -8,11 +8,15 @@ class Lauter(Recipe):
 
     l = Lauter()
 
-    At the end of the lauter the key properties are wort_volume and wort_gravity
+    At the end of the lauter the key properties are 
+
+    wort_volume - volume of wort extracted
+
+    wort_gravity - gravity of the wort extracted
     """
 
     def __init__(self, **kwargs):
-        print "Lauter.__init__" + str(kwargs)
+        #print "Lauter.__init__" + str(kwargs)
         super(Lauter, self).__init__(**kwargs)
         # Lauter specific things
         if (self.subname is None):
@@ -20,8 +24,6 @@ class Lauter(Recipe):
         if ('type' in kwargs):
             self.type = kwargs['type']
             self.subname += ' (%s)' % self.type
-        self.wort_volume=None
-        self.wort_gravity=1.0
         self.extra_info=None # extra info for end_state_str
         if ('start' in kwargs):
             m = kwargs['start']

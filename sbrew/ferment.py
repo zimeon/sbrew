@@ -17,21 +17,34 @@ class Ferment(Recipe):
             self.property('OG', s.property('OG'))
 
     def solve(self):
-        """ Calculate the ABV and atten based on OG and FG
-
-        The Complete Joy of Home Brewing, 3rd ed, p43
-        ABW = OG-FG * 105, (where OG and FG in specific gravity)
-        ABV = ABW * 1.25 
+        """ Calculate the ABV and attenuation based on OG and FG
         """
         if ('OG' in self.properties and
             'FG' in self.properties ):
-            abv = (self.property('OG').to('sg') - self.property('FG').to('sg')) * 105 * 1.25
-            self.property('%ABV', Quantity(abv,'%ABV') )
+            self.property('%ABV', Quantity(self.abv(),'%ABV') )
+            self.property('atten', ((self.property('OG').to('sg')-self.property('FG').to('sg'))/(self.property('OG').to('sg')-1.0)*100.0), '%atten' )
+        elif ('OG' in self.properties and
+              'atten' in self.properties):
+            fg = 1.0 + (self.property('OG').to('sg')-1.0) * self.property('atten')
+            self.property('FG', Quantity(fg,'sg') )
+            self.property('%ABV', Quantity(self.abv(),'%ABV') )
+    
+    def abv(self):
+        """ Calculate the ABV and attenuation based on OG and FG
+
+        The Complete Joy of Home Brewing, 3rd ed, p43
+        ABW = OG-FG * 105, (where OG and FG in specific gravity)
+        ABV = ABW * 1.25
+        """
+        return( (self.property('OG').to('sg') - self.property('FG').to('sg')) * 105 * 1.25 )
 
     def end_state_str(self):
         self.solve()
-        if (self.property('%ABV',default=None) is None):
+        if (not '%ABV' in self.properties):
             return(None)
-        return(str(self.property('%ABV').quantity))
+        s = str(self.property('%ABV').quantity)
+        if ('atten' in self.properties):
+            s += ' (' + str(self.property('atten').quantity) + ')'
+        return(s)
                                       
 

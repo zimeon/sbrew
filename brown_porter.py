@@ -29,7 +29,8 @@ m.ingredient(Ingredient('water','',volume_water,temp=t_strike))
 r.add(m)
 
 s = BatchSparge()
-s.wort_volume=Quantity('6.5gal')
+s.property('wort_volume',Quantity('6.5gal'))
+s.solve()
 r.add(s)
 
 b = Recipe()

@@ -4,14 +4,15 @@ from sbrew import *
 r = Recipe()
 r.name="Complete Breakfast Brew#56"
 
-m1 = Mash()
+m1 = InfusionMash()
 m1.subname = 'oatmeal pre-mash'
 m1.ingredient(Ingredient('grain','oatmeal','1.5lb'))
 m1.ingredient(Ingredient('water','','1.1gal'))
+m1.property('temp','122F')
 #m1.type('infuion','30min')
 print m1
 
-m = Mash()
+m = InfusionMash(start=m1)
 m.ingredient(Ingredient('grain','marris otter','8.0lb'))
 m.ingredient(Ingredient('grain','crystal 55','1.0lb'))
 m.ingredient(Ingredient('grain','british chocolate (simpsons)','0.75lb'))
