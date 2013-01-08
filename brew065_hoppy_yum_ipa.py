@@ -24,14 +24,18 @@ r.add(s)
 b = Recipe()
 b.subname = "boil"
 b.time=Quantity('60min')
-b.ingredient('hops','stryian goldings','1oz',time=Quantity('60min'))
-b.ingredient(Ingredient('hops','stryian goldings','1oz',time=Quantity('15min')))
-b.ingredient(Ingredient('misc','irish moss','1tsp',time=Quantity('15min')))
+b.ingredient('hops','simcoe','1.35oz',time=Quantity('60min'),aa=Quantity('13%'))
+b.ingredient('hops','cascade','1oz',time=Quantity('30min'),aa=Quantity('3.2%'))
+b.ingredient('hops','centennial','1oz',time=Quantity('10min'),aa=Quantity('9.9%'))
+b.ingredient('hops','simcoe','0.65oz',time=Quantity('0min'),aa=Quantity('13%'))
+b.ingredient('hops','cascade','0.5oz',time=Quantity('0min'),aa=Quantity('3.2%'))
+b.ingredient('hops','centennial','0.5oz',time=Quantity('0min'),aa=Quantity('9.9%'))
+b.ingredient('misc','irish moss','1tsp',time=Quantity('15min'))
 r.add(b)
 
 f = Recipe()
 f.subname = "ferment"
-f.ingredient('yeast','white labs WLP001 California ale','1vial')
+f.ingredient('yeast','wyeast 1056 American Ale','2vial')
 r.add(f)
 
 print r
