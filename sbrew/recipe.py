@@ -9,6 +9,9 @@ class NoProperty(object):
 class Recipe(object):
     """Representation of a complete or partial recipe as a set of steps
 
+    A recipe has a set of ingredients (real stuff: grain, water, etc.) 
+    and properties (temperature, etc.). It also has a set of steps that
+    are undertaken to complete the recipe. Each step is itself a recipe.
     The notion of a recipe does not cater for things done in parallel, the
     steps are a simple sequence.
     """
@@ -78,7 +81,7 @@ class Recipe(object):
         sum.properties+=other.properties
         return(sum)
 
-    def ingredient(self,i,name=None,quantity=None,unit=None,*args,**kwargs):
+    def ingredient(self,i,name=None,quantity=None,unit=None,*properties,**kv_properties):
         """Add ingredient to this recipe.
 
         r.ingredient(
@@ -91,7 +94,7 @@ class Recipe(object):
                         return(ing.quantity)
                 raise ValueError("Failed to find ingredient '%s', '%s'" % (i,name) )
             else:
-                i = Ingredient(i,name,quantity,unit,*args,**kwargs)
+                i = Ingredient(i,name,quantity,unit,*properties,**kv_properties)
         self.ingredients.append(i)
 
     def property(self,p,quantity=None,unit=None,default=NoProperty,**kwargs):
