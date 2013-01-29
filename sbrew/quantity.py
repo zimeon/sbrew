@@ -11,7 +11,12 @@ class Quantity:
         'oz'  : { 'lb' : 1.0/16.0,
                   'kg' : 0.0283495231,
                   'g'  : 28.3495231 },
-        'gal' : { 'pt' : 8.0 },
+        'gal' : { 'pt' : 8.0,
+                  'qt' : 4.0,
+                  'l'  : 3.78541,
+                  'dl' : 37.8541,
+                  'cl' : 378.541,
+                  'ml' : 3785.41 },
         'J'   : { 'Joule' : 1.0,
                   'kJ' : 0.001,
                   'Btu' : 0.0009478 },
@@ -31,7 +36,8 @@ class Quantity:
         'psi' : '%.1f',
         'points' : '%.1f',
         'min' : '%d',
-        'sg' : '%.3f',
+        'SG' : '%.3f',
+        'oz' : '%.2f',
         }
 
     all_conv = None
@@ -108,7 +114,7 @@ class Quantity:
         else:
             return(self.value * self.find_conversion(self.unit,new_unit))
 
-    def convert_to(new_unit):
+    def convert_to(self,new_unit):
         """Convert internal value to the new unit
 
         Piggbybacks on the to() method but changes the internal
