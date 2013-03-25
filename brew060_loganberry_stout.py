@@ -43,9 +43,10 @@ f.property('temp','68F')
 f.property('FG','1.012sg')
 r.add(f)
 
-print r
+c = Carbonation(start=f)
+c.property('temp','68F')
+c.property('vol','3volumes')
+c.solve()
+r.add(c)
 
-carb_temp=Quantity('68F')
-carb_vols=Quantity('3volumes')
-psi = psi_required(carb_temp,carb_vols)
-print "Carbonation: %s @ %s requires %s CO2" % (carb_vols,carb_temp,psi)
+print r

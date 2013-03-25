@@ -43,6 +43,6 @@ class Ferment(Recipe):
         s = str(self.property('%ABV').quantity)
         if ('atten' in self.properties):
             s += ' (' + str(self.property('atten').quantity) + ')'
-        return(s)
+        return(s + "\n")
                                       
 

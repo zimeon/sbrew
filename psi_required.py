@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from sbrew.carbonation import *
+from sbrew.quantity import Quantity
+from sbrew.carbonation import psi_required
 
 t = Quantity(raw_input("Temperature ? "))
 v = Quantity(raw_input("Volumes of CO2 required (float)? "))
