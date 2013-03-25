@@ -45,28 +45,7 @@ beer = Beer(start=f)
 beer.property('bitterness','10IBU')
 beer.property('abv','5.0%ABV')
 
-print r
 r.solve()
-
-
-
-mass_grain=m.total_grains(Quantity("9.5lb"))
-shc_grain =Quantity("0.3822Btu/lb/F")
-hc_grain=Quantity(mass_grain.to('lb')*shc_grain.to('Btu/lb/F'),'Btu/F')
-shc_water=Quantity("1Btu/lb/F")
-volume_water=Quantity("4.74gal")
-mass_water=Quantity(volume_water.to('pt'),'lb') #1lb == 1pt
-hc_water=Quantity(mass_water.to('lb')*shc_water.to('Btu/lb/F'),'Btu/F')
-shc_stainless=Quantity("0.120Btu/lb/F")
-mass_mashtun=Quantity("10lb")
-hc_mashtun=Quantity(mass_mashtun.to('lb')*shc_stainless.to('Btu/lb/F'),'Btu/F')
-hc_rest=hc_grain+hc_mashtun
-t_strike=Quantity( (((hc_water+hc_rest).value*152 - hc_rest.value*64) / hc_water.value), 'F')
-print "Total grains = " + str(mass_grain)
-print "V_strike     = " + str(volume_water)
-print "T_strike     = " + str(t_strike)
-
-
 print r
 
 
