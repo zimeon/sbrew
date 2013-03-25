@@ -18,8 +18,8 @@ class Boil(Recipe):
         self.property( 'dead_space', Quantity('0.5gal'), type='system' )
         if (duration is not None):
             self.property( 'duration', Quantity(duration) )
-        if ('lauter' in kwargs):
-            l = kwargs['lauter']
+        if ('start' in kwargs):
+            l = kwargs['start']
             self.property('v_boil', l.property('wort_volume'))
             self.property('start_gravity', l.property('wort_gravity'))
 
@@ -60,11 +60,11 @@ class Boil(Recipe):
         #self.solve()
         s = ''
         if ('wort_volume' in self.properties):
-            s += self.property('wort_volume').quantity
+            s += str(self.property('wort_volume').quantity)
         else:
             s += '?'
         if ('OG' in self.properties):
-            s += ' @ %s' % (self.property('OG').quantity)
+            s += ' @ %s' % str(self.property('OG').quantity)
         if ('IBU' in self.properties):
-            s += ' with %s' % (self.property('IBU').quantity)
+            s += ' with %s' % str(self.property('IBU').quantity)
         return( s + "\n")
