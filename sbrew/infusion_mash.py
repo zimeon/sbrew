@@ -33,7 +33,7 @@ class InfusionMash(Mash):
         t_mash = self.property('temp').quantity.to('F')
         #
         shc_water=Quantity("1Btu/lb/F")
-        if (self.property('hc_initial',default=None) is not None):
+        if (self.has_properties('hc_initial','t_initial')):
             # starting from a prior mash
             volume_water=self.ingredient('water','strike')
             hc_initial=self.property('hc_initial').quantity
@@ -48,7 +48,7 @@ class InfusionMash(Mash):
             mass_mashtun=Quantity("9.5lb")
             hc_mashtun=Quantity(mass_mashtun.to('lb')*shc_stainless.to('Btu/lb/F'),'Btu/F')
             hc_initial=hc_grain+hc_mashtun
-            t_initial = self.property('t_mashtun',default=Quantity('60F')).quantity
+            t_initial = self.property('t_mashtun',default='60F').quantity
         #
         mass_water=Quantity(volume_water.to('pt'),'lb') #1lb == 1pt
         hc_water=Quantity(mass_water.to('lb')*shc_water.to('Btu/lb/F'),'Btu/F') 
