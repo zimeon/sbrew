@@ -9,15 +9,18 @@ m1.subname = 'oatmeal pre-mash'
 m1.ingredient(Ingredient('grain','oatmeal','1.5lb'))
 m1.ingredient(Ingredient('water','','1.1gal'))
 m1.property('temp','122F')
-#m1.type('infuion','30min')
+m1.property('duration','30min')
 print m1
 
 m = InfusionMash(start=m1)
+m.subname = 'main mash'
 m.ingredient(Ingredient('grain','marris otter','8.0lb'))
 m.ingredient(Ingredient('grain','crystal 55','1.0lb'))
 m.ingredient(Ingredient('grain','british chocolate (simpsons)','0.75lb'))
 m.ingredient(Ingredient('grain','roast','0.25lb'))
-m.ingredient(Ingredient('water','','3.98gal'))
+m.ingredient(Ingredient('water','strike','3.98gal'))
+m.property('temp','152F')
+m.property('duration','60min')
 mass_grain=m.total_grains()
 shc_grain =Quantity("0.3822Btu/lb/F")
 hc_grain=Quantity(mass_grain.to('lb')*shc_grain.to('Btu/lb/F'),'Btu/F')
@@ -38,12 +41,13 @@ r.add(m)
 m.add_mash(m1)
 print "Total grains = " + str(m.total_grains())
 
-s = Recipe()
+s = Recipe(start=m1)
 s.subname = "sparge"
 r.add(s)
 
-b = Recipe()
+b = Recipe(start=s)
 b.subname = "boil"
+b.property('v_boil','6.5gal')
 b.ingredient(Ingredient('hops','stryian goldings','1oz'))
 b.ingredient(Ingredient('hops','stryian goldings','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))
