@@ -15,9 +15,10 @@ from infusion_mash import InfusionMash
 from decoction_mash import DecoctionMash
 from lauter import Lauter
 from batch_sparge import BatchSparge
+from ferment import Ferment
 from boil import Boil
 from carbonation import *
-from ferment import Ferment
+from beer import Beer
 from wort import *
 from mix import *
 
