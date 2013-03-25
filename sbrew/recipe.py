@@ -84,7 +84,7 @@ class Recipe(object):
     def ingredient(self,i,name=None,quantity=None,unit=None,*properties,**kv_properties):
         """Add ingredient to this recipe.
 
-        r.ingredient(
+        recipe.ingredient('water','to drink','6gal')
         """
         if (not isinstance(i,Ingredient)):
             if (quantity is None):
@@ -116,7 +116,7 @@ class Recipe(object):
                         return(None)
                     else:
                         # get quantity of this property (else None)
-                        return(default)
+                        return(Property(p,default))
                 return(q)
             else:
                 # set with values given
@@ -141,7 +141,24 @@ class Recipe(object):
         """Add a step to this recipe
         """
         self.steps.append(step)
-     
+
+    def solve(self, reverse=False):
+        """Solve for missing data based on the sequence of steps
+        
+        By default works start to finish, but alternatively will try to 
+        work backward from finish to start. This implementation is just
+        for a container recipe with steps, no calculation for this recipe
+        itself.
+        """
+        if (reverse):
+            print "Trying to solve backward..."
+            for step in reversed(self.steps):
+                step.solve()
+        else:
+            print "Trying to solve forward..."
+            for step in self.steps:
+                step.solve()
+
     def end_state_str(self):
         """String describing the end state of this recipe step
         """
