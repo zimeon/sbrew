@@ -142,6 +142,19 @@ class Recipe(object):
         """
         self.steps.append(step)
 
+    def import_property(self, kwargs, name, new_name=None, input='start'):
+        """Import property from previous recipe step based on kwargs
+
+        Will take from recipe pass with kwarg name 'start' unless
+        input is specified. Will use name in current recipe unless
+        new_name is specified.
+        """
+        if (new_name is None):
+            new_name = name
+        if (input in kwargs and
+            name in kwargs[input].properties):
+            self.property( new_name, kwargs[input].property(name) )
+
     def solve(self, reverse=False):
         """Solve for missing data based on the sequence of steps
         

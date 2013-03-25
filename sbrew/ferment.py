@@ -12,9 +12,7 @@ class Ferment(Recipe):
     def __init__(self, subname=None, duration=None, **kwargs):
         super(Ferment, self).__init__(**kwargs)        
         self.subname=( subname if subname else 'ferment' )
-        if ('start' in kwargs):
-            s = kwargs['start']
-            self.property('OG', s.property('OG'))
+        self.import_property(kwargs, 'OG')
 
     def solve(self):
         """ Calculate the ABV and attenuation based on OG and FG

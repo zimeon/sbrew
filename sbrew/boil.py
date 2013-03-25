@@ -18,10 +18,8 @@ class Boil(Recipe):
         self.property( 'dead_space', Quantity('0.5gal'), type='system' )
         if (duration is not None):
             self.property( 'duration', Quantity(duration) )
-        if ('start' in kwargs):
-            l = kwargs['start']
-            self.property('v_boil', l.property('wort_volume'))
-            self.property('start_gravity', l.property('wort_gravity'))
+        self.import_property(kwargs, 'wort_volume', 'v_boil')
+        self.import_property(kwargs, 'wort_gravity', 'start_gravity')
 
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil """

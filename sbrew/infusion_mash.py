@@ -16,14 +16,12 @@ class InfusionMash(Mash):
 
     def __init__(self, **kwargs):
         super(InfusionMash, self).__init__()
-        #self.subname=( name if name else 'mash' )
+        # Initialize from previous mash step
+        self.import_property(kwargs, 'temp', 't_initial')
+        self.import_property(kwargs, 'hc_total', 'hc_initial')
         if ('start' in kwargs):
-            # Initialize from previous mash step
-            m = kwargs['start']
-            self.property('t_initial',m.property('temp').quantity)
-            self.property('hc_initial',m.property('hc_total').quantity)
-            self.ingredient('grain','from prior mash',m.total_grains())
-            self.ingredient('water','from prior mash',m.total_water())
+            self.ingredient('grain','from prior mash',kwargs['start'].total_grains())
+            self.ingredient('water','from prior mash',kwargs['start'].total_water())
 
     def solve(self):
         """Solve for unknowns
