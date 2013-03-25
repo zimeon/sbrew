@@ -53,16 +53,14 @@ b.ingredient(Ingredient('hops','stryian goldings','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))
 r.add(b)
 
-f = Recipe()
+f = Ferment(start=b)
 f.subname = "ferment"
 f.ingredient(Ingredient('yeast','white labs WLP013 London Ale','1cake'))
 r.add(f)
 
-c = Recipe()
+c = Recipe(start=f)
 c.subname = "post-fermentation addition"
 c.ingredient(Ingredient('coffee','Gimme leftist espresso','800ml'))
 r.add(c)
 
 print r
-
-
