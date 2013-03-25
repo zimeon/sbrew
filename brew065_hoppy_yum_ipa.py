@@ -18,11 +18,10 @@ r.add(m)
 s = BatchSparge(start=m)
 s.property('v_boil','6.5gal')
 s.property('wort_volume','6.0gal')
-s.solve()
+#s.solve()
 r.add(s)
 
-b = Recipe()
-b.subname = "boil"
+b = Boil(start=s)
 b.time=Quantity('60min')
 b.ingredient('hops','simcoe','1.35oz',time=Quantity('60min'),aa=Quantity('13%'))
 b.ingredient('hops','cascade','1oz',time=Quantity('30min'),aa=Quantity('3.2%'))
@@ -31,10 +30,10 @@ b.ingredient('hops','simcoe','0.65oz',time=Quantity('0min'),aa=Quantity('13%'))
 b.ingredient('hops','cascade','0.5oz',time=Quantity('0min'),aa=Quantity('3.2%'))
 b.ingredient('hops','centennial','0.5oz',time=Quantity('0min'),aa=Quantity('9.9%'))
 b.ingredient('misc','irish moss','1tsp',time=Quantity('15min'))
+b.property('boil_end_volume', '6gal')
 r.add(b)
 
-f = Recipe()
-f.subname = "ferment"
+f = Ferment(start=b)
 f.ingredient('yeast','wyeast 1056 American Ale','2vial')
 r.add(f)
 

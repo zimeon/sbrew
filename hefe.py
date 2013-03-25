@@ -25,22 +25,29 @@ m.total_grains(Quantity('9.5lb'))
 m.solve()
 r.add(m)
 
-s = BatchSparge(mash=m)
+s = BatchSparge(start=m)
+s.property('v_boil','6.5gal')
 s.solve()
 r.add(s)
 
-b = Recipe()
-b.subname = "boil"
+b = Boil(start=s,duration="60min")
+b.property('v_boil','6.5gal')
 b.ingredient(Ingredient('hops','hallertau','1oz',time='60min',aa='4.3%'))
 b.ingredient(Ingredient('hops','hallertau','0.25oz',time='15min',aa='4.3%'))
 r.add(b)
+print r
 
-f = Recipe()
-f.subname = "ferment"
+f = Ferment(start=b)
 f.ingredient(Ingredient('yeast','wyeast 3056 bavarian weizen','1packet'))
 r.add(f)
 
+beer = Beer(start=f)
+beer.property('bitterness','10IBU')
+beer.property('abv','5.0%ABV')
+
 print r
+r.solve()
+
 
 
 mass_grain=m.total_grains(Quantity("9.5lb"))
