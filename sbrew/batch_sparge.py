@@ -60,12 +60,11 @@ class BatchSparge(Lauter):
     def solve(self):
         """Solve based on what is known
         """
-        if (self.has_properties('grain','water','total_points') and
-            (self.has_property('wort_volume') or 
-             self.has_property('v_boil'))):
+        if (self.has_properties('grain','water','total_points','wort_volume') or
+            self.has_properties('grain','water','total_points','v_boil')):
             return( self.solve_from_mash_and_desired_volume() )
         else:
-            raise("Bad properties to solve batch sparge")
+            raise Exception("Bad properties to solve batch sparge")
      
     def solve_2(self):
         """Solve to get size and gravity of extracted wort
@@ -107,7 +106,7 @@ class BatchSparge(Lauter):
             wort_volume = self.property('v_boil').to('gal') - self.v_dead.to('gal')
             self.property('wort_volume',wort_volume,'gal')
         else:
-            raise('bwaa')
+            raise Exception('bwaa')
         # calculate sparge
         v_wort = wort_volume
         v_water = self.property('water').to('gal')
