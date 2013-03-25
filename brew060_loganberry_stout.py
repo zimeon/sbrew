@@ -28,14 +28,13 @@ s.property('v_boil','6.5gal')
 s.solve()
 r.add(s)
 
-b = Boil(duration='60min', lauter=s)
+b = Boil(duration='60min', start=s)
 b.ingredient(Ingredient('hops','hallertau','3oz',time='60min',AA='4.3%AA'))
 b.ingredient(Ingredient('hops','saaz','1oz',time='15min',AA='3.9%AA'))
 b.ingredient(Ingredient('misc','irish moss','1tsp',time='15min'))
 b.ingredient(Ingredient('sugar','cane sugar','1.1lb',time='15min'))
 b.solve()
 r.add(b)
-
 
 f = Ferment(start=b)
 f.subname = "ferment"
