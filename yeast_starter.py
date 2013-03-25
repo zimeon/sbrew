@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from sbrew.carbonation import *
+from sbrew import *
 
 g = Quantity(raw_input("Gravity (e.g. 1.040SG)? "))
 v = Quantity(raw_input("Volumes (e.g. 4qt)? "))
