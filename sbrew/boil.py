@@ -7,7 +7,7 @@ from property import Property
 class Boil(Recipe):
     """A boil is a simple recipe with no sub-steps.
 
-    b = Boil(start=sparge)
+    b = Boil(start=sparge,duration="60min")
     b.ingredient( Ingredient('hops','ekg','2.0') )
     """
 
@@ -26,8 +26,11 @@ class Boil(Recipe):
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil """
         # Volume
-        v_end_boil = self.property('v_boil').to('gal') - \
-                     self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
+        if (self.has_property('boil_end_volume')):
+            v_end_boil = self.property('boil_end_volume').to('gal')
+        else:
+            v_end_boil = self.property('v_boil').to('gal') - \
+                         self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
         self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
         sg = (self.property('start_gravity').to('sg') - 1.0)
         self.property('OG', 1.0 + ( sg * self.property('v_boil').to('gal') / v_end_boil ), 'sg')
@@ -51,12 +54,17 @@ class Boil(Recipe):
         self.property('IBU', Quantity(total_ibu,'IBU') )
 
     def ibu_from_addition(self, aa, time):
-        return(1.2)
+        return(1.2) #FIXME, add something real!
 
     def end_state_str(self):
-        self.solve()
-        return('%s @ %s with %s\n' % (self.property('wort_volume').quantity,
-                                      self.property('OG').quantity,
-                                      self.property('IBU').quantity) )
-                                      
-
+        #self.solve()
+        s = ''
+        if ('wort_volume' in self.properties):
+            s += self.property('wort_volume').quantity
+        else:
+            s += '?'
+        if ('OG' in self.properties):
+            s += ' @ %s' % (self.property('OG').quantity)
+        if ('IBU' in self.properties):
+            s += ' with %s' % (self.property('IBU').quantity)
+        return( s + "\n")
