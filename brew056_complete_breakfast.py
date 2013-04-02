@@ -47,7 +47,7 @@ r.add(s)
 
 b = Recipe(start=s)
 b.subname = "boil"
-b.property('v_boil','6.5gal')
+b.property('boil_start_volume','6.5gal')
 b.ingredient(Ingredient('hops','stryian goldings','1oz'))
 b.ingredient(Ingredient('hops','stryian goldings','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))

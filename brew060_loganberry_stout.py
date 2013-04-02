@@ -24,7 +24,7 @@ m2.solve()
 r.add(m2)
 
 s = BatchSparge(start=m2)
-s.property('v_boil','6.5gal')
+s.property('boil_start_volume','6.5gal')
 s.solve()
 r.add(s)
 
@@ -49,4 +49,4 @@ c.property('vol','3volumes')
 c.solve()
 r.add(c)
 
-print r
+print r.__str__(line_numbers=True)

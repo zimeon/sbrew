@@ -44,29 +44,48 @@ class Recipe(object):
             return(self.name + '(' + self.subname + ')')
 
     def __str__(self, **kwargs):
+        """Human readable output of this recipe
+
+        A call with kwarg line_numbers will set off printing such that
+        all subsequent steps will print line numbers.
+        """
+        if ('line_numbers' in kwargs):
+            kwargs['state']={'num':0}
+            del kwargs['line_numbers']
         str_list = []
         if (self.name):
             str_list.append("\n")
-            str_list.append("== " + self.name + " ==\n")
+            str_list.append( self._str_line_num(kwargs) +
+                             "== " + self.name + " ==\n")
         if (not ('skip_steps' in kwargs)):
             for step in self.steps:
-                str_list.append(str(step))
+                str_list.append(step.__str__(**kwargs))
         if (self.subname):
             str_list.append("= " + self.subname + " =\n")
         if (len(self.ingredients)>0):
             str_list.append("Ingredients:\n")
             for ingredient in self.ingredients:
-                str_list.append(' ' + str(ingredient) + "\n")
+                str_list.append(self._str_line_num(kwargs) +
+                                ' ' + str(ingredient) + "\n")
         if (len(self.properties)>0):
             str_list.append("Properties:\n")
             for name in sorted(self.properties.keys()):
                 if ('type' not in self.properties[name].extra or
                     self.properties[name].extra['type']!='system'):
-                    str_list.append(' ' + str(self.properties[name]) + "\n")
+                    str_list.append(self._str_line_num(kwargs) +
+                                    ' ' + str(self.properties[name]) + "\n")
         end_str = self.end_state_str()
         if (end_str is not None and end_str != ''):
             str_list.append(' -> '+end_str)
         return(''.join(str_list))
+
+    def _str_line_num(self, kwargs):
+        """Return line number prefix or nothing"""
+        if ('line_number' in kwargs):
+            kwargs['line_number'] += 1
+            return('[%03d] ' % (kwargs['line_number']))
+        else:
+            return('')
 
     def __add__(self, other):
         """Add the partial recipes togerther, returning a new recipe

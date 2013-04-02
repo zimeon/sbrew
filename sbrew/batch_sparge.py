@@ -61,7 +61,7 @@ class BatchSparge(Lauter):
         """Solve based on what is known
         """
         if (self.has_properties('grain','water','total_points','wort_volume') or
-            self.has_properties('grain','water','total_points','v_boil')):
+            self.has_properties('grain','water','total_points','boil_start_volume')):
             return( self.solve_from_mash_and_desired_volume() )
         else:
             raise Exception("Bad properties to solve batch sparge")
@@ -71,7 +71,7 @@ class BatchSparge(Lauter):
 
         Also give size and gravity of the two runnings.
         """
-        wort_volume = self.property('v_boil').to('gal') - self.v_dead.to('gal')
+        wort_volume = self.property('boil_start_volume').to('gal') - self.v_dead.to('gal')
         self.property('wort_volume',wort_volume,'gal')
         # calculate sparge
         v_wort = wort_volume
@@ -101,9 +101,9 @@ class BatchSparge(Lauter):
         """
         if (self.has_property('wort_volume')):
             wort_volume = self.property('wort_volume').to('gal')
-        elif (self.has_property('v_boil')):
+        elif (self.has_property('boil_start_volume')):
             # FIXME, this seems wrong
-            wort_volume = self.property('v_boil').to('gal') - self.v_dead.to('gal')
+            wort_volume = self.property('boil_start_volume').to('gal') - self.v_dead.to('gal')
             self.property('wort_volume',wort_volume,'gal')
         else:
             raise Exception('bwaa')

@@ -18,7 +18,7 @@ class Boil(Recipe):
         self.property( 'dead_space', Quantity('0.5gal'), type='system' )
         if (duration is not None):
             self.property( 'duration', Quantity(duration) )
-        self.import_property(kwargs, 'wort_volume', 'v_boil')
+        self.import_property(kwargs, 'wort_volume', 'boil_start_volume')
         self.import_property(kwargs, 'wort_gravity', 'start_gravity')
 
     def solve(self):
@@ -27,11 +27,11 @@ class Boil(Recipe):
         if (self.has_property('boil_end_volume')):
             v_end_boil = self.property('boil_end_volume').to('gal')
         else:
-            v_end_boil = self.property('v_boil').to('gal') - \
+            v_end_boil = self.property('boil_start_volume').to('gal') - \
                          self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
         self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
         sg = (self.property('start_gravity').to('sg') - 1.0)
-        self.property('OG', 1.0 + ( sg * self.property('v_boil').to('gal') / v_end_boil ), 'sg')
+        self.property('OG', 1.0 + ( sg * self.property('boil_start_volume').to('gal') / v_end_boil ), 'sg')
         # Bitterness
         total_ibu = 0.0
         for i in self.ingredients:
