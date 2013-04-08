@@ -4,6 +4,44 @@ from mass import Mass
 from quantity import Quantity
 from property import Property
 
+import math
+
+# Tinseth hop utilization:
+#
+# Utilization = f(G) x f(T)
+# where: 
+# f(G) = 1.65 x 0.000125^(G - 1) 
+# f(T) = [1 - e^(-0.04 x T)] / 4.15
+# with
+# G is specific gravity
+# T in is time in mins
+# Utilization is 
+#
+# from Palmer:
+# http://www.howtobrew.com/section1/chapter5-5.html
+# from Tinseth:
+# http://www.realbeer.com/hops/research.html
+#
+def tinseth_utilization(gravity,time):
+    g = gravity.to('SG')
+    t = time.to('min')
+    fg = 1.65 * math.pow(0.000125,(g-1.0))
+    ft = ( 1.0 - math.exp(-0.04 * t)) / 4.15
+    return(fg*ft)
+
+# IBUs from a boiling hop addition
+#
+# AAU = Weight (oz) x % Alpha Acids (whole number)
+# IBU = AAU x U x 75 / Vrecipe
+#
+# from
+# http://www.howtobrew.com/section1/chapter5-5.html
+#
+def ibu_from_boil(weight,aa,volume,gravity,time):
+    aau = weight.to('oz') * aa.to('%AA')
+    u = tinseth_utilization(gravity,time)
+    return( aau * u * 75 / volume.to('gal') )
+
 class Boil(Recipe):
     """A boil is a simple recipe with no sub-steps.
 
