@@ -3,18 +3,18 @@
 from sbrew import *
 
 r = Recipe()
-r.name="Oaked Smoked Brown Ale"
+r.name="Robust Porter"
 
-# ithaca water
+# Ithaca water
 
 m = InfusionMash()
-m.ingredient('grain','US 2-row','8.0lb')
-m.ingredient('grain','simpsons chocolate','8oz')
+m.ingredient('grain','marris otter','11.0lb')
+m.ingredient('grain','chocolate (Weyermann Carafa I)','1lb')
 m.ingredient('grain','simpsons coffee','8oz')
-m.ingredient('grain','crystal 15','1.5lb')
-m.ingredient('grain','weyermann beech smoked','1lb')
-m.ingredient('water','strike','5.33gal')
-m.property('temp','153F')
+m.ingredient('grain','crystal 55','8oz')
+m.ingredient('water','strike','5.0gal')
+m.lookup_grains()
+m.property('temp','150F')
 m.property('t_mashtun','65F')
 m.solve()
 r.add(m)
