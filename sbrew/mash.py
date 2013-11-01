@@ -17,6 +17,12 @@ class Mash(Recipe):
         super(Mash,self).__init__()
         self.subname=( subname if subname else 'mash' )
 
+    def lookup_grains(self):
+        print "Lookup grains"
+        for ingredient in self.ingredients:
+            if (ingredient.type == 'grain'):
+                pass
+
     def total_type(self, type, unit=None):
         """Return total quantity of ingredient with given type
 
