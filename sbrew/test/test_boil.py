@@ -13,7 +13,7 @@ class TestAll(unittest.TestCase):
         ibu = ibu_from_boil(Quantity('1oz'),
                             Quantity('5%AA'),
                             Quantity('5gal'),
-                            Quantity('1.050SG'),
+                            Quantity('1.050sg'),
                             Quantity('60min'))
         self.assertAlmostEqual( ibu, 17.2998, places=3 )
 

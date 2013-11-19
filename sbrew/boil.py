@@ -23,7 +23,7 @@ import math
 # http://www.realbeer.com/hops/research.html
 #
 def tinseth_utilization(gravity,time):
-    g = gravity.to('SG')
+    g = gravity.to('sg')
     t = time.to('min')
     fg = 1.65 * math.pow(0.000125,(g-1.0))
     ft = ( 1.0 - math.exp(-0.04 * t)) / 4.15
@@ -84,13 +84,14 @@ class Boil(Recipe):
                     aa = i.properties['AA'].quantity
                 else:
                     print "Warning  - no AA specified for %s hops, assuming %s" % (i.name,aa)
-                ibu = self.ibu_from_addition(aa,t)
-                i.properties['AA']=Property('AA',Quantity(aa,'IBU'))
+                ibu = self.ibu_from_addition(i.quantity,aa,t)
+                #i.properties['AA']=Property('AA',Quantity(aa,'IBU'))
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu,'IBU') )
 
-    def ibu_from_addition(self, aa, time):
-        return(1.2) #FIXME, add something real!
+    def ibu_from_addition(self, weight, aa, time):
+        """ IBU from a single hop addition at a particular time in a boil """
+        return ibu_from_boil(weight,aa,self.property('boil_end_volume'),self.property('OG'),time)
 
     def end_state_str(self):
         #self.solve()
