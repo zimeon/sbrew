@@ -80,8 +80,8 @@ class Boil(Recipe):
                 else:
                     print "Warning  - no time specified for %s hops, assuming %s" % (i.name,t)
                 aa = Quantity('5%AA')
-                if ('AA' in i.properties):
-                    aa = i.properties['AA'].quantity
+                if ('aa' in i.properties):
+                    aa = i.properties['aa'].quantity
                 else:
                     print "Warning  - no AA specified for %s hops, assuming %s" % (i.name,aa)
                 ibu = self.ibu_from_addition(i.quantity,aa,t)
