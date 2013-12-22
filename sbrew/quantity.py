@@ -39,6 +39,7 @@ class Quantity:
         'og' : '%.3f',
         'sg' : '%.3f',
         'oz' : '%.2f',
+        'IBU' : '%.1f',
         }
 
     all_conv = None
