@@ -36,7 +36,8 @@ class Quantity:
         'psi' : '%.1f',
         'points' : '%.1f',
         'min' : '%d',
-        'SG' : '%.3f',
+        'og' : '%.3f',
+        'sg' : '%.3f',
         'oz' : '%.2f',
         }
 

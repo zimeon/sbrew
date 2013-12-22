@@ -16,6 +16,6 @@ class Gravity(Quantity):
         if (tval<t_data[0] or tval>t_data[-1]):
 	    raise NameError('Temperature out of range for hydrometer, must be within 50 - 118F')
         correction = numpy.interp(tval,t_data,c_data)
-        sg = self.to('SG') + correction
-        return Quantity(sg,'SG')
+        sg = self.to('sg') + correction
+        return Quantity(sg,'sg')
 

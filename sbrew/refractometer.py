@@ -19,12 +19,12 @@ def brix_to_starting_gravity(brix):
     MathCAD was used to curvefit the data for Degrees Brix @ 20 C (% sucrose 
     by weight) and specific gravity @ 15 C
     
-    SG = 1.000898 + 0.003859118*B + 0.00001370735*B*B + 0.00000003742517*B*B*B
+    sg = 1.000898 + 0.003859118*B + 0.00001370735*B*B + 0.00000003742517*B*B*B
     
           where:
 
                    B  = measured refractivity in Brix
-                   SG = calculated specific gravity at 15 C
+                   sg = calculated specific gravity at 15 C
     """
     b = brix.to("Brix")
     sg = 1.000019 + 0.003865613*b +\
@@ -36,5 +36,5 @@ def starting_gravity_to_brix(sg):
     
     Reference: Manning, M.P., Understanding Specific Gravity and Extract, Brewing Techniques, 1,3:30-35 (1993)
     
-    Plato = -676.67 + 1286.4*SG - 800.47*SG*SG + 190.74*SG*SG*SG
+    Plato = -676.67 + 1286.4*sg - 800.47*sg*sg + 190.74*sg*sg*sg
     """
