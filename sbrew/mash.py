@@ -81,7 +81,7 @@ class Mash(Recipe):
     def add_mash(self, mash=None):
         """Add another mash into this mash
         """
-        self.subname = self.subname_with_default() + ' + ' + mash.subname_with_default()
+        self.subname = self.subname_with_default + ' + ' + mash.subname_with_default
         for ingredient in mash.ingredients:
             self.ingredient( ingredient );
         #self.combine_waters()

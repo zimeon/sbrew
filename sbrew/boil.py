@@ -3,6 +3,7 @@ from ingredient import Ingredient
 from mass import Mass
 from quantity import Quantity
 from property import Property
+from recipe import MissingParam
 
 import math
 
@@ -60,13 +61,18 @@ class Boil(Recipe):
         self.import_property(kwargs, 'wort_gravity', 'start_gravity')
 
     def solve(self):
-        """ Calculate the bitterness and the volume at end of boil """
+        """ Calculate the bitterness and the volume at end of boil
+
+        Works only forward
+        """
         # Volume
-        if (self.has_property('boil_end_volume')):
+        if (self.has_property('start_gravity','boil_end_volume')):
             v_end_boil = self.property('boil_end_volume').to('gal')
-        else:
+        elif (self.has_property('start_gravity','boil_start_volume','boil_rate','duration')):
             v_end_boil = self.property('boil_start_volume').to('gal') - \
                          self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
+        else:
+            raise MissingParam("Can't solve boil")
         self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
         sg = (self.property('start_gravity').to('sg') - 1.0)
         self.property('OG', 1.0 + ( sg * self.property('boil_start_volume').to('gal') / v_end_boil ), 'sg')

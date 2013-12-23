@@ -1,6 +1,7 @@
 from mass import Mass
 from quantity import Quantity
 from lauter import Lauter
+from recipe import MissingParam
 
 class BatchSparge(Lauter):
     """Batch sparge, a special type of lauter with two extracts
@@ -64,7 +65,7 @@ class BatchSparge(Lauter):
             self.has_properties('grain','water','total_points','boil_start_volume')):
             return( self.solve_from_mash_and_desired_volume() )
         else:
-            raise Exception("Bad properties to solve batch sparge")
+            raise MissingParam("Bad properties to solve batch sparge")
      
     def solve_2(self):
         """Solve to get size and gravity of extracted wort

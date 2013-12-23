@@ -36,6 +36,10 @@ class Lauter(Recipe):
         s += "grain %s, water %s" % (self.property('grain'), self.property('water')) 
         return(s)
 
+    def solve(self):
+        """Blank, exception"""
+        raise Exception("Need to override Lauter solve()")
+
     def end_state_str(self):
         s = ''
         wv = self.property('wort_volume')

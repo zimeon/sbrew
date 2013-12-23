@@ -6,6 +6,11 @@ class NoProperty(object):
     def __str__(self):
         return('NoProperty')
 
+class MissingParam(Exception):
+    """Class for exception in solve because of missing parameter"""
+    def __str__(self):
+        return('Missing parameter exception')
+
 class Recipe(object):
     """Representation of a complete or partial recipe as a set of steps
 
@@ -18,26 +23,29 @@ class Recipe(object):
 
     def __init__(self, name=None, subname=None, **kwargs):
         self.name=name
-        self.steps=[]
         self.subname=subname
+        self.steps=[]
         self.ingredients=[]
         self.properties={}
 
+    @property
     def name_with_default(self):
         """Return self.name with default of '' if None
         """
         return( self.name if self.name else '' )
 
+    @property
     def subname_with_default(self):
         """Return self.subname with default of 'recipe' if None
         """
         return( self.subname if self.subname else 'recipe' )
 
+    @property
     def fullname(self):
         """Return best name we can get for this recipe
         """
         if ( self.name is None ):
-            return(self.subname_with_default())
+            return(self.subname_with_default)
         elif ( self.subname is None ):
             return(self.name)
         else:
@@ -131,7 +139,7 @@ class Recipe(object):
                 q = self.properties.get(p)
                 if (q is None):
                     if (default == NoProperty):
-                        print "%s has no property %s (has %s)" % (self.fullname(),p,self.properties.keys())
+                        print "%s has no property %s (has %s)" % (self.fullname,p,self.properties.keys())
                         return(None)
                     else:
                         # get quantity of this property (else None)
@@ -174,22 +182,49 @@ class Recipe(object):
             name in kwargs[input].properties):
             self.property( new_name, kwargs[input].property(name) )
 
-    def solve(self, reverse=False):
+    def solve(self):
         """Solve for missing data based on the sequence of steps
         
         By default works start to finish, but alternatively will try to 
         work backward from finish to start. This implementation is just
         for a container recipe with steps, no calculation for this recipe
         itself.
+
+        Attempt to scan forward and backward up to the number of steps
+        times.
         """
-        if (reverse):
-            print "Trying to solve backward..."
-            for step in reversed(self.steps):
-                step.solve()
-        else:
-            print "Trying to solve forward..."
+        solved = set()
+        num_steps = len(self.steps)
+        last_solved = 0
+        attempt = 0
+        for i in range(0,num_steps):
+            attempt += 1
+            print "Trying to solve, run %d ..." % (attempt)
+            this_solved = 0 # number of steps solved this iteration
             for step in self.steps:
-                step.solve()
+                if (step not in solved):
+                    try:
+                        step.solve()
+                        print "solve: solved step " + step.fullname
+                        solved.add(step)
+                        this_solved+=1
+                    except LookupError as e:
+                        print "solve: lookuperror in step " + step.fullname
+                        pass
+                    except MissingParam as e:
+                        print "solve: missingparam step " + step.fullname
+                        pass
+                else:
+                    this_solved+=1
+            if (this_solved == last_solved):
+                # no progress, exit
+                break
+            last_solved = this_solved
+        # Did we finish?
+        print "Out of %d steps, solved %d" % (num_steps,len(solved))
+        if (num_steps != len(solved)):
+            raise Exception("Failed to solve")
+        print "Solved recipe"
 
     def end_state_str(self):
         """String describing the end state of this recipe step
