@@ -31,7 +31,7 @@ class BatchSparge(Lauter):
     """
 
     def __init__(self, **kwargs):
-        """
+        """Initialize BatchSparge object as type of Lauter
 
         Key properties required:
            wort_volume - the desired wort volume

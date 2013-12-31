@@ -1,5 +1,8 @@
 import re
 
+class ConversionError(Exception):
+    pass;
+
 class Quantity:
     """Base class for all quantities.
 
@@ -40,6 +43,11 @@ class Quantity:
         'sg' : '%.3f',
         'oz' : '%.2f',
         'IBU' : '%.1f',
+        }
+
+    canonical_unit = {
+        'gal/hour': 'gal/h',
+        'hour'    : 'h',
         }
 
     all_conv = None
@@ -92,6 +100,12 @@ class Quantity:
         else:
             return(str(self.value) + str(self.unit))
 
+    def canonicalize(self,unit):
+        """Convert unit to canonical form if known but in other form"""
+        if (unit in Quantity.canonical_unit):
+            return Quantity.canonical_unit[unit]
+        return unit
+
     def to(self,new_unit):
         """Get value of this quantity in a specific unit.
 
@@ -104,6 +118,9 @@ class Quantity:
              temp=Quantity('10C')
              f = temp.to('F')
         """
+        # Make sure new_unit is canonical
+        new_unit=self.canonicalize(new_unit)
+        # Convert
         if (self.unit==new_unit):
             return(self.value)
         elif (self.unit in Quantity.conversions and
@@ -150,11 +167,11 @@ class Quantity:
         if (Quantity.all_conv is None):
             Quantity.build_all_conv()
         if (not (from_unit in Quantity.all_conv)):
-            raise LookupError('unknown original unit in conversion requested from %s to %s' % (from_unit, to_unit))
+            raise ConversionError('unknown original unit in conversion requested from %s to %s' % (from_unit, to_unit))
         if (not (to_unit in Quantity.all_conv)):
-            raise LookupError('unknown destination unit in conversion requested from %s to %s' % (from_unit,to_unit))
+            raise ConversionError('unknown destination unit in conversion requested from %s to %s' % (from_unit,to_unit))
         if (not (to_unit in Quantity.all_conv[from_unit])):
-            raise LookupError('unknown conversion requested from %s to %s' % (from_unit,to_unit))
+            raise ConversionError('unknown conversion requested from %s to %s' % (from_unit,to_unit))
         return(Quantity.all_conv[from_unit][to_unit])
 
     def test_find_conversion():
@@ -182,3 +199,4 @@ class Quantity:
                     if (not (e in Quantity.all_conv[s])):
                         Quantity.all_conv[s][e] = Quantity.all_conv[s][m] * Quantity.all_conv[m][e]
                         Quantity.all_conv[e][s] = 1.0 / Quantity.all_conv[s][e]
+

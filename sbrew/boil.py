@@ -65,26 +65,29 @@ class Boil(Recipe):
 
         Works only forward
         """
-        # Volume
-        if (self.has_property('start_gravity','boil_end_volume')):
+        print "boil-solve, have %s properties" % (self.properties.keys())
+        # Volume - forward
+        if (self.has_properties('start_gravity','boil_end_volume')):
             v_end_boil = self.property('boil_end_volume').to('gal')
-        elif (self.has_property('start_gravity','boil_start_volume','boil_rate','duration')):
+            self.solve_volume_forward(v_end_boil)
+        elif (self.has_properties('start_gravity','boil_start_volume','boil_rate','duration')):
             v_end_boil = self.property('boil_start_volume').to('gal') - \
                          self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
+            self.solve_volume_forward(v_end_boil)
+        # backward
+        elif (self.has_properties('OG','wort_volume','boil_rate','duration')):
+            self.solve_volume_backward()
         else:
-            raise MissingParam("Can't solve boil")
-        self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
-        sg = (self.property('start_gravity').to('sg') - 1.0)
-        self.property('OG', 1.0 + ( sg * self.property('boil_start_volume').to('gal') / v_end_boil ), 'sg')
+            raise MissingParam("Can't solve boil, have %s properties" % (self.properties.keys()))
         # Bitterness
         total_ibu = 0.0
         for i in self.ingredients:
             if (i.type == 'hops'):
                 t = Quantity('60min')
-                if ('time' in i.properties):
-                    t = i.properties['time'].quantity
+                if ('duration' in i.properties):
+                    t = i.properties['duration'].quantity
                 else:
-                    print "Warning  - no time specified for %s hops, assuming %s" % (i.name,t)
+                    print "Warning  - no duration specified for %s hops, assuming %s" % (i.name,t)
                 aa = Quantity('5%AA')
                 if ('aa' in i.properties):
                     aa = i.properties['aa'].quantity
@@ -94,6 +97,31 @@ class Boil(Recipe):
                 #i.properties['AA']=Property('AA',Quantity(aa,'IBU'))
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu,'IBU') )
+
+    def solve_volume_forward(self, v_end_boil):
+        self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
+        sg = (self.property('start_gravity').to('sg') - 1.0)
+        self.property('OG', 1.0 + ( sg * self.property('boil_start_volume').to('gal') / v_end_boil ), 'sg')
+
+    def solve_volume_backward(self):
+        """Solve for boil volumes starting from desired end state""" 
+        print "boi-solve-back-start"
+        self.property('boil_end_volume', self.property('wort_volume').to('gal') + 
+                                         self.property('dead_space').to('gal'), 'gal')
+        print "boi-solve-back-mid"
+        print "bev " + str(self.property('boil_end_volume'))
+        print "br  " + str(self.property('boil_rate').to('gal/hour'))
+        print "dur " + str(self.property('duration'))
+        bsv = self.property('boil_end_volume').to('gal') +\
+              self.property('boil_rate').to('gal/hour') *\
+              self.property('duration').to('h')
+        print "boi-solve-back-mid2"
+        self.property('boil_start_volume', 7.0, 'gal')
+        print "boi-solve-back-mid3"
+        og = (self.property('OG').to('sg') - 1.0)
+        self.property('start_gravity', 1.0 + (og * self.property('boil_end_volume').to('gal') /
+                                                   self.property('boil_start_volume').to('gal') ), 'sg' )
+        print "boi-solve-back-end"
 
     def ibu_from_addition(self, weight, aa, time):
         """ IBU from a single hop addition at a particular time in a boil """

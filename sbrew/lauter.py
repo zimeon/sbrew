@@ -16,6 +16,11 @@ class Lauter(Recipe):
     """
 
     def __init__(self, **kwargs):
+        """Initialize Lauter object which is a Recipe
+
+        If not sub-classed to a more specific type then will get the subname 
+        'lauter'.
+        """
         #print "Lauter.__init__" + str(kwargs)
         super(Lauter, self).__init__(**kwargs)
         # Lauter specific things
@@ -26,15 +31,9 @@ class Lauter(Recipe):
             self.subname += ' (%s)' % self.type
         self.extra_info=None # extra info for end_state_str
         if ('start' in kwargs):
-            m = kwargs['start']
-            self.property('grain',m.property('total_grain'))
-            self.property('water',m.property('total_water'))
-            self.property('total_points',m.property('total_points'))
-
-    def __str2__(self):
-        s = ""
-        s += "grain %s, water %s" % (self.property('grain'), self.property('water')) 
-        return(s)
+            self.import_property(kwargs,'grain','total_grain')
+            self.import_property(kwargs,'water','total_water')
+            self.import_property(kwargs,'total_points','total_points')
 
     def solve(self):
         """Blank, exception"""

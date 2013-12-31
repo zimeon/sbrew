@@ -124,11 +124,12 @@ class Recipe(object):
                 i = Ingredient(i,name,quantity,unit,*properties,**kv_properties)
         self.ingredients.append(i)
 
+
     def property(self,p,quantity=None,unit=None,default=NoProperty,**kwargs):
         """Add/get property to this recipe.
 
         This is getter and setter for the property p. Perhaps not
-        properly pythonic but p=Property of quantity!=None implies set,
+        properly pythonic but p=Property and quantity!=None implies set,
         otherwise get.
 
         Returns None or the value of default is there is no such property.
@@ -139,8 +140,7 @@ class Recipe(object):
                 q = self.properties.get(p)
                 if (q is None):
                     if (default == NoProperty):
-                        print "%s has no property %s (has %s)" % (self.fullname,p,self.properties.keys())
-                        return(None)
+                        raise MissingParam("%s has no property %s (has %s)" % (self.fullname,p,self.properties.keys()))
                     else:
                         # get quantity of this property (else None)
                         return(Property(p,default))
@@ -205,14 +205,14 @@ class Recipe(object):
                 if (step not in solved):
                     try:
                         step.solve()
-                        print "solve: solved step " + step.fullname
+                        print "solve: solved " + step.fullname
                         solved.add(step)
                         this_solved+=1
                     except LookupError as e:
-                        print "solve: lookuperror in step " + step.fullname
+                        print "solve: lookuperror in " + step.fullname
                         pass
                     except MissingParam as e:
-                        print "solve: missingparam step " + step.fullname
+                        print "solve: missingparam " + step.fullname
                         pass
                 else:
                     this_solved+=1
