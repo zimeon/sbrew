@@ -65,7 +65,7 @@ class BatchSparge(Lauter):
             self.has_properties('grain','water','total_points','boil_start_volume')):
             return( self.solve_from_mash_and_desired_volume() )
         else:
-            raise MissingParam("Bad properties to solve batch sparge")
+            raise MissingParam("Bad properties to solve batch sparge (have %s)" % self.properties_str())
      
     def solve_2(self):
         """Solve to get size and gravity of extracted wort

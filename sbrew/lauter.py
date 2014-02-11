@@ -31,8 +31,8 @@ class Lauter(Recipe):
             self.subname += ' (%s)' % self.type
         self.extra_info=None # extra info for end_state_str
         if ('start' in kwargs):
-            self.import_property(kwargs,'grain','total_grain')
-            self.import_property(kwargs,'water','total_water')
+            self.import_property(kwargs,'total_grain','grain')
+            self.import_property(kwargs,'total_water','water')
             self.import_property(kwargs,'total_points','total_points')
 
     def solve(self):

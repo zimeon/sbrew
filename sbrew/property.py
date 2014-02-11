@@ -39,7 +39,7 @@ class Property:
 
         Default form is "name     quantity"
         """
-        s = "{0:15s}  {1:10s}".format(self.name,str(self.quantity))
+        s = "{0:18s}  {1:10s}".format(self.name,str(self.quantity))
         if (len(self.extra)>0):
             s += "  ( "
             for e in sorted(self.extra.keys()):

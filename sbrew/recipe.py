@@ -8,7 +8,12 @@ class NoProperty(object):
 
 class MissingParam(Exception):
     """Class for exception in solve because of missing parameter"""
+    def __init__(self, msg):
+        self.msg = msg
+
     def __str__(self):
+        if (self.msg):
+            return(self.msg)
         return('Missing parameter exception')
 
 class Recipe(object):
@@ -164,6 +169,18 @@ class Recipe(object):
         """Another name for has_properties()"""
         return(self.has_properties(*arg))        
 
+    def properties_str(self):
+        """Short string of property names for this recipe"""
+        str_list = []
+        if (len(self.properties)>0):
+            for name in sorted(self.properties.keys()):
+                if ('type' not in self.properties[name].extra or
+                    self.properties[name].extra['type']!='system'):
+                    str_list.append(name)
+        else:
+            str_list.append("(no_properties)")
+        return( ', '.join(str_list) )
+
     def add(self,step):
         """Add a step to this recipe
         """
@@ -181,6 +198,7 @@ class Recipe(object):
         if (input in kwargs and
             name in kwargs[input].properties):
             self.property( new_name, kwargs[input].property(name) )
+            print "imported %s and %s" % (name, new_name)
 
     def solve(self):
         """Solve for missing data based on the sequence of steps
