@@ -66,17 +66,19 @@ class Boil(Recipe):
         Works only forward
         """
         print "boil-solve, have %s properties" % (self.properties.keys())
+        # Do we have any sugar?
+        total_sugar_points = self.points_from_sugars()
         # Volume - forward
         if (self.has_properties('start_gravity','boil_end_volume')):
             v_end_boil = self.property('boil_end_volume').to('gal')
-            self.solve_volume_forward(v_end_boil)
+            self.solve_volume_forward(v_end_boil,total_sugar_points)
         elif (self.has_properties('start_gravity','boil_start_volume','boil_rate','duration')):
             v_end_boil = self.property('boil_start_volume').to('gal') - \
                          self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
-            self.solve_volume_forward(v_end_boil)
+            self.solve_volume_forward(v_end_boil,total_sugar_points)
         # backward
         elif (self.has_properties('OG','wort_volume','boil_rate','duration')):
-            self.solve_volume_backward()
+            self.solve_volume_backward(total_sugar_points)
         else:
             raise MissingParam("Can't solve boil, have %s properties" % (self.properties.keys()))
         # Bitterness
@@ -98,13 +100,23 @@ class Boil(Recipe):
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu,'IBU') )
 
-    def solve_volume_forward(self, v_end_boil):
+    def solve_volume_forward(self, v_end_boil, total_sugar_points=0.0):
+        """Solve forward based on end of boil volume
+
+        If total_sugar_points is non zero then we simply increase the OG
+        by this number of points divided by the final volume.
+        """
         self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
         sg = (self.property('start_gravity').to('sg') - 1.0)
-        self.property('OG', 1.0 + ( sg * self.property('boil_start_volume').to('gal') / v_end_boil ), 'sg')
+        self.property('OG', 1.0 + ( sg * self.property('boil_start_volume').to('gal') / v_end_boil + ( 0.001 * total_sugar_points / v_end_boil ) ), 'sg')
 
-    def solve_volume_backward(self):
-        """Solve for boil volumes starting from desired end state""" 
+    def solve_volume_backward(self, total_sugar_points=0.0):
+        """Solve for starting boil volumes starting from desired end state
+
+        FIXME - does not yet handle sugar addition
+        """
+        if (total_sugar_points > 0.0):
+            raise Exception("FIXME - can't solve boil backwards with sugar")
         print "boi-solve-back-start"
         self.property('boil_end_volume', self.property('wort_volume').to('gal') + 
                                          self.property('dead_space').to('gal'), 'gal')
@@ -122,6 +134,20 @@ class Boil(Recipe):
         self.property('start_gravity', 1.0 + (og * self.property('boil_end_volume').to('gal') /
                                                    self.property('boil_start_volume').to('gal') ), 'sg' )
         print "boi-solve-back-end"
+
+    def points_from_sugars(self):
+        """Return number of points from all sugars additions
+        
+        FIXME - add various sugar types
+        """
+        tot = 0.0
+        for i in self.ingredients:
+            if (i.type == 'sucrose'):
+                # 46ppg
+                pts = i.quantity.to('lb') * 46.0
+                i.properties['points']=Property('points',pts,'points')
+                tot += pts
+        return(tot)
 
     def ibu_from_addition(self, weight, aa, time):
         """ IBU from a single hop addition at a particular time in a boil """
