@@ -86,10 +86,10 @@ class Boil(Recipe):
         for i in self.ingredients:
             if (i.type == 'hops'):
                 t = Quantity('60min')
-                if ('duration' in i.properties):
-                    t = i.properties['duration'].quantity
+                if ('time' in i.properties):
+                    t = i.properties['time'].quantity
                 else:
-                    print "Warning  - no duration specified for %s hops, assuming %s" % (i.name,t)
+                    print "Warning  - no time specified for %s hops, assuming %s" % (i.name,t)
                 aa = Quantity('5%AA')
                 if ('aa' in i.properties):
                     aa = i.properties['aa'].quantity
