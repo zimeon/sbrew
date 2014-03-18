@@ -24,7 +24,7 @@ r.add(s)
 
 b = Boil(start=s)
 b.time=Quantity('90min')
-b.ingredient('hops','amarillo','0.9oz',time=Quantity('60min'),aa=Quantity('10.3%AA'))
+b.ingredient('hops','amarillo','0.75oz',time=Quantity('60min'),aa=Quantity('10.3%AA')) #intended 0.9oz but forgot to fix
 b.ingredient('hops','saaz','0.50oz',time=Quantity('0min'),aa=Quantity('3.2%AA'))
 b.ingredient('misc','irish moss','1tsp',time=Quantity('15min'))
 b.ingredient('misc','gypsum','5g')
