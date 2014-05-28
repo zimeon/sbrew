@@ -2,8 +2,7 @@
 
 from sbrew import *
 
-r = Recipe()
-r.name="Saison"
+r = Recipe("Saison Fonce Avec Poivre")
 
 # ithaca water
 

@@ -2,8 +2,8 @@
 
 from sbrew import *
 
-r = Recipe()
-r.name="Warner Weisse"
+r = Recipe("Warner Weisse")
+
 m = DecoctionMash()
 m.ingredient(Ingredient('grain','marris otter (tf)','37%'))
 m.ingredient(Ingredient('grain','wheat malt (tf)','63%'))

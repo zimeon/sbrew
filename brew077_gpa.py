@@ -2,8 +2,7 @@
 
 from sbrew import *
 
-r = Recipe()
-r.name="GPA (Ginger Pale Ale 5.0)"
+r = Recipe("GPA (Ginger Pale Ale 5.0)")
 
 # ithaca water
 
