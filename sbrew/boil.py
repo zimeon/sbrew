@@ -106,9 +106,11 @@ class Boil(Recipe):
         If total_sugar_points is non zero then we simply increase the OG
         by this number of points divided by the final volume.
         """
+        print "boil-solve_volume_forward start"
         self.property('wort_volume', v_end_boil - self.property('dead_space').to('gal'), 'gal')
         sg = (self.property('start_gravity').to('sg') - 1.0)
         self.property('OG', 1.0 + ( sg * self.property('boil_start_volume').to('gal') / v_end_boil + ( 0.001 * total_sugar_points / v_end_boil ) ), 'sg')
+        print "boil-solve_volume_forward end"
 
     def solve_volume_backward(self, total_sugar_points=0.0):
         """Solve for starting boil volumes starting from desired end state

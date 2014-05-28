@@ -223,14 +223,14 @@ class Recipe(object):
                 if (step not in solved):
                     try:
                         step.solve()
-                        print "solve: solved " + step.fullname
+                        print "solve: solved %s" % (step.fullname)
                         solved.add(step)
                         this_solved+=1
                     except LookupError as e:
-                        print "solve: lookuperror in " + step.fullname
+                        print "solve: lookuperror in %s (%s)" % (step.fullname, str(e))
                         pass
                     except MissingParam as e:
-                        print "solve: missingparam " + step.fullname
+                        print "solve: missing parameter(s) in %s (%s)" % (step.fullname, str(e))
                         pass
                 else:
                     this_solved+=1
@@ -241,7 +241,7 @@ class Recipe(object):
         # Did we finish?
         print "Out of %d steps, solved %d" % (num_steps,len(solved))
         if (num_steps != len(solved)):
-            raise Exception("Failed to solve")
+            raise Exception("Failed to solve recipe")
         print "Solved recipe"
 
     def end_state_str(self):
