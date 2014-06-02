@@ -26,24 +26,23 @@ m.solve()
 r.add(m)
 
 s = BatchSparge(start=m)
-s.property('boil_start_volume','6.5gal')
+s.property('wort_volume','6.5gal')
 s.solve()
 r.add(s)
 
 b = Boil(start=s,duration="60min")
-b.property('boil_start_volume','6.5gal')
-b.ingredient(Ingredient('hops','hallertau','1oz',time='60min',aa='4.3%'))
-b.ingredient(Ingredient('hops','hallertau','0.25oz',time='15min',aa='4.3%'))
+b.ingredient(Ingredient('hops','hallertau','1oz',time='60min',aa='4.3%AA'))
+b.ingredient(Ingredient('hops','hallertau','0.25oz',time='15min',aa='4.3%AA'))
+b.property('boil_end_volume','6.0gal')
 r.add(b)
-print r
 
 f = Ferment(start=b)
 f.ingredient(Ingredient('yeast','wyeast 3056 bavarian weizen','1packet'))
 r.add(f)
 
-beer = Beer(start=f)
-beer.property('bitterness','10IBU')
-beer.property('abv','5.0%ABV')
+#beer = Beer(start=f)
+#beer.property('bitterness','10IBU')
+#beer.property('abv','5.0%ABV')
 
 r.solve()
 print r
