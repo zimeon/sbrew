@@ -12,6 +12,7 @@ from property import Property
 from recipe import Recipe
 from mash import Mash
 from infusion_mash import InfusionMash
+from step_mash import StepMash
 from decoction_mash import DecoctionMash
 from lauter import Lauter
 from batch_sparge import BatchSparge
