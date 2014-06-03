@@ -29,10 +29,11 @@ s.solve()
 r.add(s)
 
 b = Boil(duration='60min', start=s)
-b.ingredient(Ingredient('hops','hallertau','3oz',time='60min',AA='4.3%AA'))
-b.ingredient(Ingredient('hops','saaz','1oz',time='15min',AA='3.9%AA'))
+b.ingredient(Ingredient('hops','hallertau','3oz',time='60min',aa='4.3%AA'))
+b.ingredient(Ingredient('hops','saaz','1oz',time='15min',aa='3.9%AA'))
 b.ingredient(Ingredient('misc','irish moss','1tsp',time='15min'))
 b.ingredient(Ingredient('sugar','cane sugar','1.1lb',time='15min'))
+b.property('boil_end_volume','6.0gal')
 b.solve()
 r.add(b)
 
