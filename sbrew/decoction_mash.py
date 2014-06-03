@@ -163,7 +163,9 @@ class DecoctionMash(Mash):
                 mix_time = t + step['decoction'].total_time()
                 decoction_name = ( step['name'] if ('name' in step) else 'decoction' )      
                 step['decoction'].find_stages(stages, decoction_name, t)
-        # no return val, data left in stages  
+        # add final state
+        stage.append({'type': 'state', 'time': t, 'volume': vol, 'temp': temp})
+        # no return val, data left in stage 
 
     def parsetime(self, tstr):
         tqty = Quantity(tstr)
