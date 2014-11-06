@@ -3,3 +3,5 @@
 .#*
 # Python code
 *.pyc
+build
+*.egg-info

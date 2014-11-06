@@ -17,5 +17,5 @@ setup(
     long_description=open('README.rst').read(),
     url='http://github.com/zimeon/sbrew',
     install_requires=[],
-    test_suite="sbrew/test" #use ugly script to cope with 2 test dirs
+    test_suite="tests",
 )
