@@ -14,7 +14,7 @@ setup(
     author='Simeon Warner',
     author_email='simeon.warner@cornell.edu',
     description='Simeon\'s Brewing Calculations',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     url='http://github.com/zimeon/sbrew',
     install_requires=[],
     test_suite="tests",
