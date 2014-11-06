@@ -1,6 +1,10 @@
 sbrew
 =====
 
+.. image:: https://travis-ci.org/zimeon/sbrew.png?branch=master
+  :target: https://travis-ci.org/zimeon/sbrew
+  :alt: Build status
+
 Simeon's Homebrew Calculations. 
 
 *WARNING:* While I share this code it is clearly not even nearly ready 
