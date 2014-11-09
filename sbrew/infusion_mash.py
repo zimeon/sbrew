@@ -14,15 +14,20 @@ class InfusionMash(Mash):
     print m
     """
 
-    def __init__(self, name=None, **kwargs):
-        super(InfusionMash, self).__init__()
+    DEFAULT_NAME='infusion_mash'
+
+    def __init__(self, **kwargs):
+        super(InfusionMash, self).__init__(**kwargs)
+
+    def import_forward(self):
         # Initialize from previous mash step
-        self.name = ( name if name else 'infusion mash' )
-        self.import_property(kwargs, 'temp', 't_initial')
-        self.import_property(kwargs, 'hc_total', 'hc_initial')
-        if ('start' in kwargs):
-            self.ingredient('grain','from prior mash',kwargs['start'].total_grains())
-            self.ingredient('water','from prior mash',kwargs['start'].total_water())
+        self.import_property('temp', 't_initial')
+        self.import_property('hc_total', 'hc_initial')
+        # And move forward ingredients
+        if (len(self.inputs)==1): #FIXME - 0 is OK, should barf for >1
+            i=self.inputs[0]
+            self.ingredient('grain','from prior mash',i.total_grains())
+            self.ingredient('water','from prior mash',i.total_water())
 
     def solve(self):
         """Solve for unknowns

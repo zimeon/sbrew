@@ -18,15 +18,14 @@ r.add(m)
 
 s = BatchSparge(start=m)
 s.property('wort_volume','6.75gal')
-s.solve()
 r.add(s)
 
 b = Boil(start=s,duration="90min")
+b.property('boil_start_volume','6.75gal')
 b.property('boil_end_volume','6.0gal')
 b.ingredient(Ingredient('hops','hallertau','0.33oz',time='60min',aa='4.1%AA'))
 b.ingredient(Ingredient('hops','hallertau','1.0oz',time='60min',aa='4.6%AA'))
 r.add(b)
-print r
 
 f = Ferment(start=b)
 f.ingredient(Ingredient('yeast','Safbrew WB-06','1packet'))

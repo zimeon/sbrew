@@ -6,7 +6,10 @@ from quantity import Quantity
 class Lauter(Recipe):
     """Lauter process: start with mash, extract wort
 
-    l = Lauter()
+    Input is a Mash object of some type. Import parameters:
+      total_grain - (dry) mass of grain in mash
+      total_water - volume of water in mash
+      total_points - expected number of gravity points 
 
     At the end of the lauter the key properties are 
 
@@ -15,25 +18,26 @@ class Lauter(Recipe):
     wort_gravity - gravity of the wort extracted
     """
 
+    DEFAULT_NAME = 'lauter'
+
     def __init__(self, **kwargs):
         """Initialize Lauter object which is a Recipe
-
-        If not sub-classed to a more specific type then will get the name 
-        'lauter'.
         """
         #print "Lauter.__init__" + str(kwargs)
         super(Lauter, self).__init__(**kwargs)
-        # Lauter specific things
-        if (self.name is None):
-            self.name='lauter'
         if ('type' in kwargs):
             self.type = kwargs['type']
             self.name += ' (%s)' % self.type
         self.extra_info=None # extra info for end_state_str
-        if ('start' in kwargs):
-            self.import_property(kwargs,'total_grain','grain')
-            self.import_property(kwargs,'total_water','water')
-            self.import_property(kwargs,'total_points','total_points')
+
+    def import_forward(self):
+        """Import properties from previous step where available"""
+        self.import_property('total_grain','grain')
+        self.import_property('total_water','water')
+        self.import_property('total_points','total_points')
+
+    def import_backward(self):
+        pass
 
     def solve(self):
         """Blank, exception"""
@@ -41,10 +45,10 @@ class Lauter(Recipe):
 
     def end_state_str(self):
         s = ''
-        wv = self.property('wort_volume')
+        wv = self.property('wort_volume',default=None)
         if (wv is not None):
             s += str(wv.quantity) + ' wort'
-        wg = self.property('wort_gravity')
+        wg = self.property('wort_gravity',default=None)
         if (wg is not None):
             s += ' at ' + str(wg.quantity)
         if (self.extra_info is not None):

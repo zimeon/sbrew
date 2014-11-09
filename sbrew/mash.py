@@ -13,9 +13,10 @@ class Mash(Recipe):
     print m
     """
 
-    def __init__(self, name=None):
-        super(Mash,self).__init__()
-        self.name=( name if name else 'mash' )
+    DEFAULT_NAME='mash'
+
+    def __init__(self, **kwargs):
+        super(Mash,self).__init__(**kwargs)
 
     def lookup_grains(self):
         print "Lookup grains"

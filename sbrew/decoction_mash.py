@@ -12,9 +12,12 @@ class DecoctionMash(StepMash):
     print m
     """
 
-    def __init__(self, name=None):
-        super(DecoctionMash,self).__init__()
-        self.name=( name if name else 'decoction_mash' )
+    """def a"""
+    DEFAULT_NAME='decoction_mash'
+    """def b"""
+
+    def __init__(self, **kwargs):
+        super(DecoctionMash,self).__init__(**kwargs)
         self.steps=[]
         self.ingredients=[]
 
@@ -25,6 +28,9 @@ class DecoctionMash(StepMash):
         """
         extra['type']='split'
         decoction = DecoctionMash()
+        if ('remove' in extra):
+            # Take portion of volume from this mash, put into decoction
+            pass #FIXME
         extra['decoction']=decoction
         self.steps.append(extra)
         return(decoction)

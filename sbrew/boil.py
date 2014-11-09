@@ -7,38 +7,41 @@ from recipe import MissingParam
 
 import math
 
-# Tinseth hop utilization:
-#
-# Utilization = f(G) x f(T)
-# where: 
-# f(G) = 1.65 x 0.000125^(G - 1) 
-# f(T) = [1 - e^(-0.04 x T)] / 4.15
-# with
-# G is specific gravity
-# T in is time in mins
-# Utilization is 
-#
-# from Palmer:
-# http://www.howtobrew.com/section1/chapter5-5.html
-# from Tinseth:
-# http://www.realbeer.com/hops/research.html
-#
+
 def tinseth_utilization(gravity,time):
+    """Tinseth hop utilization:
+
+    Utilization = f(G) x f(T)
+
+    where: 
+
+    f(G) = 1.65 x 0.000125^(G - 1) 
+    f(T) = [1 - e^(-0.04 x T)] / 4.15
+
+    with
+
+    G is specific gravity
+    T in is time in mins
+
+    from Palmer:
+    http://www.howtobrew.com/section1/chapter5-5.html
+    from Tinseth:
+    http://www.realbeer.com/hops/research.html
+    """
     g = gravity.to('sg')
     t = time.to('min')
     fg = 1.65 * math.pow(0.000125,(g-1.0))
     ft = ( 1.0 - math.exp(-0.04 * t)) / 4.15
     return(fg*ft)
 
-# IBUs from a boiling hop addition
-#
-# AAU = Weight (oz) x % Alpha Acids (whole number)
-# IBU = AAU x U x 75 / Vrecipe
-#
-# from
-# http://www.howtobrew.com/section1/chapter5-5.html
-#
 def ibu_from_boil(weight,aa,volume,gravity,time):
+    """IBUs from a boiling hop addition
+
+    AAU = Weight (oz) x % Alpha Acids (whole number)
+    IBU = AAU x U x 75 / Vrecipe
+
+    from http://www.howtobrew.com/section1/chapter5-5.html
+    """
     aau = weight.to('oz') * aa.to('%AA')
     u = tinseth_utilization(gravity,time)
     return( aau * u * 75 / volume.to('gal') )
@@ -50,15 +53,18 @@ class Boil(Recipe):
     b.ingredient( Ingredient('hops','ekg','2.0') )
     """
 
+    DEFAULT_NAME='boil'
+
     def __init__(self, name=None, duration=None, **kwargs):
         super(Boil, self).__init__(**kwargs)        
-        self.name=( name if name else 'boil' )
         self.property( 'boil_rate', Quantity('0.5gal/h'), type='system' )
         self.property( 'dead_space', Quantity('0.5gal'), type='system' )
         if (duration is not None):
             self.property( 'duration', Quantity(duration) )
-        self.import_property(kwargs, 'wort_volume', 'boil_start_volume')
-        self.import_property(kwargs, 'wort_gravity', 'start_gravity')
+
+    def import_forward(self):
+        self.import_property('wort_volume', 'boil_start_volume')
+        self.import_property('wort_gravity', 'start_gravity')
 
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil

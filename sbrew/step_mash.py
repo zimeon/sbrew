@@ -2,15 +2,12 @@ from mash import Mash
 from quantity import Quantity
 
 class StepMash(Mash):
-    """A step mash where ingredients may be added and temperatures changed
+    """A step mash where ingredients may be added and temperatures changed"""
 
-    """
+    DEFAULT_NAME='step_mash'
 
-    def __init__(self, name=None):
-        super(StepMash,self).__init__()
-        self.name=( name if name else 'step_mash' )
-        self.steps=[]
-        self.ingredients=[]
+    def __init__(self, **kwargs):
+        super(StepMash,self).__init__(**kwargs)
 
     def add_step(self, type, **extra):
         """Add step to the mash process

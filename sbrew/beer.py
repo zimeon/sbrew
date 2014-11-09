@@ -8,10 +8,13 @@ class Beer(Recipe):
     """A placeholder recipe to express final details of beer
     """
 
+    DEFAULT_NAME='beer'
+
     def __init__(self, name=None, **kwargs):
-        super(Beer, self).__init__(**kwargs)        
-        self.name=( name if name else 'beer' )
-        self.import_property(kwargs, 'OG')
+        super(Beer, self).__init__(**kwargs)
+
+    def import_forward(self):
+        self.import_property('OG')
 
     def solve(self):
         """ Calculate the ABV and attenuation based on OG and FG
@@ -24,5 +27,3 @@ class Beer(Recipe):
         if ('%ABV' in self.properties):
             s += str(self.property('%ABV').quantity)
         return(s)
-                                      
-

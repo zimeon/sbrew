@@ -30,6 +30,8 @@ class BatchSparge(Lauter):
 
     """
 
+    DEFAULT_NAME='batch sparge'
+
     def __init__(self, **kwargs):
         """Initialize BatchSparge object as type of Lauter
 
@@ -40,9 +42,7 @@ class BatchSparge(Lauter):
            v_dead - dead volume in tun when draining
            grain_water_retention 
         """
-        #print "batch sparge __init__" + str(kwargs)
         super(BatchSparge, self).__init__(**kwargs)
-        self.name='batch sparge'
         self.v_dead = Quantity('0.25gal')
         self.grain_water_retention = Quantity('0.55qt/lb') # qt/lb
         

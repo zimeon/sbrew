@@ -20,17 +20,38 @@ class Recipe(object):
     """Representation of a complete or partial recipe as a set of steps
 
     A recipe has a set of ingredients (real stuff: grain, water, etc.) 
-    and properties (temperature, etc.). It also has a set of steps that
-    are undertaken to complete the recipe. Each step is itself a recipe.
-    The notion of a recipe does not cater for things done in parallel, the
-    steps are a simple sequence.
+    and properties (non-stuff: temperature, etc.). It also has a set of 
+    steps that are undertaken to complete the recipe. Each step is itself 
+    a recipe. The notion of a recipe does not cater for things done in 
+    parallel, the steps are a simple sequence.
+
+    A recipe may have zero or more inputs (connected to the outputs of 
+    other recipes), and may have zero or one output (connected to the
+    input of another recipe). Splitting of the consituents of a recipe
+    must be done as part of the recipe (e.g. in decoction mash).
     """
 
-    def __init__(self, name=None, **kwargs):
-        self.name=name
+    DEFAULT_NAME=None
+
+    def __init__(self, name=None, verbose=False, debug=False, 
+                 start=None, **kwargs):
+        self.name=name or self.DEFAULT_NAME
+        self.verbose=verbose
+        self.debug=debug
+        # Local data for this recipe
         self.steps=[]
         self.ingredients=[]
         self.properties={}
+        # Inputs from other recipes
+        self.inputs=[]
+        if (start is not None):
+            # make bi-directional link
+            print "connecting %s output to %s input" % (start.fullname,self.fullname)
+            self.inputs.append(start)
+            start.set_output(self)
+        self.import_forward()
+        # Output to another recipe
+        self.output=None
 
     @property
     def name_with_default(self):
@@ -173,19 +194,58 @@ class Recipe(object):
         """
         self.steps.append(step)
 
-    def import_property(self, kwargs, name, new_name=None, input='start'):
-        """Import property from previous recipe step based on kwargs
+    def import_property(self, name, new_name=None, source=None):
+        """Import property from previous recipe step
 
-        Will take from recipe pass with kwarg name 'start' unless
-        input is specified. Will use name in current recipe unless
-        new_name is specified.
+        Import an input property or an require output property from 
+        a connected recipe. By default will look (in order) at all inputs
+        for a matching name, otherwise a specific input or `output` may be 
+        specified with the `source` parameter.
+
+        Will use the same name in current recipe unless `new_name` is 
+        specified.
+
+        If there is no matching property then will silently return.
         """
         if (new_name is None):
             new_name = name
-        if (input in kwargs and
-            name in kwargs[input].properties):
-            self.property( new_name, kwargs[input].property(name) )
-            print "imported %s and %s" % (name, new_name)
+        if (source is None):
+            for i in self.inputs:
+                if (name in i.properties):
+                    self.property( new_name, i.property(name) )
+                    if (self.verbose):
+                        print "imported %s and %s" % (name, new_name) 
+                    return
+        elif (source=='output'):
+            if (name in self.output.properties):
+                self.property( new_name, self.output.property(name) )
+                if (self.verbose):
+                    print "imported %s and %s" % (name, new_name) 
+                return
+        else: #source is an input Recipe instance
+            if (name in source.properties):
+                self.property( new_name, source.property(name) )
+                if (self.verbose):
+                    print "imported %s and %s" % (name, new_name) 
+                return
+
+    def set_output(self,output):
+        """Set connection to recipe for which output of this recipe is and input
+
+        An output may only go to one other recipe so it is an error 
+        to call this method if self.output is already set.
+        """
+        if (self.output is not None):
+            raise Exception("Bad connection of %s -> %s, already connected to %s"%(self.name_with_default,output.name_with_default,self.output.name_with_default))
+        self.output=output
+
+    def import_forward(self):
+        """Import properties from input(s)"""
+        pass
+
+    def import_backward(self):
+        """Import output property requirements from output recipe"""
+        pass
 
     def solve(self):
         """Solve for missing data based on the sequence of steps
@@ -209,6 +269,8 @@ class Recipe(object):
             for step in self.steps:
                 if (step not in solved):
                     try:
+                        step.import_forward()
+                        step.import_backward()
                         step.solve()
                         print "solve: solved %s" % (step.fullname)
                         solved.add(step)
@@ -228,8 +290,12 @@ class Recipe(object):
         # Did we finish?
         print "Out of %d steps, solved %d" % (num_steps,len(solved))
         if (num_steps != len(solved)):
-            raise Exception("Failed to solve recipe")
-        print "Solved recipe"
+            if (self.debug):
+                raise Exception("Failed to solve recipe")
+            else:
+                print "Failed to solve recipe (look at messages above)"
+        else:
+            print "Solved recipe"
 
     def end_state_str(self):
         """String describing the end state of this recipe step
