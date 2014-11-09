@@ -20,8 +20,7 @@ s.property('wort_volume','6.5gal')
 s.solve()
 r.add(s)
 
-b = Recipe()
-b.subname = "boil"
+b = Boil()
 b.time=Quantity('60min')
 b.property('wort_volume','6.0gal')
 b.ingredient('hops','simcoe','1.35oz',time=Quantity('60min'),aa=Quantity('13%'))
@@ -30,8 +29,7 @@ b.ingredient('hops','centennial','1oz',time=Quantity('10min'),aa=Quantity('9.9%'
 b.ingredient('hops','simcoe','0.65oz',time=Quantity('0min'),aa=Quantity('13%'))
 r.add(b)
 
-f = Recipe()
-f.subname = "ferment"
+f = Ferment()
 f.ingredient('yeast','wyeast 1056 American Ale','2vial')
 r.add(f)
 

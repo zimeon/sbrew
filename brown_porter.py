@@ -21,16 +21,14 @@ s.property('boil_start_volume','6.5gal')
 s.solve()
 r.add(s)
 
-b = Recipe()
-b.subname = "boil"
+b = Boil()
 b.time=Quantity('60min')
 b.ingredient('hops','stryian goldings','1oz',time=Quantity('60min'))
 b.ingredient(Ingredient('hops','stryian goldings','1oz',time=Quantity('15min')))
 b.ingredient(Ingredient('misc','irish moss','1tsp',time=Quantity('15min')))
 r.add(b)
 
-f = Recipe()
-f.subname = "ferment"
+f = Ferment()
 f.ingredient('yeast','white labs WLP001 California ale','1vial')
 r.add(f)
 

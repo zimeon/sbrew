@@ -9,9 +9,9 @@ class Ferment(Recipe):
 
     """
 
-    def __init__(self, subname=None, duration=None, **kwargs):
+    def __init__(self, name=None, duration=None, **kwargs):
         super(Ferment, self).__init__(**kwargs)        
-        self.subname=( subname if subname else 'ferment' )
+        self.name=( name if name else 'ferment' )
         self.import_property(kwargs, 'OG')
 
     def solve(self):

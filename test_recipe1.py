@@ -19,15 +19,13 @@ s.property('wort_volume','6.0gal')
 s.solve()
 r.add(s)
 
-b = Recipe()
-b.subname = "boil"
+b = Boil()
 b.ingredient(Ingredient('hops','stryian goldings','1oz'))
 b.ingredient(Ingredient('hops','stryian goldings','1oz'))
 b.ingredient(Ingredient('misc','irish moss','1tsp'))
 r.add(b)
 
-f = Recipe()
-f.subname = "ferment"
+f = Ferment()
 f.ingredient(Ingredient('yeast','white labs WLP550 belgian ale','1vial'))
 f.ingredient(Ingredient('hops','stryian goldings','2oz'))
 r.add(f)

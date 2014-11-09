@@ -26,35 +26,23 @@ class Recipe(object):
     steps are a simple sequence.
     """
 
-    def __init__(self, name=None, subname=None, **kwargs):
+    def __init__(self, name=None, **kwargs):
         self.name=name
-        self.subname=subname
         self.steps=[]
         self.ingredients=[]
         self.properties={}
 
     @property
     def name_with_default(self):
-        """Return self.name with default of '' if None
+        """Return self.name with default of 'recipe' if None
         """
-        return( self.name if self.name else '' )
-
-    @property
-    def subname_with_default(self):
-        """Return self.subname with default of 'recipe' if None
-        """
-        return( self.subname if self.subname else 'recipe' )
+        return( self.name if self.name else 'recipe' )
 
     @property
     def fullname(self):
         """Return best name we can get for this recipe
         """
-        if ( self.name is None ):
-            return(self.subname_with_default)
-        elif ( self.subname is None ):
-            return(self.name)
-        else:
-            return(self.name + '(' + self.subname + ')')
+        return(self.name_with_default)
 
     def __str__(self, **kwargs):
         """Human readable output of this recipe
@@ -66,15 +54,14 @@ class Recipe(object):
             kwargs['state']={'num':0}
             del kwargs['line_numbers']
         str_list = []
-        if (self.name):
+        if (len(self.steps)==0 or 'skip_steps' in kwargs):
+            str_list.append("= " + self.name_with_default + " =\n")
+        else:
             str_list.append("\n")
             str_list.append( self._str_line_num(kwargs) +
-                             "== " + self.name + " ==\n")
-        if (not ('skip_steps' in kwargs)):
+                             "== " + self.name_with_default + " ==\n")
             for step in self.steps:
                 str_list.append(step.__str__(**kwargs))
-        if (self.subname):
-            str_list.append("= " + self.subname + " =\n")
         if (len(self.ingredients)>0):
             str_list.append("Ingredients:\n")
             for ingredient in self.ingredients:

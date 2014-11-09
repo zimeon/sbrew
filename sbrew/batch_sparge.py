@@ -42,7 +42,7 @@ class BatchSparge(Lauter):
         """
         #print "batch sparge __init__" + str(kwargs)
         super(BatchSparge, self).__init__(**kwargs)
-        self.subname='batch sparge'
+        self.name='batch sparge'
         self.v_dead = Quantity('0.25gal')
         self.grain_water_retention = Quantity('0.55qt/lb') # qt/lb
         

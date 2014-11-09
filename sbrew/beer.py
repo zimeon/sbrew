@@ -8,9 +8,9 @@ class Beer(Recipe):
     """A placeholder recipe to express final details of beer
     """
 
-    def __init__(self, subname=None, **kwargs):
+    def __init__(self, name=None, **kwargs):
         super(Beer, self).__init__(**kwargs)        
-        self.subname=( subname if subname else 'beer' )
+        self.name=( name if name else 'beer' )
         self.import_property(kwargs, 'OG')
 
     def solve(self):

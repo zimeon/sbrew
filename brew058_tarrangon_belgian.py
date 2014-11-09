@@ -2,8 +2,7 @@
 
 from sbrew import *
 
-r = Recipe()
-r.name="Brew58 Tarragon Belgian"
+r = Recipe("Brew58 Tarragon Belgian")
 
 m = InfusionMash()
 m.ingredient(Ingredient('grain','pilsner','9.25lb'))
@@ -35,8 +34,8 @@ s.property('boil_start_volume','6.5gal')
 s.solve()
 r.add(s)
 
-b = Recipe()
-b.subname = "boil"
+b = Boil(start=s)
+b.property('boil_end_volume','6.0gal')
 b.ingredient('hops','hallertau','3oz')
 b.ingredient('hops','saaz','1oz')
 b.ingredient('misc','irish moss','1tsp')
@@ -44,11 +43,11 @@ b.ingredient('misc','tarragon(fresh)','120g')
 b.ingredient('sugar','cane sugar','1.1lb')
 r.add(b)
 
-f = Recipe()
-f.subname = "ferment"
+f = Ferment(start=b)
 f.ingredient(Ingredient('yeast','white labs WLP550 Belgian Ale','1vial'))
 r.add(f)
 
+r.solve()
 print r
 
 carb_temp=Quantity('68F')

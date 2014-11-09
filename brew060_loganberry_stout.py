@@ -5,8 +5,7 @@ from sbrew import *
 r = Recipe()
 r.name="Brew60 Loganberry Stout"
 
-m = InfusionMash()
-m.subname = 'first infusion'
+m = InfusionMash(name='first infusion')
 m.ingredient(Ingredient('grain','marris otter','7lb'))
 m.ingredient(Ingredient('grain','roasted barley','14oz'))
 m.ingredient(Ingredient('grain','flaked barley','2lb'))
@@ -16,8 +15,7 @@ m.property('t_mashtun','70F')
 m.solve()
 r.add(m)
 
-m2 = InfusionMash(start=m)
-m2.subname = 'second infusion'
+m2 = InfusionMash(start=m, name='second infusion')
 m2.ingredient('water','strike','2.5gal')
 m2.property('temp','152F')
 m2.solve()
@@ -38,7 +36,6 @@ b.solve()
 r.add(b)
 
 f = Ferment(start=b)
-f.subname = "ferment"
 f.ingredient(Ingredient('yeast','white labs WLP550 Belgian Ale','1vial'))
 f.property('temp','68F')
 f.property('FG','1.012sg')

@@ -14,9 +14,10 @@ class InfusionMash(Mash):
     print m
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, name=None, **kwargs):
         super(InfusionMash, self).__init__()
         # Initialize from previous mash step
+        self.name = ( name if name else 'infusion mash' )
         self.import_property(kwargs, 'temp', 't_initial')
         self.import_property(kwargs, 'hc_total', 'hc_initial')
         if ('start' in kwargs):

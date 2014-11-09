@@ -1,61 +1,44 @@
-from mash import Mash
+from step_mash import StepMash
 from quantity import Quantity
 from sbrew_error import SbrewError
 from datetime import timedelta
 
-class DecoctionMash(Mash):
-    """A decoction mash, derived from a simple mash.
+class DecoctionMash(StepMash):
+    """A decoction mash, an extension of a step mash to split/mix decoctions.
 
     m =  DecoctionMash()
-    m.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
-    m.ingredient( Ingredient('grain','caravieene belgian','1.25lb') )
-    m.ingredient( Ingredient('grain','clear candi sugar','0.87lb') )
+    m.ingredient( Ingredient('grain','pilsner','5lb') )
+    m.ingredient( Ingredient('grain','wheat malt','5lb') )
     print m
     """
 
     def __init__(self, name=None):
         super(DecoctionMash,self).__init__()
-        self.name=None
+        self.name=( name if name else 'decoction_mash' )
         self.steps=[]
-        self.subname=( name if name else 'decoction_mash' )
         self.ingredients=[]
 
-    def add_step(self, type, **extra):
-        extra['type']=type
-	if (type == 'infuse'):
-            self.steps.append(extra)
-	elif (type == 'rest'):
-            self.steps.append(extra)
-	elif (type == 'boil'):
-            self.steps.append(extra)
-        elif (type == 'heat'):
-            self.steps.append(extra)
-        elif (type == 'adjust'):
-            self.steps.append(extra)
-        elif (type == 'split'):
-            decoction = DecoctionMash()
-            extra['decoction']=decoction
-            self.steps.append(extra)
-            return(decoction)     
-        elif (type == 'mix'):
-            self.steps.append(extra)
-        elif (type == 'heat'):
-            self.steps.append(extra)
-        else:
-            raise SbrewError('Unknown step type for decoction mash "{0:s}"'.format(type))
+    def split(self,**extra):
+        """Split mash to take decoction
 
+        Add 'split' step and returns the new DecoctionMash object
+        """
+        extra['type']='split'
+        decoction = DecoctionMash()
+        extra['decoction']=decoction
+        self.steps.append(extra)
+        return(decoction)
+
+    def mix(self,decoction,**extra):
+        """Mix decoction into this mash
+
+        Add a 'mix' step that integrates the decoction mash into this mash
+        """
+        extra['type']='mix'
+        self.steps.append(extra)
+ 
     def add_rest(self,time):
-	return add_step('rest',time=time)
-
-    def total_water(self):
-        """Add up all water to return total volume"""
-        total_water = Quantity('0.0gal')
-        for step in self.steps:
-            if ('type' in step and step['type']=='infuse' and
-                'volume' in step):
-                total_water += Quantity(step['volume'])
-        return(total_water)
-        
+        return add_step('rest',time=time)
  
     def __str__(self):
         # Use superclass str() but don't try to render steps
@@ -66,11 +49,11 @@ class DecoctionMash(Mash):
         return(s)
 
     def steps_str(self,start_time=timedelta(),n=0,indent=''):
-	""" Write out a time sequence of all steps, including decoctions
+        """ Write out a time sequence of all steps, including decoctions
 
         Goal is to create a useful presentation of all steps on a single 
-	timeline, including working out any implied rests because the 
-	decoction steps take longer than explicit steps in the main mash.
+        timeline, including working out any implied rests because the 
+        decoction steps take longer than explicit steps in the main mash.
         """
         # Go through the sequence of steps in this mash and any decoctions
         # taken to populate the set of stages for each.
@@ -101,7 +84,7 @@ class DecoctionMash(Mash):
             s += "{0:s} ".format(t)
             for mash in mashes:
                 state = ''
-		if (stages_next[mash]):
+                if (stages_next[mash]):
                     if (stages_next[mash]['time']<=t):
                         state = self.stage_state_str(stages_next[mash])
                         stages_started[mash]+=1
@@ -112,7 +95,7 @@ class DecoctionMash(Mash):
                     elif (stages_started[mash]>0):
                         state = '    -ditto-'
                     else:
-			state = '' # '-not-started-'
+                        state = '' # '-not-started-'
                 else:
                     state = '' # '-end-'
                 s += "| {0:27s} ".format(state)
@@ -140,7 +123,7 @@ class DecoctionMash(Mash):
         temp = Quantity()
         mix_time = None
         num = 0;
-	for step in self.steps:
+        for step in self.steps:
             num += 1
             type = step['type']
             if (type == 'mix'):
@@ -172,16 +155,16 @@ class DecoctionMash(Mash):
         if (tqty.unit == 'min'):
             return(timedelta(minutes=tqty.value))
         else:
-	    raise SbrewError('Unknow time unit "{0:s}"'.format(tqty.unit))
+            raise SbrewError('Unknow time unit "{0:s}"'.format(tqty.unit))
 
     def total_time(self):
         """Return the total time that this mash takes to complete.
  
         Doesn't deal with decoctions but is useful to calculate the time
         of a decoction which is part of a main mash.
-	"""
+        """
         t = timedelta()
-	for step in self.steps:
+        for step in self.steps:
             if ('time' in step):
                 t += self.parsetime(step['time']) 
         return(t)

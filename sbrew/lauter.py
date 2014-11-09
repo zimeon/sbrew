@@ -18,17 +18,17 @@ class Lauter(Recipe):
     def __init__(self, **kwargs):
         """Initialize Lauter object which is a Recipe
 
-        If not sub-classed to a more specific type then will get the subname 
+        If not sub-classed to a more specific type then will get the name 
         'lauter'.
         """
         #print "Lauter.__init__" + str(kwargs)
         super(Lauter, self).__init__(**kwargs)
         # Lauter specific things
-        if (self.subname is None):
-            self.subname='lauter'
+        if (self.name is None):
+            self.name='lauter'
         if ('type' in kwargs):
             self.type = kwargs['type']
-            self.subname += ' (%s)' % self.type
+            self.name += ' (%s)' % self.type
         self.extra_info=None # extra info for end_state_str
         if ('start' in kwargs):
             self.import_property(kwargs,'total_grain','grain')

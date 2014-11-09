@@ -13,9 +13,9 @@ class Mash(Recipe):
     print m
     """
 
-    def __init__(self, subname=None):
+    def __init__(self, name=None):
         super(Mash,self).__init__()
-        self.subname=( subname if subname else 'mash' )
+        self.name=( name if name else 'mash' )
 
     def lookup_grains(self):
         print "Lookup grains"
@@ -81,7 +81,7 @@ class Mash(Recipe):
     def add_mash(self, mash=None):
         """Add another mash into this mash
         """
-        self.subname = self.subname_with_default + ' + ' + mash.subname_with_default
+        self.name = self.name_with_default + ' + ' + mash.name_with_default
         for ingredient in mash.ingredients:
             self.ingredient( ingredient );
         #self.combine_waters()

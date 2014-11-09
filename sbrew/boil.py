@@ -50,9 +50,9 @@ class Boil(Recipe):
     b.ingredient( Ingredient('hops','ekg','2.0') )
     """
 
-    def __init__(self, subname=None, duration=None, **kwargs):
+    def __init__(self, name=None, duration=None, **kwargs):
         super(Boil, self).__init__(**kwargs)        
-        self.subname=( subname if subname else 'boil' )
+        self.name=( name if name else 'boil' )
         self.property( 'boil_rate', Quantity('0.5gal/h'), type='system' )
         self.property( 'dead_space', Quantity('0.5gal'), type='system' )
         if (duration is not None):
