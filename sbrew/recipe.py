@@ -49,7 +49,7 @@ class Recipe(object):
             print "connecting %s output to %s input" % (start.fullname,self.fullname)
             self.inputs.append(start)
             start.set_output(self)
-        self.import_forward()
+            self.import_forward() #FIXME - do we want/need this? Should it be done just at solve() time?
         # Output to another recipe
         self.output=None
 
@@ -146,7 +146,7 @@ class Recipe(object):
         otherwise get.
 
         Returns None or the value of default is there is no such property.
-        If default is not set the a message is printed.
+        If default is not set then a MissingParam exception is raised.
         """
         if (not isinstance(p,Property)):
             if (quantity is None):
@@ -154,6 +154,9 @@ class Recipe(object):
                 if (q is None):
                     if (default == NoProperty):
                         raise MissingParam("%s has no property %s (has %s)" % (self.fullname,p,self.properties.keys()))
+                    elif (default is None):
+                        # request it to return None in this case that property does not exist
+                        return None
                     else:
                         # get quantity of this property (else None)
                         return(Property(p,default))
@@ -217,7 +220,7 @@ class Recipe(object):
                         print "imported %s and %s" % (name, new_name) 
                     return
         elif (source=='output'):
-            if (name in self.output.properties):
+            if (self.output and name in self.output.properties):
                 self.property( new_name, self.output.property(name) )
                 if (self.verbose):
                     print "imported %s and %s" % (name, new_name) 
@@ -299,5 +302,9 @@ class Recipe(object):
 
     def end_state_str(self):
         """String describing the end state of this recipe step
+
+        Should always return a string, a simple question mark if no unseful information
+        is available. Likely to be overridden in all specific implementations of
+        Recipe.
         """
-        return(None)
+        return('?')

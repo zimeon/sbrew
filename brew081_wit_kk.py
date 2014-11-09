@@ -13,7 +13,6 @@ m.add_step('rest',time='15min')
 m.add_step('heat',temp='152F',time='30min')
 m.add_step('rest',time='60min')
 m.add_step('heat',temp='160F',time='5min')
-m.solve()
 r.add(m)
 
 s = BatchSparge(start=m)

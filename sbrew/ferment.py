@@ -9,16 +9,16 @@ class Ferment(Recipe):
 
     """
 
-    DEFAUL_NAME='ferment'
+    DEFAULT_NAME='ferment'
 
-    def __init__(self, name=None, duration=None, **kwargs):
+    def __init__(self, **kwargs):
         super(Ferment, self).__init__(**kwargs)
 
     def import_forward(self):
         self.import_property('OG')
 
-    def import_backwards(self):
-        self.import_property('FG',source='outputs')
+    def import_backward(self):
+        self.import_property('FG',source='output')
 
     def solve(self):
         """ Calculate the ABV and attenuation based on OG and FG
@@ -29,7 +29,7 @@ class Ferment(Recipe):
             self.property('atten', ((self.property('OG').to('sg')-self.property('FG').to('sg'))/(self.property('OG').to('sg')-1.0)*100.0), '%atten' )
         elif ('OG' in self.properties and
               'atten' in self.properties):
-            fg = 1.0 + (self.property('OG').to('sg')-1.0) * self.property('atten')
+            fg = 1.0 + (self.property('OG').to('sg')-1.0) * ( 1.0 - self.property('atten').to('%atten') / 100.0 )
             self.property('FG', Quantity(fg,'sg') )
             self.property('%ABV', Quantity(self.abv(),'%ABV') )
     
@@ -43,12 +43,16 @@ class Ferment(Recipe):
         return( (self.property('OG').to('sg') - self.property('FG').to('sg')) * 105 * 1.25 )
 
     def end_state_str(self):
+        """Description of end state of fermantion
+
+        Includes the ABV and, if available, the apparent attenuation.
+        """
         self.solve()
         if (not '%ABV' in self.properties):
-            return(None)
+            return('?')
         s = str(self.property('%ABV').quantity)
         if ('atten' in self.properties):
             s += ' (' + str(self.property('atten').quantity) + ')'
         return(s + "\n")
-                                      
+
 
