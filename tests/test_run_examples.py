@@ -36,33 +36,31 @@ class TestAll(unittest.TestCase):
         out = self.run_script('brew065_hoppy_yum_ipa.py')
 
     def test065(self):
-	out = self.run_script('brew066_czech_pils.py')
-
-
-    def test065(self):
-	out = self.run_script('brew068_wheat_wine_2.py')
-
+        out = self.run_script('brew066_czech_pils.py')
 
     def test065(self):
-	out = self.run_script('brew069_special_rye_bitter.py')
+        out = self.run_script('brew068_wheat_wine_2.py')
 
     def test065(self):
-	out = self.run_script('brew070_oaked_smoked_brown_ale.py')
+        out = self.run_script('brew069_special_rye_bitter.py')
 
     def test065(self):
-	out = self.run_script('brew071_robust_porter.py')
+        out = self.run_script('brew070_oaked_smoked_brown_ale.py')
 
     def test065(self):
-	out = self.run_script('brew076_dark_but_mild.py')
+        out = self.run_script('brew071_robust_porter.py')
 
     def test065(self):
-	out = self.run_script('brew077_gpa.py')
+        out = self.run_script('brew076_dark_but_mild.py')
 
     def test065(self):
-	out = self.run_script('brew078_saison.py')
+        out = self.run_script('brew077_gpa.py')
 
     def test065(self):
-	out = self.run_script('brew079_saison_fonce_avec_poivre.py')
+        out = self.run_script('brew078_saison.py')
+
+    def test065(self):
+        out = self.run_script('brew079_saison_fonce_avec_poivre.py')
         self.assertRegexpMatches( out, r'-> 6.00 gal @ 1.056 sg with 32.3 IBU')
         self.assertRegexpMatches( out, r'-> 6.8 %ABV \(91.1 %atten\)')
 

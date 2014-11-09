@@ -31,11 +31,11 @@ class Ingredient:
         from pct and properties
         """
         s = "{0:15s}  {1:30s}   {2:10s}".format(self.type,self.name,str(self.quantity))
-	if (self.pct):
-	    s += "   ({0:5.1f}%)".format(self.pct)
+        if (self.pct):
+            s += "   ({0:5.1f}%)".format(self.pct)
         if (len(self.properties)>0):
             prop_strs = []
             for e in sorted(self.properties.keys()):
-   	        prop_strs.append(self.properties[e].short_str())
+                prop_strs.append(self.properties[e].short_str())
             s += "  (" + ", ".join(prop_strs) + ")"
         return s

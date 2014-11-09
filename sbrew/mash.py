@@ -47,16 +47,16 @@ class Mash(Recipe):
             num_not_pct=0
             for ingredient in self.ingredients:
                 if (ingredient.type == 'grain'):
-            	    if (ingredient.quantity.unit != '%'):
-			num_not_pct+=1
+                    if (ingredient.quantity.unit != '%'):
+                        num_not_pct+=1
             if (num_not_pct>0):
-		print "can't set total as not all pct"
+                print "can't set total as not all pct"
             else:
-          	for ingredient in self.ingredients:
+                for ingredient in self.ingredients:
                     if (ingredient.type == 'grain'):
                         ingredient.quantity.unit = total_mass.unit
-                        ingredient.pct = ingredient.quantity.value
-		        ingredient.quantity.value = total_mass.value * ingredient.quantity.value / 100.0		
+                    ingredient.pct = ingredient.quantity.value
+                    ingredient.quantity.value = total_mass.value * ingredient.quantity.value / 100.0
         # Now return total mass
         mass = self.total_type('grain')
         return( mass if mass else Mass('0lb'))
