@@ -28,11 +28,13 @@ r.add(b)
 
 f = Ferment(start=b)
 f.ingredient(Ingredient('yeast','Safbrew WB-06','1packet'))
+f.property("atten","80.0%atten")
 r.add(f)
 
 beer = Beer(start=f)
-beer.property('bitterness','10IBU')
-beer.property('abv','5.0%ABV')
+beer.property('IBU_goal','10IBU')
+beer.property('%ABV_goal','5.0%ABV')
+r.add(beer)
 
 r.solve()
 print r

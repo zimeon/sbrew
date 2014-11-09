@@ -1,4 +1,4 @@
-"""Test code for sbrew/lauter"""
+"""Test code for sbrew.lauter"""
 
 import unittest
 
@@ -14,7 +14,7 @@ class TestAll(unittest.TestCase):
 #        self.assertEqual( l.end_state_str(), '')
         l.property('wort_volume', '12.3gal')
         l.property('wort_gravity', '1.099sg')
-        self.assertEqual( l.end_state_str(), '12.30 gal wort at 1.099 sg\n')
+        self.assertEqual( l.end_state_str(), '12.30 gal wort at 1.099 sg')
 
 # If run from command line, do tests
 if __name__ == '__main__':

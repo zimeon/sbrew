@@ -64,9 +64,9 @@ class TestAll(unittest.TestCase):
         f = Ferment()
         self.assertEqual( f.end_state_str(), '?' )
         f.property('%ABV', Quantity('6.3','%ABV'))
-        self.assertEqual( f.end_state_str(), '6.3 %ABV\n' )
+        self.assertEqual( f.end_state_str(), '6.3 %ABV' )
         f.property('atten', Quantity('76','%atten'))
-        self.assertEqual( f.end_state_str(), '6.3 %ABV (76.0 %atten)\n' )
+        self.assertEqual( f.end_state_str(), '6.3 %ABV (76.0 %atten)' )
 
 # If run from command line, do tests
 if __name__ == '__main__':

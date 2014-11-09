@@ -53,6 +53,4 @@ class Lauter(Recipe):
             s += ' at ' + str(wg.quantity)
         if (self.extra_info is not None):
             s += ' (' + self.extra_info + ')'
-        if (s != ''):
-            s += "\n"
         return(s)

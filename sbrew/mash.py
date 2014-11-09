@@ -109,7 +109,7 @@ class Mash(Recipe):
 
     def end_state_str(self):
         self.solve()
-        return('%s, %s, %s\n' %
+        return('%s, %s, %s' %
                (self.property('total_grain').short_str(),
                 self.property('total_water').short_str(),
                 self.property('total_points').short_str() ))

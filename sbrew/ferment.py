@@ -16,6 +16,7 @@ class Ferment(Recipe):
 
     def import_forward(self):
         self.import_property('OG')
+        self.import_property('IBU')
 
     def import_backward(self):
         self.import_property('FG',source='output')
@@ -53,6 +54,6 @@ class Ferment(Recipe):
         s = str(self.property('%ABV').quantity)
         if ('atten' in self.properties):
             s += ' (' + str(self.property('atten').quantity) + ')'
-        return(s + "\n")
+        return(s)
 
 

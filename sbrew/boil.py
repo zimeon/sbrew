@@ -172,4 +172,4 @@ class Boil(Recipe):
             s += ' @ %s' % str(self.property('OG').quantity)
         if ('IBU' in self.properties):
             s += ' with %s' % str(self.property('IBU').quantity)
-        return( s + "\n")
+        return(s)

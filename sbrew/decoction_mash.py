@@ -12,9 +12,7 @@ class DecoctionMash(StepMash):
     print m
     """
 
-    """def a"""
     DEFAULT_NAME='decoction_mash'
-    """def b"""
 
     def __init__(self, **kwargs):
         super(DecoctionMash,self).__init__(**kwargs)

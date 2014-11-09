@@ -97,7 +97,7 @@ class Recipe(object):
                                     ' ' + str(self.properties[name]) + "\n")
         end_str = self.end_state_str()
         if (end_str is not None and end_str != ''):
-            str_list.append(' -> '+end_str)
+            str_list.append(' -> '+end_str+"\n")
         return(''.join(str_list))
 
     def _str_line_num(self, kwargs):
@@ -307,4 +307,4 @@ class Recipe(object):
         is available. Likely to be overridden in all specific implementations of
         Recipe.
         """
-        return('?')
+        return('')
