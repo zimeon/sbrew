@@ -31,7 +31,7 @@ class Mash(Recipe):
         type found. Will return None is there are no ingredients
         of this type unless a default unit is specified.
         """
-        total=( Quanity(0.0,unit) if unit else None)
+        total=( Quantity(0.0,unit) if unit else None)
         for ingredient in self.ingredients:
             if (ingredient.type == type):
                 if (total):
@@ -79,6 +79,12 @@ class Mash(Recipe):
         vol = self.total_type('water')
         return( vol if vol else Quantity('0gal'))
 
+    def mash_volume(self):
+        """Return volume of mash including both liquid and grain"""
+        vol=self.total_water().to('gal') +\
+            self.total_grains().to('lb') * 0.15 #FIXME - what is this number really?
+        return( Quantity(vol,'gal') )
+
     def add_mash(self, mash=None):
         """Add another mash into this mash
         """
@@ -106,6 +112,8 @@ class Mash(Recipe):
         self.property('total_water', self.total_water())
         self.property('total_grain', self.total_grains())
         self.property('total_points', self.total_points())
+        if (self.has_properties('total_water','total_grain')):
+            self.property('mash_volume', self.mash_volume())
 
     def end_state_str(self):
         self.solve()

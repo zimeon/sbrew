@@ -25,7 +25,7 @@ class DecoctionMash(StepMash):
         Add 'split' step and returns the new DecoctionMash object
         """
         extra['type']='split'
-        decoction = DecoctionMash()
+        decoction = DecoctionMash(name="decoction")
         if ('remove' in extra):
             # Take portion of volume from this mash, put into decoction
             pass #FIXME
@@ -40,9 +40,6 @@ class DecoctionMash(StepMash):
         """
         extra['type']='mix'
         self.steps.append(extra)
- 
-    def add_rest(self,time):
-        return add_step('rest',time=time)
  
     def __str__(self):
         # Use superclass str() but don't try to render steps
@@ -118,7 +115,9 @@ class DecoctionMash(StepMash):
         return(str)
 
     def find_stages(self, stages, mash_name='_main', start_time=timedelta()):
-        # Create list for this mash's stages in main stages dict, clear
+        """Create list for this mash's stages in main stages dict
+
+        """
         stage=[]
         stages[mash_name]=stage
         #
@@ -154,17 +153,10 @@ class DecoctionMash(StepMash):
         stage.append({'type': 'state', 'time': t, 'volume': vol, 'temp': temp})
         # no return val, data left in stage 
 
-    def parsetime(self, tstr):
-        tqty = Quantity(tstr)
-        if (tqty.unit == 'min'):
-            return(timedelta(minutes=tqty.value))
-        else:
-            raise SbrewError('Unknow time unit "{0:s}"'.format(tqty.unit))
-
     def total_time(self):
         """Return the total time that this mash takes to complete.
  
-        Doesn't deal with decoctions but is useful to calculate the time
+        Does not deal with decoctions but is useful to calculate the time
         of a decoction which is part of a main mash.
         """
         t = timedelta()
