@@ -30,7 +30,7 @@ class Carbonation(Recipe):
     def end_state_str(self):
         s = ''
         if (self.has_properties('temp','pressure','vol')):
-            s = "Carbonation: %s @ %s requires %s CO2\n" % (
+            s = "Carbonation: %s @ %s requires %s CO2" % (
                 self.property('vol').quantity,
                 self.property('temp').quantity,
                 self.property('pressure').quantity)
