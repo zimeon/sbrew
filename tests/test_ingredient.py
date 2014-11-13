@@ -14,7 +14,7 @@ class TestAll(unittest.TestCase):
         i2 = Ingredient('grain','belgian pilsner',9.75,'lb')
         self.assertRegexpMatches( str(i2), r'grain\s+belgian pilsner\s+9\.75 lb' )
         i3 = Ingredient('grain','us pilsner',Quantity(10.1,'lb'))
-        self.assertRegexpMatches( str(i2), r'grain\s+us pilsner\s+10\.1 lb' )
+        self.assertRegexpMatches( str(i3), r'grain\s+us pilsner\s+10\.1 lb' )
         # pct
         i4 = Ingredient('grain','marris otter',pct=50.9)
         self.assertAlmostEqual( i4.pct, 50.9 )
