@@ -44,14 +44,20 @@ class Recipe(object):
         self.properties={}
         # Inputs from other recipes
         self.inputs=[]
-        if (start is not None):
-            # make bi-directional link
-            print "connecting %s output to %s input" % (start.fullname,self.fullname)
-            self.inputs.append(start)
-            start.set_output(self)
-            self.import_forward() #FIXME - do we want/need this? Should it be done just at solve() time?
+        if (start):
+            self.connect_input(start)
         # Output to another recipe
         self.output=None
+
+    def connect_input(self, input_recipe):
+        """Connect input_recipe output as input to this recipe
+
+        Makes bi-directional link between the two recipes.
+        """
+        print "connecting %s output to %s input" % (input_recipe.fullname,input_recipe.fullname)
+        self.inputs.append(input_recipe)
+        input_recipe.set_output(self)
+        self.import_forward() #FIXME - do we want/need this? Should it be done just at solve() time?
 
     @property
     def name_with_default(self):
