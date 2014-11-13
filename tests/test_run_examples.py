@@ -20,9 +20,9 @@ class TestAll(unittest.TestCase):
         out = self.run_script('brew056_complete_breakfast.py')
         self.assertRegexpMatches( out, r'Gimme leftist' )
         # key outputs
-        self.assertRegexpMatches( out, r'-> total_grain 13.0 lb, total_water 6.18 gal, total_points 456.4 points' )
-        self.assertRegexpMatches( out, r'-> 6.50 gal wort at 1.059 sg' )
-        self.assertRegexpMatches( out, r'-> 5.50 gal @ 1.064 sg with 25.4 IBU')
+        self.assertRegexpMatches( out, r'-> total_grain 11.5 lb, total_water 5.08 gal, total_points 403.8 points' )
+        self.assertRegexpMatches( out, r'-> 6.50 gal wort at 1.054 sg' )
+        self.assertRegexpMatches( out, r'-> 5.50 gal @ 1.059 sg with 26.7 IBU')
 
     def test058(self):
         out = self.run_script('brew058_tarrangon_belgian.py')

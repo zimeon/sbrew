@@ -128,7 +128,7 @@ class Recipe(object):
         return(sum)
 
     def ingredient(self,i,name=None,quantity=None,unit=None,*properties,**kv_properties):
-        """Add ingredient to this recipe.
+        """Add ingredient to this recipe, or find ingredient matching i,name
 
         recipe.ingredient('water','to drink','6gal')
         """
@@ -142,7 +142,6 @@ class Recipe(object):
             else:
                 i = Ingredient(i,name,quantity,unit,*properties,**kv_properties)
         self.ingredients.append(i)
-
 
     def property(self,p,quantity=None,unit=None,default=NoProperty,**kwargs):
         """Add/get property to this recipe.

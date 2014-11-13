@@ -23,11 +23,19 @@ class InfusionMash(Mash):
         # Initialize from previous mash step
         self.import_property('temp', 't_initial')
         self.import_property('hc_total', 'hc_initial')
-        # And move forward ingredients
+        # And move forward ingredients (but avoid doing this more than once)
         if (len(self.inputs)==1): #FIXME - 0 is OK, should barf for >1
             i=self.inputs[0]
-            self.ingredient('grain','from prior mash',i.total_grains())
-            self.ingredient('water','from prior mash',i.total_water())
+            try:
+                self.ingredient('grain','from prior mash')
+            except ValueError:
+                # Not present already so add
+                self.ingredient('grain','from prior mash',i.total_grains())
+            try:
+                self.ingredient('water','from prior mash')
+            except ValueError:
+                # Not present already so add
+                self.ingredient('water','from prior mash',i.total_water())
 
     def solve(self):
         """Solve for unknowns
