@@ -49,7 +49,25 @@ class BatchSparge(Lauter):
     def extraction(self,v_boil,v_stuck,v_first):
         """Efficiency and extraction of batch sparge
 
-        All parameters are just numbers
+        All parameters are just numbers (not Quantity values) where only
+        the ratios are important. Obviously they must all be expressed in
+        the same units.
+
+          v_boil - total runnings collected (hence volume at start of boil)
+          v_stuck - volume that will be stuck in gran and any dead volume
+          v_first - volume of first runnings
+
+        The results are:
+
+          p_first - fraction of total points in first runnings
+          p_second - fraction of total points in second runnings
+          v_second - volume of second runnings
+
+        where
+
+          p_first + p_second <= 1.0 
+
+        because of the points left in v_stuck.
         """
         v_second = v_boil-v_first
         # assume points equally distributed in free water and grain
@@ -107,7 +125,7 @@ class BatchSparge(Lauter):
             wort_volume = self.property('boil_start_volume').to('gal') - self.v_dead.to('gal')
             self.property('wort_volume',wort_volume,'gal')
         else:
-            raise Exception('bwaa')
+            raise MissingParam('bwaa')
         # calculate sparge
         v_wort = wort_volume
         v_water = self.property('water').to('gal')

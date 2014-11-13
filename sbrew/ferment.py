@@ -4,6 +4,9 @@ from mass import Mass
 from quantity import Quantity
 from property import Property
 
+# Good sources for formulas
+# http://www.primetab.com/formulas.html
+
 class Ferment(Recipe):
     """A fermentation is a simple recipe with no sub-steps.
 
