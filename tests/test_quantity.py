@@ -70,9 +70,9 @@ class TestAll(unittest.TestCase):
         self.assertEqual( Quantity.find_conversion('xyz','xyz'), 1.0 )
         self.assertAlmostEqual( Quantity.find_conversion('g','kg'), 0.001 )
         # error conditions
-        self.assertRaises( ConversionError, Quantity.find_conversion, 'xyz','F' )
-        self.assertRaises( ConversionError, Quantity.find_conversion, 'F','xyz' )
-        self.assertRaises( ConversionError, Quantity.find_conversion, 'F','sg' )
+        self.assertRaises( ConversionError, Quantity.find_conversion, 'xyz','lb' )
+        self.assertRaises( ConversionError, Quantity.find_conversion, 'lb','xyz' )
+        self.assertRaises( ConversionError, Quantity.find_conversion, 'lb','h' )
 
  
 # If run from command line, do tests
