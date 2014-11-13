@@ -9,7 +9,7 @@ class Quantity:
     All quantities have a value and a unit.
     """
 
-    conversions = { 
+    CONVERSIONS = { 
         '%ABW' : { '%ABV' : 1.25 },
         'oz'  : { 'lb' : 1.0/16.0,
                   'kg' : 0.0283495231,
@@ -29,7 +29,7 @@ class Quantity:
                   's'   : 3600 },
         }
 
-    display_fmt = {
+    DISPLAY_FMT = {
         '%ABV' : '%.1f',
         '%ABW' : '%.1f',
         '%atten' : '%.1f',
@@ -45,7 +45,7 @@ class Quantity:
         'IBU' : '%.1f',
         }
 
-    canonical_unit = {
+    CANONICAL_UNIT = {
         'gal/hour': 'gal/h',
         'hour'    : 'h',
         }
@@ -87,8 +87,8 @@ class Quantity:
             return("QuantityNotDefined")
         elif (self.unit is None):
             return(str(self.value) + " (dimensionless)")
-        elif (self.unit in Quantity.display_fmt):
-            return( (Quantity.display_fmt[self.unit] % self.value) + " " + str(self.unit))
+        elif (self.unit in Quantity.DISPLAY_FMT):
+            return( (Quantity.DISPLAY_FMT[self.unit] % self.value) + " " + str(self.unit))
         else:
             return(str(self.value) + " " + str(self.unit))
 
@@ -100,16 +100,17 @@ class Quantity:
         else:
             return(str(self.value) + str(self.unit))
 
-    def canonicalize(self,unit):
-        """Convert unit to canonical form if known but in other form"""
-        if (unit in Quantity.canonical_unit):
-            return Quantity.canonical_unit[unit]
+    @staticmethod
+    def canonical_unit(unit):
+        """Convert unit string to canonical form if recognized but in another form"""
+        if (unit in Quantity.CANONICAL_UNIT):
+            return Quantity.CANONICAL_UNIT[unit]
         return unit
 
     def to(self,new_unit):
         """Get value of this quantity in a specific unit.
 
-        Used conversions in conversions dictionary of dictionaries
+        Uses conversions in CONVERSIONS dictionary of dictionaries
         to look up conversion factors. At present not smart enough
         to find a chain between two units but that should be possible
         add.
@@ -119,17 +120,17 @@ class Quantity:
              f = temp.to('F')
         """
         # Make sure new_unit is canonical
-        new_unit=self.canonicalize(new_unit)
+        new_unit=self.canonical_unit(new_unit)
         # Convert
         if (self.unit==new_unit):
             return(self.value)
-        elif (self.unit in Quantity.conversions and
-                new_unit in Quantity.conversions[self.unit]):
-            return(self.value*Quantity.conversions[self.unit][new_unit])
-        elif (new_unit in Quantity.conversions and
-                self.unit in Quantity.conversions[new_unit]):
+        elif (self.unit in Quantity.CONVERSIONS and
+                new_unit in Quantity.CONVERSIONS[self.unit]):
+            return(self.value*Quantity.CONVERSIONS[self.unit][new_unit])
+        elif (new_unit in Quantity.CONVERSIONS and
+                self.unit in Quantity.CONVERSIONS[new_unit]):
             #inverse
-            return(self.value/Quantity.conversions[new_unit][self.unit])
+            return(self.value/Quantity.CONVERSIONS[new_unit][self.unit])
         else:
             return(self.value * self.find_conversion(self.unit,new_unit))
 
@@ -139,6 +140,8 @@ class Quantity:
         Piggbybacks on the to() method but changes the internal
         representation. Returns self.
         """
+        # Make sure new_unit is canonical
+        new_unit=self.canonical_unit(new_unit)
         self.value = self.to(new_unit)
         self.unit = new_unit
         return(self)
@@ -179,16 +182,16 @@ class Quantity:
 
     @staticmethod
     def build_all_conv():
-        # Expand tree of all conversions (include sanity check to 
+        # Expand tree of all CONVERSIONS (include sanity check to 
         # avoid possible cycles)
         #
-        # Build local self.conv with data from Quantity.conversions and inverses
+        # Build local self.conv with data from Quantity.CONVERSIONS and inverses
         Quantity.all_conv={}
-        for f in Quantity.conversions:
+        for f in Quantity.CONVERSIONS:
             Quantity.all_conv[f]={}
-            for t in Quantity.conversions[f]:
-                Quantity.all_conv[f][t]=Quantity.conversions[f][t]
-                if (not (t in Quantity.conversions)):
+            for t in Quantity.CONVERSIONS[f]:
+                Quantity.all_conv[f][t]=Quantity.CONVERSIONS[f][t]
+                if (not (t in Quantity.CONVERSIONS)):
                     Quantity.all_conv[t]={}
                 if (not (f in Quantity.all_conv[t])):
                     Quantity.all_conv[t][f]= 1.0 / Quantity.all_conv[f][t] #inverse
