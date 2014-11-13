@@ -6,6 +6,9 @@ class Property:
 
     p1 = Property('temp','122F')
     p2 = Property('temp',123.2,'F')
+    p3 = Property('temp',Quantity('124F'))
+    p4 = Property('temp',Property('othertemp','125F')) #take Quantity from supplied Property
+    p5 = Property('temp','126F',therm2='a',therm1='b')
     """
 
     def __init__(self, name, quantity, unit=None, **extra):
@@ -25,7 +28,11 @@ class Property:
         return self.quantity.to(unit)
 
     def short_str(self):
-        """Short human readable string representation, exlcuding extra info"""
+        """Short human readable string representation, excluding extra info
+
+        Avoid including the property name in cases where it will be obvious 
+        from the units of the property.
+        """
         s = ""
         if (self.name != 'time' and 
             self.name != 'AA' and
@@ -41,8 +48,8 @@ class Property:
         """
         s = "{0:18s}  {1:10s}".format(self.name,str(self.quantity))
         if (len(self.extra)>0):
-            s += "  ( "
+            extras = []
             for e in sorted(self.extra.keys()):
-               s += "{0:6s}, ".format(self.extra[e])
-            s += ")"
+               extras.append("{0:6s}".format(self.extra[e]))
+            s += "( " + ', '.join(extras) + ")"
         return s

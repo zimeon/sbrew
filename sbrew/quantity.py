@@ -177,9 +177,6 @@ class Quantity:
             raise ConversionError('unknown conversion requested from %s to %s' % (from_unit,to_unit))
         return(Quantity.all_conv[from_unit][to_unit])
 
-    def test_find_conversion():
-        assert Quantity.find_conversion('kg','g') == 0.001
-
     @staticmethod
     def build_all_conv():
         # Expand tree of all CONVERSIONS (include sanity check to 
