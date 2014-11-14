@@ -56,7 +56,7 @@ class Boil(Recipe):
     DEFAULT_NAME='boil'
 
     def __init__(self, name=None, duration=None, **kwargs):
-        super(Boil, self).__init__(**kwargs)        
+        super(Boil, self).__init__(name=name, **kwargs)        
         self.property( 'boil_rate', Quantity('0.5gal/h'), type='system' )
         self.property( 'dead_space', Quantity('0.5gal'), type='system' )
         if (duration is not None):
@@ -69,16 +69,16 @@ class Boil(Recipe):
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil
 
-        Works only forward
+        Includes methods for both forward and backward calculations 
         """
         print "boil-solve, have %s properties" % (self.properties.keys())
         # Do we have any sugar?
         total_sugar_points = self.points_from_sugars()
         # Volume - forward
-        if (self.has_properties('start_gravity','boil_end_volume')):
+        if (self.has_properties('boil_start_volume','start_gravity','boil_end_volume')):
             v_end_boil = self.property('boil_end_volume').to('gal')
             self.solve_volume_forward(v_end_boil,total_sugar_points)
-        elif (self.has_properties('start_gravity','boil_start_volume','boil_rate','duration')):
+        elif (self.has_properties('boil_start_volume','start_gravity','boil_rate','duration')):
             v_end_boil = self.property('boil_start_volume').to('gal') - \
                          self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
             self.solve_volume_forward(v_end_boil,total_sugar_points)
@@ -136,7 +136,7 @@ class Boil(Recipe):
               self.property('boil_rate').to('gal/hour') *\
               self.property('duration').to('h')
         print "boi-solve-back-mid2"
-        self.property('boil_start_volume', 7.0, 'gal')
+        self.property('boil_start_volume', bsv, 'gal')
         print "boi-solve-back-mid3"
         og = (self.property('OG').to('sg') - 1.0)
         self.property('start_gravity', 1.0 + (og * self.property('boil_end_volume').to('gal') /
