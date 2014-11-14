@@ -50,7 +50,14 @@ class TestAll(unittest.TestCase):
     def test03_solve_2(self):
         bs = BatchSparge()
         self.assertRaises( MissingParam, bs.solve_2 )
-       
+        bs.property('boil_start_volume','6gal')
+        bs.property('water','5gal')
+        bs.property('grain','8lb')
+        bs.property('total_points','300points')
+        bs.solve_2()
+        self.assertAlmostEqual( bs.property('wort_gravity').quantity.value, 1.04651397 )
+        self.assertAlmostEqual( bs.property('wort_volume').quantity.value, 5.75 )
+
     def test04_solve_from_mash_and_desired_volume(self):
         bs = BatchSparge()
         self.assertRaises( MissingParam, bs.solve_from_mash_and_desired_volume )
