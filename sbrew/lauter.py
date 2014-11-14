@@ -21,13 +21,7 @@ class Lauter(Recipe):
     DEFAULT_NAME = 'lauter'
 
     def __init__(self, **kwargs):
-        """Initialize Lauter object which is a Recipe
-        """
-        #print "Lauter.__init__" + str(kwargs)
         super(Lauter, self).__init__(**kwargs)
-        if ('type' in kwargs):
-            self.type = kwargs['type']
-            self.name += ' (%s)' % self.type
         self.extra_info=None # extra info for end_state_str
 
     def import_forward(self):
