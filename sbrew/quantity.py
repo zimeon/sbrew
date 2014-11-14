@@ -50,7 +50,7 @@ class Quantity:
         'hour'    : 'h',
         }
 
-    all_conv = None
+    ALL_CONV = None
 
     def __init__(self, value=None, unit=None):
         """Create a Quantity
@@ -167,36 +167,36 @@ class Quantity:
         """
         if (from_unit==to_unit):
             return(1.0);
-        if (Quantity.all_conv is None):
-            Quantity.build_all_conv()
-        if (not (from_unit in Quantity.all_conv)):
+        if (Quantity.ALL_CONV is None):
+            Quantity.build_ALL_CONV()
+        if (not (from_unit in Quantity.ALL_CONV)):
             raise ConversionError('unknown original unit in conversion requested from %s to %s' % (from_unit, to_unit))
-        if (not (to_unit in Quantity.all_conv)):
+        if (not (to_unit in Quantity.ALL_CONV)):
             raise ConversionError('unknown destination unit in conversion requested from %s to %s' % (from_unit,to_unit))
-        if (not (to_unit in Quantity.all_conv[from_unit])):
+        if (not (to_unit in Quantity.ALL_CONV[from_unit])):
             raise ConversionError('unknown conversion requested from %s to %s' % (from_unit,to_unit))
-        return(Quantity.all_conv[from_unit][to_unit])
+        return(Quantity.ALL_CONV[from_unit][to_unit])
 
     @staticmethod
-    def build_all_conv():
+    def build_ALL_CONV():
         # Expand tree of all CONVERSIONS (include sanity check to 
         # avoid possible cycles)
         #
         # Build local self.conv with data from Quantity.CONVERSIONS and inverses
-        Quantity.all_conv={}
+        Quantity.ALL_CONV={}
         for f in Quantity.CONVERSIONS:
-            Quantity.all_conv[f]={}
+            Quantity.ALL_CONV[f]={}
             for t in Quantity.CONVERSIONS[f]:
-                Quantity.all_conv[f][t]=Quantity.CONVERSIONS[f][t]
+                Quantity.ALL_CONV[f][t]=Quantity.CONVERSIONS[f][t]
                 if (not (t in Quantity.CONVERSIONS)):
-                    Quantity.all_conv[t]={}
-                if (not (f in Quantity.all_conv[t])):
-                    Quantity.all_conv[t][f]= 1.0 / Quantity.all_conv[f][t] #inverse
+                    Quantity.ALL_CONV[t]={}
+                if (not (f in Quantity.ALL_CONV[t])):
+                    Quantity.ALL_CONV[t][f]= 1.0 / Quantity.ALL_CONV[f][t] #inverse
         # Now expand tree by repeatedly adding two-step paths as one
-        for s in Quantity.all_conv.keys():
-            for m in Quantity.all_conv[s].keys():
-                for e in Quantity.all_conv[m]:
-                    if (not (e in Quantity.all_conv[s])):
-                        Quantity.all_conv[s][e] = Quantity.all_conv[s][m] * Quantity.all_conv[m][e]
-                        Quantity.all_conv[e][s] = 1.0 / Quantity.all_conv[s][e]
+        for s in Quantity.ALL_CONV.keys():
+            for m in Quantity.ALL_CONV[s].keys():
+                for e in Quantity.ALL_CONV[m]:
+                    if (not (e in Quantity.ALL_CONV[s])):
+                        Quantity.ALL_CONV[s][e] = Quantity.ALL_CONV[s][m] * Quantity.ALL_CONV[m][e]
+                        Quantity.ALL_CONV[e][s] = 1.0 / Quantity.ALL_CONV[s][e]
 
