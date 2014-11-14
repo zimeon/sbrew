@@ -16,7 +16,7 @@ class Beer(Recipe):
     def import_forward(self):
         self.import_property('OG')
         self.import_property('IBU')
-        self.import_property('%ABV')
+        self.import_property('ABV')
 
     def solve(self):
         """ Calculate the ABV and attenuation based on OG and FG
@@ -26,6 +26,6 @@ class Beer(Recipe):
     def end_state_str(self):
         self.solve()
         s = ''
-        if ('%ABV' in self.properties):
-            s += str(self.property('%ABV').quantity)
+        if ('ABV' in self.properties):
+            s += str(self.property('ABV').quantity)
         return(s)

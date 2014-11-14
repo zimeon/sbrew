@@ -40,7 +40,7 @@ class TestAll(unittest.TestCase):
         f.property('OG', Quantity('1.050','sg'))
         f.property('FG', Quantity('1.010','sg'))
         f.solve()
-        self.assertEqual( str(f.property('%ABV').quantity), '5.3 %ABV' )
+        self.assertEqual( str(f.property('ABV').quantity), '5.3 %ABV' )
         self.assertEqual( str(f.property('atten').quantity), '80.0 %atten' )
 
     def test05_solve_og_atten(self):
@@ -48,7 +48,7 @@ class TestAll(unittest.TestCase):
         f.property('OG', Quantity('1.050','sg'))
         f.property('atten', Quantity('80.0','%atten'))
         f.solve()
-        self.assertEqual( str(f.property('%ABV').quantity), '5.3 %ABV' )
+        self.assertEqual( str(f.property('ABV').quantity), '5.3 %ABV' )
         self.assertEqual( str(f.property('FG').quantity), '1.010 sg' )
 
     def test06_abv(self):
@@ -63,7 +63,7 @@ class TestAll(unittest.TestCase):
     def test07_end_state_str(self):
         f = Ferment()
         self.assertEqual( f.end_state_str(), '?' )
-        f.property('%ABV', Quantity('6.3','%ABV'))
+        f.property('ABV', Quantity('6.3','%ABV'))
         self.assertEqual( f.end_state_str(), '6.3 %ABV' )
         f.property('atten', Quantity('76','%atten'))
         self.assertEqual( f.end_state_str(), '6.3 %ABV (76.0 %atten)' )

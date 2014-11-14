@@ -19,14 +19,14 @@ class TestAll(unittest.TestCase):
         r = Recipe()
         self.assertFalse( b.has_property('OG') )
         self.assertFalse( b.has_property('IBU') )
-        self.assertFalse( b.has_property('%ABV') )
+        self.assertFalse( b.has_property('ABV') )
         r.property('OG',Quantity('1.050sg'))
         r.property('IBU',Quantity('45IBU'))
-        r.property('%ABV',Quantity('5.0%ABV'))
+        r.property('ABV',Quantity('5.0%ABV'))
         b.connect_input(r)
         self.assertEqual( str(b.property('OG').quantity), '1.050 sg' )
         self.assertEqual( str(b.property('IBU').quantity), '45.0 IBU' )
-        self.assertEqual( str(b.property('%ABV').quantity), '5.0 %ABV' )
+        self.assertEqual( str(b.property('ABV').quantity), '5.0 %ABV' )
 
     def test02_solve(self):
         b = Beer()
@@ -34,7 +34,7 @@ class TestAll(unittest.TestCase):
 
     def test03_end_state_str(self):
         b = Beer()
-        b.property('%ABV',Quantity('6.1%ABV'))
+        b.property('ABV',Quantity('6.1%ABV'))
         self.assertEqual( b.end_state_str(), '6.1 %ABV' )
         
 # If run from command line, do tests

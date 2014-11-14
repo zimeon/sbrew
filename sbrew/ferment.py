@@ -29,13 +29,13 @@ class Ferment(Recipe):
         """
         if ('OG' in self.properties and
             'FG' in self.properties ):
-            self.property('%ABV', Quantity(self.abv(),'%ABV') )
+            self.property('ABV', Quantity(self.abv(),'%ABV') )
             self.property('atten', ((self.property('OG').to('sg')-self.property('FG').to('sg'))/(self.property('OG').to('sg')-1.0)*100.0), '%atten' )
         elif ('OG' in self.properties and
               'atten' in self.properties):
             fg = 1.0 + (self.property('OG').to('sg')-1.0) * ( 1.0 - self.property('atten').to('%atten') / 100.0 )
             self.property('FG', Quantity(fg,'sg') )
-            self.property('%ABV', Quantity(self.abv(),'%ABV') )
+            self.property('ABV', Quantity(self.abv(),'%ABV') )
     
     def abv(self):
         """ Calculate the ABV and attenuation based on OG and FG
@@ -52,9 +52,9 @@ class Ferment(Recipe):
         Includes the ABV and, if available, the apparent attenuation.
         """
         self.solve()
-        if (not '%ABV' in self.properties):
+        if (not 'ABV' in self.properties):
             return('?')
-        s = str(self.property('%ABV').quantity)
+        s = str(self.property('ABV').quantity)
         if ('atten' in self.properties):
             s += ' (' + str(self.property('atten').quantity) + ')'
         return(s)
