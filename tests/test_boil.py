@@ -5,7 +5,7 @@ import unittest
 from sbrew.quantity import Quantity
 from sbrew.property import Property
 from sbrew.boil import tinseth_utilization,ibu_from_boil,Boil
-from sbrew.recipe import Recipe
+from sbrew.recipe import Recipe, MissingParam
 
 class TestAll(unittest.TestCase):
 
@@ -50,6 +50,7 @@ class TestAll(unittest.TestCase):
 
     def test05_solve(self):
         b1 = Boil()
+        self.assertRaises( MissingParam, b1.solve )
         b1.property('boil_start_volume','6.5gal')
         b1.property('start_gravity','1.060sg')
         b1.property('boil_end_volume','6gal')
@@ -65,6 +66,10 @@ class TestAll(unittest.TestCase):
         b2.solve()
         self.assertAlmostEqual( b2.property('OG').to('sg'), 1.065 )
         self.assertAlmostEqual( b2.property('wort_volume').to('gal'), 5.5 )
+        # add hops
+        b2.ingredient('hops','cascade','2oz',time='60min',aa='4.5%AA')
+        b2.solve()
+        self.assertAlmostEqual( b2.property('IBU').to('IBU'), 22.677, places=3 )
         # backward
         b3 = Boil()
         b3.property('OG','1.065sg')

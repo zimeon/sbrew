@@ -81,6 +81,7 @@ class Boil(Recipe):
         elif (self.has_properties('boil_start_volume','start_gravity','boil_rate','duration')):
             v_end_boil = self.property('boil_start_volume').to('gal') - \
                          self.property('boil_rate').to('gal/h') * self.property('duration').to('h')
+            self.property('boil_end_volume',Quantity(v_end_boil,'gal'))
             self.solve_volume_forward(v_end_boil,total_sugar_points)
         # backward
         elif (self.has_properties('OG','wort_volume','boil_rate','duration')):
@@ -102,7 +103,7 @@ class Boil(Recipe):
                 else:
                     print "Warning  - no AA specified for %s hops, assuming %s" % (i.name,aa)
                 ibu = self.ibu_from_addition(i.quantity,aa,t)
-                #i.properties['AA']=Property('AA',Quantity(aa,'IBU'))
+                i.properties['IBU']=Property('IBU',Quantity(aa,'IBU'))
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu,'IBU') )
 
