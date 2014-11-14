@@ -13,9 +13,8 @@ class Lauter(Recipe):
 
     At the end of the lauter the key properties are 
 
-    wort_volume - volume of wort extracted
-
-    wort_gravity - gravity of the wort extracted
+      wort_volume - volume of wort extracted
+      wort_gravity - gravity of the wort extracted
     """
 
     DEFAULT_NAME = 'lauter'
