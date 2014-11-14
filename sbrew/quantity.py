@@ -4,9 +4,9 @@ class ConversionError(Exception):
     pass;
 
 class Quantity:
-    """Base class for all quantities.
+    """Base class for all quantities
 
-    All quantities have a value and a unit.
+    Qantities have a value and a unit. Without a unit a quantity is dimensionless.
     """
 
     CONVERSIONS = { 
