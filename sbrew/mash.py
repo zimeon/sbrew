@@ -1,6 +1,5 @@
 from recipe import Recipe
 from ingredient import Ingredient
-from mass import Mass
 from quantity import Quantity
 
 class Mash(Recipe):
@@ -60,7 +59,7 @@ class Mash(Recipe):
                     ingredient.quantity.value = total_mass.value * ingredient.quantity.value / 100.0
         # Now return total mass
         mass = self.total_type('grain')
-        return( mass if mass else Mass('0lb'))
+        return( mass if mass else Quantity('0lb'))
 
     def total_points(self):
         """Return total number of points estimated to be in grains if fully converted

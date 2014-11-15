@@ -43,14 +43,25 @@ class TestAll(unittest.TestCase):
     def test07_to(self):
         self.assertAlmostEqual( Quantity('1lb').to('oz'), 16.0 )
         self.assertAlmostEqual( Quantity('30min').to('hour'), 0.5 )
+        self.assertAlmostEqual( Quantity('32F').to('C'), 0.0 )
+        self.assertAlmostEqual( Quantity('-18C').to('F'), -0.4 )
 
-    def test08_convert_to(self):
+    def test08_temp_to(self):
+        self.assertAlmostEqual( Quantity('32F').temp_to('C'), 0.0 )
+        self.assertAlmostEqual( Quantity('-18C').temp_to('F'), -0.4 )
+        # expect exception for non temperature input or output unit
+        q = Quantity('1C')
+        self.assertRaises( ConversionError, q.temp_to, 'kg' )
+        q = Quantity('1.001sg')
+        self.assertRaises( ConversionError, q.temp_to, 'F' )
+
+    def test09_convert_to(self):
         self.assertAlmostEqual( Quantity('1lb').convert_to('oz').value, 16.0 )
         self.assertEqual( Quantity('1lb').convert_to('oz').unit, 'oz' )
         self.assertAlmostEqual( Quantity('1lb').convert_to('oz').value, 16.0 )
         self.assertEqual( Quantity('30min').convert_to('hour').unit, 'h' )
 
-    def test09_add(self):
+    def test10_add(self):
         q1 = Quantity('1lb')+Quantity('1oz')
         self.assertAlmostEqual( q1.value, 1.0625 )
         self.assertEqual( q1.unit, 'lb' )
@@ -58,7 +69,7 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( q2.value, 17 )
         self.assertEqual( q2.unit, 'oz' )
 
-    def test10_sub(self):
+    def test11_sub(self):
         q1 = Quantity('1lb')-Quantity('1oz')
         self.assertAlmostEqual( q1.value, 0.9375 )
         self.assertEqual( q1.unit, 'lb' )
@@ -66,7 +77,7 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( q2.value, 3 )
         self.assertEqual( q2.unit, 'oz' )
 
-    def test11_find_conversion(self):
+    def test12_find_conversion(self):
         self.assertEqual( Quantity.find_conversion('xyz','xyz'), 1.0 )
         self.assertAlmostEqual( Quantity.find_conversion('g','kg'), 0.001 )
         # error conditions

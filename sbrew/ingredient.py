@@ -5,16 +5,16 @@ import re
 class Ingredient:
     """Representation of one ingredient
 
-    i = Ingredient('grain','belgian pilsner','9.75lb')
-    i = Ingredient('grain','belgian pilsner',9.75,'lb')
+      i = Ingredient('grain','belgian pilsner','9.75lb')
+      i = Ingredient('grain','belgian pilsner',9.75,'lb')
 
     or alternatively, the fraction of this ingredient may be set:
 
-    i = Ingredient('grain','belgian pilsner',pct=80.0)
+      i = Ingredient('grain','belgian pilsner',pct=80.0)
 
     and additionally, properties may be added as named parameters:
 
-    i = Ingredient('grain','belgian pilsner',pct=80.0,temp=Quantity("65F"))
+      i = Ingredient('grain','belgian pilsner',pct=80.0,temp=Quantity("65F"))
     """
 
     def __init__(self, type, name, quantity=None, unit=None, pct=None, **properties_kv):

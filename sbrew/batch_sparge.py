@@ -1,4 +1,3 @@
-from mass import Mass
 from quantity import Quantity
 from lauter import Lauter
 from recipe import MissingParam

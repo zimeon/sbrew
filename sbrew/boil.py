@@ -1,6 +1,5 @@
 from recipe import Recipe
 from ingredient import Ingredient
-from mass import Mass
 from quantity import Quantity
 from property import Property
 from recipe import MissingParam

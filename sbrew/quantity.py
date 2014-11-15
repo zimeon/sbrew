@@ -131,8 +131,19 @@ class Quantity:
                 self.unit in Quantity.CONVERSIONS[new_unit]):
             #inverse
             return(self.value/Quantity.CONVERSIONS[new_unit][self.unit])
+        elif (self.unit in ['C','F'] and new_unit in ['C','F']):
+            return(self.temp_to(new_unit))
         else:
             return(self.value * self.find_conversion(self.unit,new_unit))
+
+    def temp_to(self, new_unit):
+        """Temperature conversion method"""
+        if (self.unit == 'F' and new_unit == 'C'):
+            return((self.value-32.0)*5.0/9.0)
+        elif (self.unit == 'C' and new_unit == 'F'):
+            return((self.value*9.0/5.0)+32.0)
+        else:
+            raise ConversionError("unknown temperature conversion")
 
     def convert_to(self,new_unit):
         """Convert internal value to the new unit
@@ -199,4 +210,8 @@ class Quantity:
                     if (not (e in Quantity.ALL_CONV[s])):
                         Quantity.ALL_CONV[s][e] = Quantity.ALL_CONV[s][m] * Quantity.ALL_CONV[m][e]
                         Quantity.ALL_CONV[e][s] = 1.0 / Quantity.ALL_CONV[s][e]
+
+#############################################################################
+# Functions use for specific conversions
+#
 
