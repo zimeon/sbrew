@@ -75,3 +75,4 @@ class InfusionMash(Mash):
         self.property('total_water', self.total_water())
         self.property('total_grain', self.total_grains())
         self.property('total_points', self.total_points())
+        self.color_units()

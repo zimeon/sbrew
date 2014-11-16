@@ -64,6 +64,7 @@ class Boil(Recipe):
     def import_forward(self):
         self.import_property('wort_volume', 'boil_start_volume')
         self.import_property('wort_gravity', 'start_gravity')
+        self.import_property('MCU')
 
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil
@@ -105,6 +106,7 @@ class Boil(Recipe):
                 i.properties['IBU']=Property('IBU',Quantity(aa,'IBU'))
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu,'IBU') )
+        self.color()
 
     def solve_volume_forward(self, v_end_boil, total_sugar_points=0.0):
         """Solve forward based on end of boil volume
@@ -160,6 +162,19 @@ class Boil(Recipe):
     def ibu_from_addition(self, weight, aa, time):
         """ IBU from a single hop addition at a particular time in a boil """
         return ibu_from_boil(weight,aa,self.property('boil_end_volume'),self.property('OG'),time)
+
+    def color(self):
+        """Calculate color after boil based on mash color units (MCU) at start
+
+        Morey formula, see for example: <http://brewwiki.com/index.php/Estimating_Color>
+
+        SRM_Color = 1.4922 * [MCU ^ 0.6859] 
+        """
+        if (self.has_properties('MCU','boil_start_volume','boil_end_volume')):
+            # scale MCU based on boil-down, then use formula
+            mcu = self.property('MCU').to('MCU') * self.property('boil_start_volume').to('gal') / self.property('boil_end_volume').to('gal') 
+            srm = 1.4922 * ( mcu ** 0.6859 )
+            self.property('SRM',Quantity(srm,'SRM'))
 
     def end_state_str(self):
         #self.solve()

@@ -19,6 +19,7 @@ class Ferment(Recipe):
     def import_forward(self):
         self.import_property('OG')
         self.import_property('IBU')
+        self.import_property('SRM')
 
     def import_backward(self):
         self.import_property('FG',source='output')

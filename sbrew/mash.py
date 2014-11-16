@@ -1,4 +1,4 @@
-from recipe import Recipe
+from recipe import Recipe,MissingParam
 from ingredient import Ingredient
 from quantity import Quantity
 
@@ -78,6 +78,34 @@ class Mash(Recipe):
         vol = self.total_type('water')
         return( vol if vol else Quantity('0gal'))
 
+    def color_units(self):
+        """Calculate number of mash color units from grain colors (L)
+
+        The number of color units is defined as the grain quantity (lbs) multiplied
+        by the color of each grain (L), divided by the total water volume.
+
+        Use Morey equation. See, for example, <http://brewwiki.com/index.php/Estimating_Color>
+
+        FIXME - should be able to configure or perhaps switch equation automatically
+        based on color range.
+        """
+        mcu = 0.0
+        try:
+            for ingredient in self.ingredients:
+                if (ingredient.type == 'grain'):
+                    mcu += ingredient.quantity.to('lb') * ingredient.property('color').to('L')
+            mcu /= self.total_water().to('gal')
+        except ZeroDivisionError:
+            pass
+        except AttributeError:
+            pass
+        except MissingParam:
+            pass
+        if (mcu>0.0):
+            # set property only if we have a real value
+            self.property('MCU', Quantity(mcu,'MCU'))
+        return( Quantity(mcu,'MCU') )
+
     def mash_volume(self):
         """Return volume of mash including both liquid and grain"""
         vol=self.total_water().to('gal') +\
@@ -113,6 +141,7 @@ class Mash(Recipe):
         self.property('total_points', self.total_points())
         if (self.has_properties('total_water','total_grain')):
             self.property('mash_volume', self.mash_volume())
+        self.color_units()
 
     def end_state_str(self):
         self.solve()

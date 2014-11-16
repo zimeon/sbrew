@@ -27,6 +27,7 @@ class Lauter(Recipe):
         self.import_property('total_grain','grain')
         self.import_property('total_water','water')
         self.import_property('total_points','total_points')
+        self.import_property('MCU')
 
     def import_backward(self):
         pass

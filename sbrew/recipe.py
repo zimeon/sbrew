@@ -1,10 +1,5 @@
 from ingredient import Ingredient
-from property import Property
-
-class NoProperty(object):
-    """Class used to represent 'no property' default"""
-    def __str__(self):
-        return('NoProperty')
+from property import Property,NoProperty
 
 class MissingParam(Exception):
     """Class for exception in solve because of missing parameter"""

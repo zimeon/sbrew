@@ -43,6 +43,8 @@ class Quantity:
         'sg' : '%.3f',
         'oz' : '%.2f',
         'IBU' : '%.1f',
+        'MCU' : '%.2f',
+        'SRM' : '%.1f',
         }
 
     CANONICAL_UNIT = {

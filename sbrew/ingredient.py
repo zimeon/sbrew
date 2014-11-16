@@ -1,5 +1,5 @@
 from quantity import Quantity
-from property import Property
+from property import Property,NoProperty
 import re
 
 class Ingredient:
@@ -30,6 +30,48 @@ class Ingredient:
             self.quantity = quantity
         elif (quantity is not None):
             self.quantity = Quantity(quantity, unit)
+
+    def property(self,p,quantity=None,unit=None,default=NoProperty):
+        """Add/get property to this ingredient
+
+        This is getter and setter for the property p. Perhaps not
+        properly pythonic but p=Property and quantity!=None implies set,
+        otherwise get.
+
+        Returns None or the value of default is there is no such property.
+        If default is not set then a MissingParam exception is raised.
+        """
+        if (not isinstance(p,Property)):
+            if (quantity is None):
+                q = self.properties.get(p)
+                if (q is None):
+                    if (default == NoProperty):
+                        raise Exception("%s has no property %s (has %s)" % (self.fullname,p,self.properties.keys()))
+                    elif (default is None):
+                        # request it to return None in this case that property does not exist
+                        return None
+                    else:
+                        # get quantity of this property (else None)
+                        return(Property(p,default))
+                return(q)
+            else:
+                # set with values given
+                name = p
+                p = Property(name,quantity,unit,**kwargs)
+        else:
+            name = p.name
+        self.properties[name]=p
+
+    def has_properties(self,*args):
+        """True if recipe has the properties listed, else false"""
+        for property in args:
+            if (property not in self.properties):
+                return(False)
+        return(True)
+
+    def has_property(self,*arg):
+        """Another name for has_properties()"""
+        return(self.has_properties(*arg))        
 
     def __str__(self):
         """Human readable string version of object

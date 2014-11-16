@@ -16,6 +16,7 @@ class Beer(Recipe):
         self.import_property('OG')
         self.import_property('IBU')
         self.import_property('ABV')
+        self.import_property('SRM')
 
     def solve(self):
         """ Calculate the ABV and attenuation based on OG and FG

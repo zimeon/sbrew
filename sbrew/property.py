@@ -1,6 +1,11 @@
 from quantity import Quantity
 import re
 
+class NoProperty(object):
+    """Class used to represent 'no property' default"""
+    def __str__(self):
+        return('NoProperty')
+
 class Property:
     """Representation of one property
 
