@@ -5,7 +5,7 @@ import unittest
 from sbrew.quantity import Quantity
 from sbrew.property import Property
 from sbrew.carbonation import Carbonation
-from sbrew.recipe import Recipe
+from sbrew.recipe import Recipe,MissingParam
 
 class TestAll(unittest.TestCase):
 
@@ -26,8 +26,30 @@ class TestAll(unittest.TestCase):
         self.assertEqual( str(c.property('FG').quantity), '1.010 sg' )
 
     def test02_solve(self):
-        c = Carbonation()
-        c.solve()
+        c1 = Carbonation()
+        self.assertRaises( MissingParam, c1.solve )
+        c1.property('temp','45F')
+        c1.property('pressure','12psi')
+        c1.property('vol','2.0')
+        c1.solve()
+        # temp and pressure known
+        c2 = Carbonation()
+        c2.property('temp','45F')
+        c2.property('pressure','12psi')
+        c2.solve()
+        self.assertAlmostEqual( c2.property('vol').quantity.value, 2.2537, places=4 )
+        # temp and vol known
+        c3 = Carbonation()
+        c3.property('temp','45F')
+        c3.property('vol','2.0')
+        c3.solve()
+        self.assertAlmostEqual( c3.property('pressure').to('psi'), 9.0182, places=4 )
+        # pressure and vol known
+        c4 = Carbonation()
+        c4.property('pressure','15psi')
+        c4.property('vol','2.0')
+        c4.solve()
+        self.assertAlmostEqual( c4.property('temp').to('F'), 58.09719, places=4 )
 
     def test03_end_state_str(self):
         c = Carbonation()

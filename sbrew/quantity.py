@@ -48,6 +48,7 @@ class Quantity:
     CANONICAL_UNIT = {
         'gal/hour': 'gal/h',
         'hour'    : 'h',
+        'dimensionless': None,
         }
 
     ALL_CONV = None
@@ -59,7 +60,7 @@ class Quantity:
         1) empty: qty = Quantity()
         2) copy: qty2 = Quantity(qty1) #creates new object with same value and unit
         3) split: qty = Quantity(value, unit)
-        4) unit only: qty = Quanityt(None, unit)
+        4) unit only: qty = Quantity(None, unit)
         5) string: qyt = Quantity('1gal')
         """
         #
@@ -124,11 +125,12 @@ class Quantity:
         # Convert
         if (self.unit==new_unit):
             return(self.value)
+
         elif (self.unit in Quantity.CONVERSIONS and
-                new_unit in Quantity.CONVERSIONS[self.unit]):
+              new_unit in Quantity.CONVERSIONS[self.unit]):
             return(self.value*Quantity.CONVERSIONS[self.unit][new_unit])
         elif (new_unit in Quantity.CONVERSIONS and
-                self.unit in Quantity.CONVERSIONS[new_unit]):
+              self.unit in Quantity.CONVERSIONS[new_unit]):
             #inverse
             return(self.value/Quantity.CONVERSIONS[new_unit][self.unit])
         elif (self.unit in ['C','F'] and new_unit in ['C','F']):
