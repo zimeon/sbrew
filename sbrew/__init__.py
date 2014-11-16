@@ -18,7 +18,7 @@ from ferment import Ferment
 from boil import Boil
 from carbonation import *
 from beer import Beer
-from wort import *
+from wort_additions import *
 from mix import *
 
 #print "Loaded sbrew.__init__"

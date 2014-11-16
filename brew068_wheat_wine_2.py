@@ -13,27 +13,29 @@ m.ingredient('misc','rice hulls','4oz')
 m.ingredient('water','strike','5.25gal')
 m.property('temp','145F')
 m.property('t_mashtun','65F')
-m.solve()
 r.add(m)
 
 s = BatchSparge(start=m)
-s.property('wort_volume','6.50gal')
-s.solve()
+s.property('wort_volume','7.00gal')
 r.add(s)
 
-b = Boil()
-b.time=Quantity('60min')
-b.property('wort_volume','6.0gal')
-b.ingredient('hops','simcoe','1.35oz',time=Quantity('60min'),aa=Quantity('13%'))
-b.ingredient('hops','cascade','1oz',time=Quantity('30min'),aa=Quantity('3.2%'))
-b.ingredient('hops','centennial','1oz',time=Quantity('10min'),aa=Quantity('9.9%'))
-b.ingredient('hops','simcoe','0.65oz',time=Quantity('0min'),aa=Quantity('13%'))
+a = WortAdditions(start=s)
+a.ingredient('ldme','muntons extra light','3lb')
+a.ingredient('sucrose','table sugar','1.5lb')
+r.add(a)
+
+b = Boil(start=a)
+b.time=Quantity('90min')
+b.property('boil_end_volume','6.25gal')
+b.ingredient('hops','hallertau','3oz',time=Quantity('90min'),aa=Quantity('3.9%AA'))
 r.add(b)
 
-f = Ferment()
+f = Ferment(start=b)
 f.ingredient('yeast','wyeast 1056 American Ale','2vial')
+f.property('FG','1.024sg')
 r.add(f)
 
+r.solve()
 print r
 
 
