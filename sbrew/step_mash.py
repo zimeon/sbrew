@@ -30,7 +30,7 @@ class StepMash(Mash):
         elif (type == 'adjust'):
             self.steps.append(extra)
         else:
-            raise SbrewError('Unknown step type "{0:s}"'.format(type))
+            raise Exception('Unknown step type "{0:s}"'.format(type))
 
     def total_water(self):
         """Add up all water to return total volume

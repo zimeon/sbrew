@@ -1,6 +1,5 @@
 from step_mash import StepMash
 from quantity import Quantity
-from sbrew_error import SbrewError
 from datetime import timedelta
 
 class DecoctionMash(StepMash):
