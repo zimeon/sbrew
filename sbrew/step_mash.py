@@ -5,7 +5,7 @@ from datetime import timedelta
 class StepMash(Mash):
     """A step mash where ingredients may be added and temperatures changed"""
 
-    DEFAULT_NAME='step_mash'
+    DEFAULT_NAME='step mash'
 
     def __init__(self, **kwargs):
         super(StepMash,self).__init__(**kwargs)
@@ -59,14 +59,6 @@ class StepMash(Mash):
             if ('time' in step):
                 t += self.parsetime(step['time']) 
         return(t)  
-
-    def __str__(self, **kwargs):
-        # Use superclass str() but don't try to render steps
-        s = super(StepMash,self).__str__(skip_steps=1)
-        # Now render the steps in our own special way
-        s += '***steps***\n'
-        s += self.steps_str()
-        return(s)
 
     def steps_str(self,start_time=timedelta(),n=0,indent=''):
         """ Write out a time sequence of all steps, including decoctions
@@ -167,3 +159,13 @@ class StepMash(Mash):
     def parsetime(self, tstr):
         tqty = Quantity(tstr).to('min')
         return(timedelta(minutes=tqty))
+
+    def __str__(self, **kwargs):
+        # Use superclass str() but don't try to render steps
+        s = super(StepMash,self).__str__(skip_steps=1)
+        # Now render the steps in our own special way
+        s += '***steps***\n'
+        s += self.steps_str()
+        return(s)
+
+

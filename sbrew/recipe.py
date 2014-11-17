@@ -208,7 +208,8 @@ class Recipe(object):
         Will use the same name in current recipe unless `new_name` is 
         specified.
 
-        If there is no matching property then will silently return.
+        If there is no matching property then will silently return. Returns
+        True for a successful import, False otherwise.
         """
         if (new_name is None):
             new_name = name
@@ -218,19 +219,20 @@ class Recipe(object):
                     self.property( new_name, i.property(name) )
                     if (self.verbose):
                         print "imported %s and %s" % (name, new_name) 
-                    return
+                    return True
         elif (source=='output'):
             if (self.output and name in self.output.properties):
                 self.property( new_name, self.output.property(name) )
                 if (self.verbose):
                     print "imported %s and %s" % (name, new_name) 
-                return
+                return True
         else: #source is an input Recipe instance
             if (name in source.properties):
                 self.property( new_name, source.property(name) )
                 if (self.verbose):
                     print "imported %s and %s" % (name, new_name) 
-                return
+                return True
+        return False
 
     def set_output(self,output):
         """Set connection to recipe for which output of this recipe is and input
