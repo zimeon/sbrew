@@ -37,7 +37,14 @@ class TestAll(unittest.TestCase):
         sm.add_step(type="infuse",volume="0.5gal",temp="162F")
         self.assertAlmostEqual(sm.total_water().to('gal'), 3.5)
 
-    def test_04_steps_str(self):
+    def test_04_total_time(self):
+        sm = StepMash()
+        sm.add_step(type="rest",time="10min")
+        self.assertAlmostEqual( sm.total_time().total_seconds(), 600.0 )
+        sm.add_step(type="rest",time="1min")
+        self.assertAlmostEqual( sm.total_time().total_seconds(), 660.0 )
+
+    def test_05_steps_str(self):
         sm = StepMash()
         sm.add_step(type="infuse",volume="2gal",temp="122F")
         sm.add_step(type="rest",time="10min")
@@ -49,12 +56,12 @@ class TestAll(unittest.TestCase):
         self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| adjust -> 2gal @ 212F' )
         self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| state -> 2gal @ 212F' )
 
-    def test_05_stage_state_str(self):
+    def test_06_stage_state_str(self):
         sm = StepMash()
         stage = { 'type':'type_here', 'volume':'vol_here', 'temp':'123F' }
         self.assertEqual( sm.stage_state_str(stage), 'type_here -> vol_here @ 123F ' )
 
-    def test_06_find_stages(self):
+    def test_07_find_stages(self):
         sm = StepMash()
         sm.add_step(type="infuse",volume="2gal",temp="122F")
         sm.add_step(type="rest",time="10min")
@@ -68,17 +75,17 @@ class TestAll(unittest.TestCase):
         self.assertEqual( stages['abc'][4]['type'], 'state' )
         self.assertEqual( stages['abc'][4]['time'].total_seconds(), 600.0 )
 
-    def test_07_parsetime(self):
+    def test_08_parsetime(self):
         sm = StepMash()
         self.assertEqual( sm.parsetime('1h').total_seconds(), 3600.0 )
 
-    def test_08_str(self):
+    def test_09_str(self):
         sm = StepMash()
+        sm.add_step(type="infuse",volume='1gal',temp='123F')
         sm.add_step(type="rest",time="10min")
-        self.assertAlmostEqual( sm.total_time().total_seconds(), 600.0 )
-        sm.add_step(type="rest",time="1min")
-        self.assertAlmostEqual( sm.total_time().total_seconds(), 660.0 )
-
+        self.assertRegexpMatches( str(sm), r'= step mash =' )
+        self.assertRegexpMatches( str(sm), r'\*\*\*steps\*\*\*' )
+        self.assertRegexpMatches( str(sm), r'rest -> 1gal @ 123F' )
 
 # If run from command line, do tests
 if __name__ == '__main__':
