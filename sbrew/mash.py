@@ -17,12 +17,6 @@ class Mash(Recipe):
     def __init__(self, **kwargs):
         super(Mash,self).__init__(**kwargs)
 
-    def lookup_grains(self):
-        print "Lookup grains"
-        for ingredient in self.ingredients:
-            if (ingredient.type == 'grain'):
-                pass
-
     def total_type(self, type, unit=None):
         """Return total quantity of ingredient with given type
 
@@ -96,20 +90,24 @@ class Mash(Recipe):
                     mcu += ingredient.quantity.to('lb') * ingredient.property('color').to('L')
             mcu /= self.total_water().to('gal')
         except ZeroDivisionError:
-            pass
+            mcu = 0.0
         except AttributeError:
-            pass
+            mcu = 0.0
         except MissingParam:
-            pass
+            mcu = 0.0
         if (mcu>0.0):
             # set property only if we have a real value
             self.property('MCU', Quantity(mcu,'MCU'))
         return( Quantity(mcu,'MCU') )
 
     def mash_volume(self):
-        """Return volume of mash including both liquid and grain"""
+        """Return volume of mash including both liquid and grain
+
+        See <http://www.howtobrew.com/appendices/appendixD-3.html> for numbers, use 1lb grain
+        has volume of 10oz = 10/128
+        """
         vol=self.total_water().to('gal') +\
-            self.total_grains().to('lb') * 0.15 #FIXME - what is this number really?
+            self.total_grains().to('lb') * 10.0/128.0
         return( Quantity(vol,'gal') )
 
     def add_mash(self, mash=None):
@@ -118,22 +116,6 @@ class Mash(Recipe):
         self.name = self.name_with_default + ' + ' + mash.name_with_default
         for ingredient in mash.ingredients:
             self.ingredient( ingredient );
-        #self.combine_waters()
-
-    def combine_waters(self):
-        """Combine multiple water ingredients into one
-
-        Will use the units of the first water quantity found
-        """
-        water_total=None
-        for ingredient in self.ingredients:
-            if (ingredient.type == 'water'):
-                if (water_total):
-                    water_total+=ingredient.quantity
-                else:
-                    water_total=Quantity(ingredient.quantity)
-                self.ingredients.remove(ingredient)
-        self.ingredient( Ingredient('water','',water_total) )
 
     def solve(self):
         self.property('total_water', self.total_water())
