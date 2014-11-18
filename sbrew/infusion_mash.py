@@ -63,11 +63,8 @@ class InfusionMash(Mash):
         #
         mass_water=Quantity(volume_water.to('pt'),'lb') #1lb == 1pt
         hc_water=Quantity(mass_water.to('lb')*shc_water.to('Btu/lb/F'),'Btu/F') 
-        # sanity check
-        if (hc_water.value<0.000000001):
-            raise Exception("hc_water zero which won't work")
         hc_total=hc_water+hc_initial
-        t_strike=Quantity( ((hc_total.value*t_mash - hc_initial.value*t_initial.to('F')) / hc_water.value), 'F')
+        t_strike=Quantity( ((hc_total.to('Btu/F')*t_mash - hc_initial.to('Btu/F')*t_initial.to('F')) / hc_water.to('Btu/F')), 'F')
         self.property('t_strike',t_strike,'F')
         self.property('hc_total',hc_total)
 
