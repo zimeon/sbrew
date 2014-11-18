@@ -1,4 +1,6 @@
+"""Model for physical quantities -- value and unit"""
 import re
+import numpy
 
 class ConversionError(Exception):
     pass;
@@ -214,6 +216,22 @@ class Quantity:
                     if (not (e in Quantity.ALL_CONV[s])):
                         Quantity.ALL_CONV[s][e] = Quantity.ALL_CONV[s][m] * Quantity.ALL_CONV[m][e]
                         Quantity.ALL_CONV[e][s] = 1.0 / Quantity.ALL_CONV[s][e]
+
+    # Data from documentation with True Brue #6800 hydrometer
+    # t_data = temps in F
+    # c_data = specific gravity corrects to ADD 
+    t_data = [50,60,70,77,84,95,105,110,113,118] 
+    c_data = [-0.0005,0.0,0.001,0.002,0.003,0.005,0.007,0.008,0.009,0.010]
+
+    def hydrometer_correction(self, temp='60F'):
+        # get specific gravity correction
+        tval = Quantity(temp).to('F')
+        # barf if outside range
+        if (tval<self.t_data[0] or tval>self.t_data[-1]):
+           raise NameError('Temperature out of range for hydrometer, must be within 50 - 118F')
+        correction = numpy.interp(tval,self.t_data,self.c_data)
+        sg = self.to('sg') + correction
+        return Quantity(sg,'sg')
 
 #############################################################################
 # Functions use for specific conversions

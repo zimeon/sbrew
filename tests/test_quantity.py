@@ -85,6 +85,13 @@ class TestAll(unittest.TestCase):
         self.assertRaises( ConversionError, Quantity.find_conversion, 'lb','xyz' )
         self.assertRaises( ConversionError, Quantity.find_conversion, 'lb','h' )
 
+    def test13_hydrometer_correction(self):
+        q = Quantity('1.010sg')
+        self.assertAlmostEqual( q.hydrometer_correction().to('sg'), 1.010 )
+        q = Quantity('1.010sg')
+        self.assertAlmostEqual( q.hydrometer_correction('100F').to('sg'), 1.016 )
+        q = Quantity('1.010sg')
+        self.assertAlmostEqual( q.hydrometer_correction('118F').to('sg'), 1.020 )
  
 # If run from command line, do tests
 if __name__ == '__main__':

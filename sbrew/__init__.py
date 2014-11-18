@@ -4,7 +4,6 @@ Simply loads everything at present
 """
 
 from quantity import Quantity
-from gravity import Gravity
 from ingredient import Ingredient
 from property import Property
 from recipe import Recipe
