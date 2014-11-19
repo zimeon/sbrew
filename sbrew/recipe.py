@@ -110,16 +110,19 @@ class Recipe(object):
             return('')
 
     def __add__(self, other):
-        """Add the partial recipes togerther, returning a new recipe
+        """Add two partial recipes togerther, returning a new recipe
+
+        The steps of the second follow those of the first. The ingredients
+        are combined. The properties of the second override those of the
+        first.
         """
         sum=Recipe()
         sum.steps+=self.steps
         sum.steps+=other.steps
-        sum.name= self.name + " + " + other.name
+        sum.name= self.fullname + " + " + other.fullname
         sum.ingredients+=self.ingredients
         sum.ingredients+=other.ingredients
-        sum.properties+=self.properties
-        sum.properties+=other.properties
+        sum.properties=dict( self.properties.items() + other.properties.items() )
         return(sum)
 
     def ingredient(self,i,name=None,quantity=None,unit=None,*properties,**kv_properties):
