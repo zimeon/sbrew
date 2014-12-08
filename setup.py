@@ -1,6 +1,21 @@
-from setuptools import setup
+from setuptools import setup, Command
+import os
 # setuptools used instead of distutils.core so that 
 # dependencies can be handled automatically
+
+class Coverage(Command):
+    description = "run coverage"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        os.system("coverage run --source=sbrew setup.py test")
+        os.system("coverage report")
 
 setup(
     name='sbrew',
@@ -18,4 +33,7 @@ setup(
     url='http://github.com/zimeon/sbrew',
     install_requires=[],
     test_suite="tests",
+    cmdclass={
+        'coverage': Coverage,
+    },
 )
