@@ -1,4 +1,4 @@
-from recipe import Recipe
+from recipe import Recipe,MissingParam
 from ingredient import Ingredient
 from quantity import Quantity
 from property import Property
@@ -36,6 +36,16 @@ class Ferment(Recipe):
             fg = 1.0 + (self.property('OG').to('sg')-1.0) * ( 1.0 - self.property('atten').to('%atten') / 100.0 )
             self.property('FG', Quantity(fg,'sg') )
             self.property('ABV', Quantity(self.abv(),'%ABV') )
+        elif ('ABV' in self.properties and
+              'atten' in self.properties):
+            fatten = self.property('atten').to('%atten') / 100.0
+            ogp = self.property('ABV').to('%ABV') / ( fatten * 105 * 1.25 )
+            fgp = ( 1.0 - fatten ) * ogp
+            self.property('OG', Quantity(1.0+ogp,'sg') )
+            self.property('FG', Quantity(1.0+fgp,'sg') )
+        else:
+            raise MissingParam("Cannot solve ferment, have %s properties" % (self.properties.keys()))
+
     
     def abv(self):
         """ Calculate the ABV and attenuation based on OG and FG
@@ -51,12 +61,13 @@ class Ferment(Recipe):
 
         Includes the ABV and, if available, the apparent attenuation.
         """
-        self.solve()
+        try:
+            self.solve()
+        except:
+            pass
         if (not 'ABV' in self.properties):
             return('?')
         s = str(self.property('ABV').quantity)
         if ('atten' in self.properties):
             s += ' (' + str(self.property('atten').quantity) + ')'
         return(s)
-
-

@@ -66,6 +66,9 @@ class Boil(Recipe):
         self.import_property('wort_gravity', 'start_gravity')
         self.import_property('MCU')
 
+    def import_backward(self):
+        self.import_property('OG',source='output')
+
     def solve(self):
         """ Calculate the bitterness and the volume at end of boil
 
@@ -153,8 +156,12 @@ class Boil(Recipe):
         tot = 0.0
         for i in self.ingredients:
             if (i.type == 'sucrose'):
+                pts = i.quantity.to('lb') * 46.0 # 46ppg
+                i.properties['points']=Property('points',pts,'points')
+                tot += pts
+            elif (i.type == 'dme'):
                 # 46ppg
-                pts = i.quantity.to('lb') * 46.0
+                pts = i.quantity.to('lb') * 43.0 # 43ppg 
                 i.properties['points']=Property('points',pts,'points')
                 tot += pts
         return(tot)

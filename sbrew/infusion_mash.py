@@ -1,4 +1,4 @@
-from recipe import Recipe
+from recipe import Recipe,MissingParam
 from ingredient import Ingredient
 from quantity import Quantity
 from mash import Mash
@@ -41,6 +41,8 @@ class InfusionMash(Mash):
         
         Will barf unless we have the following properties:
         """
+        #if (self.all_grains_percentage()):
+        #    raise MissingParam("Cannot solve infusion mash as have only grain ratios")
         t_mash = self.property('temp').quantity.to('F')
         #
         shc_water=Quantity("1Btu/lb/F")
