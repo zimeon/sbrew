@@ -40,7 +40,7 @@ class Property:
         """
         s = ""
         if (self.name != 'time' and 
-            self.name != 'AA' and
+            self.name != 'aa' and
             self.name != self.quantity.unit):
             s += self.name + " "
         s += str(self.quantity)
