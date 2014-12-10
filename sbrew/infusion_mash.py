@@ -13,7 +13,7 @@ class InfusionMash(Mash):
     print m
     """
 
-    DEFAULT_NAME='infusion_mash'
+    DEFAULT_NAME='infusion mash'
 
     def __init__(self, **kwargs):
         super(InfusionMash, self).__init__(**kwargs)
