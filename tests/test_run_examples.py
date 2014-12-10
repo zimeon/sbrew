@@ -85,6 +85,20 @@ class TestAll(unittest.TestCase):
         out = self.run_script('brew081_wit_kk.py')
         self.assertRegexpMatches( out, r'-> 5.50 gal @ 1.050 sg with 17.2 IBU')
 
+    def test082(self):
+        out = self.run_script('brew082_brown_porter.py')
+        self.assertRegexpMatches( out, r'-> 6.00 gal @ 1.049 sg with 36.7 IBU' )
+        self.assertRegexpMatches( out, r'-> 4.9 %ABV \(75.6 %atten\)' )
+
+    def test086(self):
+        out = self.run_script('brew086_imperial_stout.py')
+        self.assertRegexpMatches( out, r'-> 8.1 %ABV \(75.0 %atten\)')
+
+    def test088(self):
+        out = self.run_script('brew088_belgian_golden_barrel_sour_collab.py')
+        self.assertRegexpMatches( out, r'-> 5.7 %ABV \(73.0 %atten\)')
+
+
 # If run from command line, do tests
 if __name__ == '__main__':
     unittest.main()
