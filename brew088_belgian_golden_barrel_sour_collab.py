@@ -13,7 +13,7 @@ m.ingredient('grain','Munich','1.0lb',color='10L')
 m.ingredient('grain','Vienna','1.0lb',color='4L')
 m.ingredient('grain','Crystal 55','8oz',color='55L')
 m.ingredient('water','strike','5.0gal')
-m.property('temp','150F')
+m.property('temp','152F')
 m.property('t_mashtun','65F')
 r.add(m)
 
