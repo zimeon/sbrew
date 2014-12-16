@@ -94,6 +94,10 @@ class TestAll(unittest.TestCase):
         out = self.run_script('brew086_imperial_stout.py')
         self.assertRegexpMatches( out, r'-> 8.1 %ABV \(75.0 %atten\)')
 
+    def test087(self):
+        out = self.run_script('brew087_saison.py')
+        self.assertRegexpMatches( out, r'-> 6.00 gal @ 1.055 sg with 20.9 IBU')
+
     def test088(self):
         out = self.run_script('brew088_belgian_golden_barrel_sour_collab.py')
         self.assertRegexpMatches( out, r'-> 5.7 %ABV \(73.0 %atten\)')
