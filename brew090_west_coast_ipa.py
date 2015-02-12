@@ -9,10 +9,10 @@ r.name="American West Coast IPA (Imperialish)"
 
 m = InfusionMash()
 m.ingredient('grain','2 row','12.75lb',color='2L')
-m.ingredient('grain','Biscuit','12oz',color='20L')
-m.ingredient('water','strike','5.4gal')
+m.ingredient('grain','Crystal 15','12oz',color='15L')
+m.ingredient('water','strike','5.3gal')
 m.property('temp','150F')
-m.property('t_mashtun','60F')
+m.property('t_mashtun','58F')
 r.add(m)
 
 s = BatchSparge(start=m)
@@ -28,7 +28,7 @@ b.ingredient('hops','Simcoe','1.0oz',time='60min',aa='12.3%AA')
 # mid
 b.ingredient('hops','Columbus','1.0oz',time='30min',aa='15.2%AA')
 b.ingredient('hops','Simcoe','1.0oz',time='15min',aa='12.3%AA')
-b.ingredient('sucrose','table sugar','1lb',time=Quantity('5min'))
+b.ingredient('sucrose','table sugar','1.0lb',time=Quantity('5min'))
 # flame out
 b.ingredient('hops','Centennial','1.0oz',time='0min',aa='9.0%AA')
 b.ingredient('hops','Simcoe','1.0oz',time='0min',aa='12.3%AA')
