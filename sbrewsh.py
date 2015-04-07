@@ -31,6 +31,8 @@ while (1):
         break
     elif (i in prompt.keys()):
         input_mode = i
+    elif (i == 'help'):
+        print "sbrewsh - sbrew shell\n q - quit\n sb - sbrew input\n py - python input\n help - this help\n"
 print "sbrew go bye bye"
 
 
