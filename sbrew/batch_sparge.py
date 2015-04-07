@@ -3,7 +3,7 @@ from lauter import Lauter
 from recipe import MissingParam
 
 class BatchSparge(Lauter):
-    """Batch sparge, a special type of lauter with two extracts
+    """Batch sparge, a special type of lauter with two or more extracts
 
     There are two properties that are essential to calculating
     how a batch sparge will work:
@@ -27,11 +27,13 @@ class BatchSparge(Lauter):
     wort_gravity - gravity of the combined wort extracted from the
       two runnings of the batch sparge.
 
+    extracts - number of extracts, defauls to 2 but may be more (or 
+      just 1 in which case we have a simple sparge)
     """
 
     DEFAULT_NAME='batch sparge'
 
-    def __init__(self, **kwargs):
+    def __init__(self, extracts=2, **kwargs):
         """Initialize BatchSparge object as type of Lauter
 
         Key properties required:
@@ -44,36 +46,48 @@ class BatchSparge(Lauter):
         super(BatchSparge, self).__init__(**kwargs)
         self.v_dead = Quantity('0.25gal')
         self.grain_water_retention = Quantity('0.55qt/lb') # qt/lb
-        
-    def extraction(self,v_boil,v_stuck,v_first):
-        """Efficiency and extraction of batch sparge
+        self.extracts = extracts
 
-        All parameters are just numbers (not Quantity values) where only
-        the ratios are important. Obviously they must all be expressed in
-        the same units.
+    def extractions_calculated_forward(self, v_water, v_in_grain, v_wort):
+        """Calculate volumes and points for each of self.extracts extractions calculated forward
 
-          v_boil - total runnings collected (hence volume at start of boil)
-          v_stuck - volume that will be stuck in gran and any dead volume
-          v_first - volume of first runnings
+        Assumes that v_water, v_in_grain, v_wort are values in gallons.
 
-        The results are:
+          v_water - volume of water in grain at start of sparge
+          v_in_grain - volume of water stuck in grain
+          v_wort - total runnings to be collected (hence volume at start of boil)
 
-          p_first - fraction of total points in first runnings
-          p_second - fraction of total points in second runnings
-          v_second - volume of second runnings
+        and uses:
 
-        where
+          v_stuck - volume that will be stuck in grain and any dead volume
+          v_first - volume of first runnings etc.
 
-          p_first + p_second <= 1.0 
+        Returns two lists: 
+          vols - a list of volumes extracted 
+          points - a list of fractions of the starting points extracted
 
-        because of the points left in v_stuck.
+        Thus sum(points)<1.0 for all practical situations (==1 for no v_in_grain and
+        no dead volume).
+
+        Key assumption is that the point (sugars) are distributed evenly
+        between all the water portions: drained out and left in the grain
+        and dead space.
         """
-        v_second = v_boil-v_first
+        v_stuck = v_in_grain + self.v_dead.to('gal')
+        v_first = v_water - v_in_grain ## FIXME - this should be v_stuck
+        v_second = v_wort - v_first
         # assume points equally distributed in free water and grain
         p_first  = v_first/(v_first+v_stuck)
-        # assume remaining points equally distributed
-        p_second = (1-p_first)*v_second/(v_second+v_stuck)
-        return( p_first, p_second, v_second )
+        if (v_second<0.0):
+            raise Exception("Requested boil volume is less than first runnings")
+        elif (v_second<0.000001):
+            p_second = 0.0
+        else:
+            # assume remaining points equally distributed
+            p_second = (1-p_first)*v_second/(v_second+v_stuck)
+        vols = [ v_first, v_second ]
+        points = [ p_first, p_second ]
+        return(vols,points)
 
     def solve(self):
         """Solve based on what is known
@@ -83,32 +97,6 @@ class BatchSparge(Lauter):
             return( self.solve_from_mash_and_desired_volume() )
         else:
             raise MissingParam("Bad properties to solve batch sparge (have %s)" % self.properties_str())
-     
-    def solve_2(self):
-        """Solve to get size and gravity of extracted wort
-
-        Also give size and gravity of the two runnings.
-        """
-        wort_volume = self.property('boil_start_volume').to('gal') - self.v_dead.to('gal')
-        self.property('wort_volume',wort_volume,'gal')
-        # calculate sparge
-        v_wort = wort_volume
-        v_water = self.property('water').to('gal')
-        v_in_grain = self.property('grain').to('lb') *\
-                     self.grain_water_retention.to('qt/lb') / 4.0
-        v_first = v_water - v_in_grain
-        v_stuck = v_in_grain + self.v_dead.to('gal')
-        p_first, p_second, v_second = self.extraction(v_wort,v_stuck,v_first)
-        # description of process
-        t_points = self.property('total_points').to('points')
-        self.extra_info = 'first runnings: %s at %s; second runnings %s at %s; efficiency %.1f%%' %\
-            (Quantity(v_first,'gal'),Quantity(1.0 + 0.001 * p_first * t_points / v_first, 'sg'),\
-             Quantity(v_second,'gal'),Quantity(1.0 + 0.001 * p_second * t_points / v_second, 'sg'),\
-             ((p_first+p_second) * 100.0) )
-        # final values
-        wort_gravity = 1.0 + 0.001 * (p_first+p_second) * t_points / v_wort
-        self.property('wort_gravity', Quantity(wort_gravity,'sg'))
-        self.property('wort_volume', Quantity(v_first+v_second,'gal'))
 
     def solve_from_mash_and_desired_volume(self):
         """Solve to get gravity of extracted wort
@@ -125,22 +113,26 @@ class BatchSparge(Lauter):
             self.property('wort_volume',wort_volume,'gal')
         else:
             raise MissingParam('bwaa')
-        # calculate sparge
+        # calculate sparge with a total of self.extracts steps
         v_wort = wort_volume
         v_water = self.property('water').to('gal')
         v_in_grain = self.property('grain').to('lb') *\
                      self.grain_water_retention.to('qt/lb') / 4.0
-        v_first = v_water - v_in_grain
-        v_stuck = v_in_grain + self.v_dead.to('gal')
-        p_first, p_second, v_second = self.extraction(v_wort,v_stuck,v_first)
+        vols, points = self.extractions_calculated_forward( v_water, v_in_grain, v_wort) 
         # description of process
         t_points = self.property('total_points').to('points')
-        self.extra_info = 'first runnings: %s at %s; second runnings %s at %s; efficiency %.1f%%' %\
-            (Quantity(v_first,'gal'),Quantity(1.0 + 0.001 * p_first * t_points / v_first, 'sg'),\
-             Quantity(v_second,'gal'),Quantity(1.0 + 0.001 * p_second * t_points / v_second, 'sg'),\
-             ((p_first+p_second) * 100.0) )
+        if (self.extracts==2):
+            # special formatting for case of normal batch sparge
+            self.extra_info = 'first runnings: %s at %s; second runnings %s at %s; efficiency %.1f%%' %\
+                (Quantity(vols[0],'gal'),Quantity(1.0 + 0.001 * points[0] * t_points / vols[0], 'sg'),\
+                 Quantity(vols[1],'gal'),Quantity(1.0 + 0.001 * points[1] * t_points / vols[1], 'sg'),\
+                 (sum(points) * 100.0) )
+        else:
+            # 1,3,4...
+            pass
+            self.extra_info = '%d way batch sparge...' % (self.extracts)
         # final values
-        wort_gravity = 1.0 + 0.001 * (p_first+p_second) * t_points / v_wort
+        wort_gravity = 1.0 + 0.001 * sum(points) * t_points / v_wort
         self.property('wort_gravity', Quantity(wort_gravity,'sg'))
-        self.property('wort_volume', Quantity(v_first+v_second,'gal'))
+        self.property('wort_volume', Quantity(sum(vols),'gal'))
 
