@@ -23,7 +23,8 @@ r.add(s)
 
 b = Boil(start=s)
 b.time=Quantity('90min')
-b.ingredient('hops','Hallertau','1.5oz',time='60min',aa='4.0%AA')
+b.ingredient('hops','Hallertau','1.0oz',time='60min',aa='4.6%AA')
+b.ingredient('hops','Hallertau','0.5oz',time='60min',aa='3.1%AA')
 b.property('boil_end_volume', '6.25gal')
 r.add(b)
 
