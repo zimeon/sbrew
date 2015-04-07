@@ -24,15 +24,54 @@ class TestAll(unittest.TestCase):
         self.assertEqual( bs.extractions_calculated_forward(2.0,1.0,1.0), ([1.0,0.0],[0.5,0.0]) )
         self.assertEqual( bs.extractions_calculated_forward(2.0,1.0,2.0), ([1.0,1.0],[0.5,0.25]) )
         (vols, points) = bs.extractions_calculated_forward(4.0,0.5,7.0)
+        self.assertEqual( len(vols), 2 )
         self.assertAlmostEqual( vols[0], 3.5 )
         self.assertAlmostEqual( vols[1], 3.5 )
         self.assertAlmostEqual( points[0], 0.875 )
         self.assertAlmostEqual( points[1], 0.109375 )
-        # FIXME - need to resolve issues with v_stuck vs v_in_grain
-        #bs.v_dead = Quantity('0.5gal')
-        #self.assertEqual( bs.extractions_calculated_forward(2.0,0.5,1.0), ([1.0,0.0],[0.5,0.0]) )
-        #self.assertEqual( bs.extractions_calculated_forward(2.0,0.5,2.0), ([1.0,1.0],[0.5,0.25]) )
-
+        bs.v_dead = Quantity('0.5gal')
+        self.assertEqual( bs.extractions_calculated_forward(2.0,0.5,1.0), ([1.0,0.0],[0.5,0.0]) )
+        self.assertEqual( bs.extractions_calculated_forward(2.0,0.5,2.0), ([1.0,1.0],[0.5,0.25]) )
+        # 3-way batch sparge
+        bs.extracts = 3
+        bs.v_dead = Quantity('0.0gal')
+        (vols, points) = bs.extractions_calculated_forward(2.0,1.0,2.0)
+        self.assertEqual( len(vols), 3 )
+        self.assertAlmostEqual( vols[0], 1.0 )
+        self.assertAlmostEqual( vols[1], 0.5 )
+        self.assertAlmostEqual( vols[2], 0.5 )
+        self.assertAlmostEqual( points[0], 0.5 )
+        self.assertAlmostEqual( points[1], 0.16666666 )
+        self.assertAlmostEqual( points[2], 0.11111111 )
+        # 4-way batch sparge
+        bs.extracts = 4
+        bs.v_dead = Quantity('0.0gal')
+        (vols, points) = bs.extractions_calculated_forward(2.0,1.0,4.0)
+        self.assertEqual( len(vols), 4 )
+        self.assertAlmostEqual( vols[0], 1.0 )
+        self.assertAlmostEqual( vols[1], 1.0 )
+        self.assertAlmostEqual( vols[2], 1.0 )
+        self.assertAlmostEqual( vols[3], 1.0 )
+        self.assertAlmostEqual( points[0], 0.5 )
+        self.assertAlmostEqual( points[1], 0.25 )
+        self.assertAlmostEqual( points[2], 0.125 )
+        self.assertAlmostEqual( points[3], 0.0625 )
+        # 5-way batch sparge
+        bs.extracts = 5
+        bs.v_dead = Quantity('0.0gal')
+        (vols, points) = bs.extractions_calculated_forward(2.0,1.0,5.0)
+        self.assertEqual( len(vols), 5 )
+        self.assertAlmostEqual( vols[0], 1.0 )
+        self.assertAlmostEqual( vols[1], 1.0 )
+        self.assertAlmostEqual( vols[2], 1.0 )
+        self.assertAlmostEqual( vols[3], 1.0 )
+        self.assertAlmostEqual( vols[4], 1.0 )
+        self.assertAlmostEqual( points[0], 0.5 )
+        self.assertAlmostEqual( points[1], 0.25 )
+        self.assertAlmostEqual( points[2], 0.125 )
+        self.assertAlmostEqual( points[3], 0.0625 )
+        self.assertAlmostEqual( points[4], 0.03125 )
+  
     def test02_solve(self):
         bs = BatchSparge()
         bs.v_dead = Quantity('0.25gal')
@@ -44,7 +83,7 @@ class TestAll(unittest.TestCase):
         bs.property('total_points',Quantity('300points'))
         bs.property('wort_volume',Quantity('6gal'))
         bs.solve()
-        self.assertAlmostEqual( bs.property('wort_gravity').to('sg'), 1.04378676 )
+        self.assertAlmostEqual( bs.property('wort_gravity').to('sg'), 1.043712797 )
         # 'grain','water','total_points','boil_start_volume'
         bs = BatchSparge()
         bs.v_dead = Quantity('0.25gal')
@@ -54,7 +93,7 @@ class TestAll(unittest.TestCase):
         bs.property('total_points',Quantity('300points'))
         bs.property('boil_start_volume',Quantity('6.5gal'))
         bs.solve()
-        self.assertAlmostEqual( bs.property('wort_gravity').to('sg'), 1.042319327 )
+        self.assertAlmostEqual( bs.property('wort_gravity').to('sg'), 1.040854933 )
 
     def test03_solve_from_mash_and_desired_volume(self):
         bs = BatchSparge()
@@ -64,6 +103,6 @@ class TestAll(unittest.TestCase):
         bs.property('grain','8lb')
         bs.property('total_points','300points')
         bs.solve_from_mash_and_desired_volume()
-        self.assertAlmostEqual( bs.property('wort_gravity').quantity.value, 1.04651397 )
-        self.assertAlmostEqual( bs.property('wort_volume').quantity.value, 5.75 )
+        self.assertAlmostEqual( bs.property('wort_gravity').quantity.value, 1.04507432 )
+        self.assertAlmostEqual( bs.property('wort_volume').quantity.value, 6.00 )
 

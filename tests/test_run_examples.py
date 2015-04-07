@@ -28,8 +28,8 @@ class TestAll(unittest.TestCase):
         out = self.run_script('brew058_tarrangon_belgian.py')
         # key outputs
         self.assertRegexpMatches( out, r' -> total_grain 10.5 lb, total_water 3.98 gal, total_points 368.7 points' )
-        self.assertRegexpMatches( out, r' -> 6.25 gal wort at 1.052 sg' )
-        self.assertRegexpMatches( out, r' -> 5.50 gal @ 1.054 sg with 55.8 IBU' )
+        self.assertRegexpMatches( out, r' -> 6.50 gal wort at 1.050 sg' )
+        self.assertRegexpMatches( out, r' -> 5.50 gal @ 1.054 sg with 55.7 IBU' )
         self.assertRegexpMatches( out, r'requires 35.5 psi CO2' )
 
     def test060(self):
@@ -37,14 +37,14 @@ class TestAll(unittest.TestCase):
         # check mash names
         self.assertRegexpMatches( out, r'= first infusion =\n' )
         self.assertRegexpMatches( out, r'= second infusion =\n' )
-        self.assertRegexpMatches( out, r' -> 5.50 gal @ 1.051 sg with 42.4 IBU' )
+        self.assertRegexpMatches( out, r' -> 5.50 gal @ 1.051 sg with 42.2 IBU' )
 
     def test065(self):
         out = self.run_script('brew065_hoppy_yum_ipa.py')
         # stats in output
         self.assertRegexpMatches( out, r'-> total_grain 13.0 lb, total_water 5.30 gal, total_points 456.4 points' )
-        self.assertRegexpMatches( out, r'-> 6.00 gal wort at 1.063 sg' )
-        self.assertRegexpMatches( out, r'-> 5.50 gal @ 1.063 sg with 60.3 IBU' )
+        self.assertRegexpMatches( out, r'-> 6.00 gal wort at 1.064 sg' )
+        self.assertRegexpMatches( out, r'-> 5.50 gal @ 1.064 sg with 60.2 IBU' )
 
     def test066(self):
         out = self.run_script('brew066_czech_pils.py')
@@ -88,7 +88,7 @@ class TestAll(unittest.TestCase):
     def test082(self):
         out = self.run_script('brew082_brown_porter.py')
         self.assertRegexpMatches( out, r'-> 6.00 gal @ 1.049 sg with 36.7 IBU' )
-        self.assertRegexpMatches( out, r'-> 4.9 %ABV \(75.6 %atten\)' )
+        self.assertRegexpMatches( out, r'-> 4.9 %ABV \(75.5 %atten\)' )
 
     def test086(self):
         out = self.run_script('brew086_imperial_stout.py')
