@@ -36,11 +36,11 @@ b.property('boil_end_volume', '6.5gal')
 r.add(b)
 
 f = Ferment(start=b)
-f.ingredient('yeast','Safbrew S-05','1pack/starter')
+f.ingredient('yeast','Safbrew S-05','1yeast_cake')
 # dry hop
 f.ingredient('hops','Centennial','1.0oz',aa='8.7%AA')
 f.ingredient('hops','Simcoe','1.0oz',aa='12.3%AA')
-f.property('atten','80%atten')
+f.property('FG','1.011sg',note='as measured')
 r.add(f)
 
 r.solve()
