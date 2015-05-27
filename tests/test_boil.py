@@ -104,7 +104,7 @@ class TestAll(unittest.TestCase):
 
     def test10_end_state_str(self):
         b = Boil()
-        self.assertEqual( b.end_state_str(), '?' )
+        self.assertEqual( b.end_state_str(), '? gal' )
         b.property( 'wort_volume', '6gal' )
         self.assertEqual( b.end_state_str(), '6.00 gal' )
         b.property( 'OG', '1.056sg' )

@@ -34,27 +34,42 @@ class Mash(Recipe):
         return total
 
     def all_grains_percentage(self):
-        """True is all grain quantities are expressed as a percentage"""
+        """True if all grain quantities are expressed as a percentage
+
+        This is used to flag the need to calculate back to get weights
+        based on parameters specified for a later part of the recipe.
+        """
         num_not_pct=0
+        num_pct=0
         for ingredient in self.ingredients:
             if (ingredient.type == 'grain'):
-                if (ingredient.quantity.unit != '%'):
+                if (ingredient.quantity.unit == '%'):
+                    num_pct+=1
+                else:
                     num_not_pct+=1
-        return(num_not_pct==0)
+        return(num_pct>0 and num_not_pct==0)
+
+    def grain_weights_from_total_and_percentages(self,total_mass=None):
+        """Calculate weight for each grain given overall total
+        """
+        if (total_mass is None):
+            total_mass=self.property('total_grain').quantity
+        total_pct=0.0
+        # Want to set total mass, are all grains set as pct?
+        if (not self.all_grains_percentage()):
+            print "can't set total as not all pct"
+        else:
+            for ingredient in self.ingredients:
+                if (ingredient.type == 'grain'):
+                    ingredient.quantity.unit = total_mass.unit
+                    ingredient.pct = ingredient.quantity.value
+                    ingredient.quantity.value = total_mass.value * ingredient.quantity.value / 100.0
 
     def total_grains(self, total_mass=None):
         """Return total mass of grains
         """
         if (total_mass):
-            # Want to set total mass, are all grains set as pct?
-            if (not self.all_grains_percentage()):
-                print "can't set total as not all pct"
-            else:
-                for ingredient in self.ingredients:
-                    if (ingredient.type == 'grain'):
-                        ingredient.quantity.unit = total_mass.unit
-                    ingredient.pct = ingredient.quantity.value
-                    ingredient.quantity.value = total_mass.value * ingredient.quantity.value / 100.0
+            self.grain_weights_from_total_and_percentages(total_mass)
         # Now return total mass
         mass = self.total_type('grain')
         return( mass if mass else Quantity('0lb'))
@@ -119,11 +134,14 @@ class Mash(Recipe):
         """
         self.name = self.name_with_default + ' + ' + mash.name_with_default
         for ingredient in mash.ingredients:
-            self.ingredient( ingredient );
+            self.ingredient( ingredient )
 
     def solve(self):
-        #if (self.all_grains_percentage()):
-        #    raise MissingParam("Cannot solve mash as have only grain ratios")
+        if (self.all_grains_percentage()):
+            if ('total_grain' in self.properties):
+                self.grain_weights_from_total_and_percentages()
+            else:
+                raise MissingParam("Cannot solve mash as have only grain ratios")
         self.property('total_water', self.total_water())
         self.property('total_grain', self.total_grains())
         self.property('total_points', self.total_points())
@@ -132,8 +150,11 @@ class Mash(Recipe):
         self.color_units()
 
     def end_state_str(self):
-        self.solve()
-        return('%s, %s, %s' %
-               (self.property('total_grain').short_str(),
-                self.property('total_water').short_str(),
-                self.property('total_points').short_str() ))
+        try:
+            self.solve()
+        except:
+            pass
+        tg = self.property('total_grain',default='?lb').short_str()
+        tw = self.property('total_water',default='?gal').short_str()
+        tp = self.property('total_points',default='?points').short_str()
+        return('%s, %s, %s' % (tg,tw,tp) )

@@ -27,7 +27,7 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( Quantity.find_conversion('oz','lb'), 1.0/16.0 )
 
     def test04_str(self):
-        self.assertEqual( str(Quantity(unit='%ABV')), 'QuantityNotDefined' )
+        self.assertEqual( str(Quantity(unit='%ABV')), '? %ABV' )
         self.assertEqual( str(Quantity("1.23")), '1.23 (dimensionless)' )
         self.assertEqual( str(Quantity("1.013sg")), '1.013 sg' )
         self.assertEqual( str(Quantity("1.01345sg")), '1.013 sg' )

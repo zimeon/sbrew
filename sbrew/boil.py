@@ -89,6 +89,8 @@ class Boil(Recipe):
         # backward
         elif (self.has_properties('OG','wort_volume','boil_rate','duration')):
             self.solve_volume_backward(total_sugar_points)
+        elif (self.has_properties('OG','boil_end_volume','boil_rate','duration')):
+            self.solve_volume_backward(total_sugar_points)
         else:
             raise MissingParam("Can't solve boil, have %s properties" % (self.properties.keys()))
         # Bitterness
@@ -131,8 +133,12 @@ class Boil(Recipe):
         if (total_sugar_points > 0.0):
             raise Exception("FIXME - can't solve boil backwards with sugar")
         print "boi-solve-back-start"
-        self.property('boil_end_volume', self.property('wort_volume').to('gal') + 
+        if ('boil_end_volume' in self.properties):
+            self.property('wort_volume', self.property('boil_end_volume').to('gal') - 
                                          self.property('dead_space').to('gal'), 'gal')
+        else:
+            self.property('boil_end_volume', self.property('wort_volume').to('gal') + 
+                                             self.property('dead_space').to('gal'), 'gal')
         print "boi-solve-back-mid"
         print "bev " + str(self.property('boil_end_volume'))
         print "br  " + str(self.property('boil_rate').to('gal/hour'))
@@ -185,11 +191,7 @@ class Boil(Recipe):
 
     def end_state_str(self):
         #self.solve()
-        s = ''
-        if ('wort_volume' in self.properties):
-            s += str(self.property('wort_volume').quantity)
-        else:
-            s += '?'
+        s = str(self.property('wort_volume',default='?gal').quantity)
         if ('OG' in self.properties):
             s += ' @ %s' % str(self.property('OG').quantity)
         if ('IBU' in self.properties):

@@ -41,8 +41,11 @@ class InfusionMash(Mash):
         
         Will barf unless we have the following properties:
         """
-        #if (self.all_grains_percentage()):
-        #    raise MissingParam("Cannot solve infusion mash as have only grain ratios")
+        if (self.all_grains_percentage()):
+            if ('total_grain' in self.properties):
+                self.grain_weights_from_total_and_percentages()
+            else:
+                raise MissingParam("Cannot solve mash as have only grain ratios")
         t_mash = self.property('temp').quantity.to('F')
         #
         shc_water=Quantity("1Btu/lb/F")

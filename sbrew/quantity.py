@@ -65,7 +65,7 @@ class Quantity:
         2) copy: qty2 = Quantity(qty1) #creates new object with same value and unit
         3) split: qty = Quantity(value, unit)
         4) unit only: qty = Quantity(None, unit)
-        5) string: qyt = Quantity('1gal')
+        5) string: qty = Quantity('1gal') or Quantity('?gal')
         """
         #
         if (value is None):
@@ -76,9 +76,9 @@ class Quantity:
             self.unit = value.unit
         elif (unit is None):
             # try to parse value and unit from string
-            m = re.match('\s*([-+]?\d+(\.\d*)?)\s*([A-Za-z%][\w/%]*)\s*$', value)
+            m = re.match('\s*([-+]?\d+(\.\d*)?|\?)\s*([A-Za-z%][\w/%]*)\s*$', value)
             if (m):
-                self.value=float(m.group(1))
+                self.value=None if (m.group(1)=='?') else float(m.group(1))
                 self.unit=m.group(3)
             else:
                 self.value = float(value)
@@ -89,7 +89,7 @@ class Quantity:
 
     def __str__(self):
         if (self.value is None):
-            return("QuantityNotDefined")
+            return("? " + str(self.unit))
         elif (self.unit is None):
             return(str(self.value) + " (dimensionless)")
         elif (self.unit in Quantity.DISPLAY_FMT):
