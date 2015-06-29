@@ -29,6 +29,7 @@ class Quantity:
         'Btu/lb/F' : { 'kJ/kg/F' : 2.324444 },
         'h'   : { 'min' : 60,
                   's'   : 3600 },
+        'fraction' : { '%': 100.0 },
         }
 
     DISPLAY_FMT = {
@@ -47,6 +48,8 @@ class Quantity:
         'IBU' : '%.1f',
         'MCU' : '%.2f',
         'SRM' : '%.1f',
+        'fraction' : '%.3f',
+        '%' : '%.1f',
         }
 
     CANONICAL_UNIT = {
@@ -174,6 +177,13 @@ class Quantity:
         """
         sum=self.value-other.to(self.unit)
         return(Quantity(sum,self.unit))
+
+    def __mul__(self,frac):
+        """Mulitply quantity by a fraction, return new quantity as result.
+        """
+        return(Quantity(self.value*frac,self.unit))
+
+    __rmul__ = __mul__
 
     @staticmethod
     def find_conversion(from_unit,to_unit):

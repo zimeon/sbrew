@@ -25,12 +25,14 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( Quantity.find_conversion('kg','g'), 1000.0 )
         self.assertAlmostEqual( Quantity.find_conversion('lb','oz'), 16.0 )
         self.assertAlmostEqual( Quantity.find_conversion('oz','lb'), 1.0/16.0 )
+        self.assertAlmostEqual( Quantity.find_conversion('%','fraction'), 0.01 )
 
     def test04_str(self):
         self.assertEqual( str(Quantity(unit='%ABV')), '? %ABV' )
         self.assertEqual( str(Quantity("1.23")), '1.23 (dimensionless)' )
         self.assertEqual( str(Quantity("1.013sg")), '1.013 sg' )
         self.assertEqual( str(Quantity("1.01345sg")), '1.013 sg' )
+        self.assertEqual( str(Quantity("1.35%")), '1.4 %' )
 
     def test05_repr(self):
         self.assertEqual( repr(Quantity(unit='%ABV')), 'QuantityNotDefined' )
@@ -77,7 +79,21 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( q2.value, 3 )
         self.assertEqual( q2.unit, 'oz' )
 
-    def test12_find_conversion(self):
+    def test12_mul(self):
+        q1 = Quantity('1lb') * 1.23
+        self.assertAlmostEqual( q1.value, 1.23 )
+        self.assertEqual( q1.unit, 'lb' )
+        q1 = Quantity('1%') * 2 #integer
+        self.assertAlmostEqual( q1.value, 2 )
+        self.assertEqual( q1.unit, '%' )
+
+    def test12_rmul(self):
+        # Multiply should also work the other way around
+        q1 = 2.34 * Quantity('1lb')
+        self.assertAlmostEqual( q1.value, 2.34 )
+        self.assertEqual( q1.unit, 'lb' )
+
+    def test20_find_conversion(self):
         self.assertEqual( Quantity.find_conversion('xyz','xyz'), 1.0 )
         self.assertAlmostEqual( Quantity.find_conversion('g','kg'), 0.001 )
         # error conditions
@@ -85,7 +101,7 @@ class TestAll(unittest.TestCase):
         self.assertRaises( ConversionError, Quantity.find_conversion, 'lb','xyz' )
         self.assertRaises( ConversionError, Quantity.find_conversion, 'lb','h' )
 
-    def test13_hydrometer_correction(self):
+    def test21_hydrometer_correction(self):
         q = Quantity('1.010sg')
         self.assertAlmostEqual( q.hydrometer_correction().to('sg'), 1.010 )
         q = Quantity('1.010sg')
@@ -96,4 +112,3 @@ class TestAll(unittest.TestCase):
 # If run from command line, do tests
 if __name__ == '__main__':
     unittest.main()
-
