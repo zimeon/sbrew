@@ -3,7 +3,12 @@ from quantity import Quantity
 from datetime import timedelta
 
 class StepMash(Mash):
-    """A step mash where ingredients may be added and temperatures changed"""
+    """A step mash where ingredients may be added and temperatures changed
+
+    Each step in the mash is recorded as a sub-recipe but, unlike the normal
+    case of sub-recipes, the steps are not full recipe objects but a simpler
+    description (a dict) of the part of the mash process.
+    """
 
     DEFAULT_NAME='step mash'
 
@@ -19,6 +24,12 @@ class StepMash(Mash):
         recombine decoctions).
         """
         extra['type']=type
+        if ('time' not in extra):
+            extra['time'] = Quantity('0min')
+        else:
+            extra['time'] = Quantity(extra['time'])
+        if ('volume' in extra):
+            extra['volume'] = Quantity(extra['volume'])
         if (type == 'infuse'):
             self.steps.append(extra)
         elif (type == 'rest'):
@@ -45,7 +56,7 @@ class StepMash(Mash):
         for step in self.steps:
             if ('type' in step and step['type']=='infuse' and
                 'volume' in step):
-                total_water += Quantity(step['volume'])
+                total_water += step['volume']
         return(total_water)
 
     def total_time(self):
@@ -163,9 +174,8 @@ class StepMash(Mash):
     def __str__(self, **kwargs):
         # Use superclass str() but don't try to render steps
         s = super(StepMash,self).__str__(skip_steps=1)
-        # Now render the steps in our own special way
-        s += '***steps***\n'
-        s += self.steps_str()
+        if ('skip_steps' not in kwargs):
+            # Now render the steps in our own special way
+            s += '***steps***\n'
+            s += self.steps_str()
         return(s)
-
-

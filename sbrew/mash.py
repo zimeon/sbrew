@@ -120,14 +120,8 @@ class Mash(Recipe):
         return( Quantity(mcu,'MCU') )
 
     def mash_volume(self):
-        """Return volume of mash including both liquid and grain
-
-        See <http://www.howtobrew.com/appendices/appendixD-3.html> for numbers, use 1lb grain
-        has volume of 10oz = 10/128
-        """
-        vol=self.total_water().to('gal') +\
-            self.total_grains().to('lb') * 10.0/128.0
-        return( Quantity(vol,'gal') )
+        """Return volume of mash including both liquid and grain"""
+        return( water_grain_volume( self.total_water(), self.total_grains() ) )
 
     def add_mash(self, mash=None):
         """Add another mash into this mash
@@ -158,3 +152,15 @@ class Mash(Recipe):
         tw = self.property('total_water',default='?gal').short_str()
         tp = self.property('total_points',default='?points').short_str()
         return('%s, %s, %s' % (tg,tw,tp) )
+
+##### Functions #####
+
+def water_grain_volume(water, grain):
+    """Return volume of water and grain
+
+    See <http://www.howtobrew.com/appendices/appendixD-3.html> for numbers, use 1lb grain
+
+    has volume of 10oz = 10/128
+    """
+    vol = water.to('gal') + grain.to('lb') * 10.0/128.0
+    return( Quantity(vol,'gal') )

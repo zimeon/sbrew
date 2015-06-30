@@ -51,10 +51,10 @@ class TestAll(unittest.TestCase):
         sm.add_step(type="heat",temp="212F")
         sm.add_step(type="adjust")
         sm.add_step(type="boil")
-        self.assertRegexpMatches( sm.steps_str(), r'0:00:00 \| rest -> 2gal @ 122F' )
-        self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| heat -> 2gal @ 122F' )
-        self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| adjust -> 2gal @ 212F' )
-        self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| state -> 2gal @ 212F' )
+        self.assertRegexpMatches( sm.steps_str(), r'0:00:00 \| rest -> 2.00 gal @ 122F' )
+        self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| heat -> 2.00 gal @ 122F' )
+        self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| adjust -> 2.00 gal @ 212F' )
+        self.assertRegexpMatches( sm.steps_str(), r'0:10:00 \| state -> 2.00 gal @ 212F' )
 
     def test_06_stage_state_str(self):
         sm = StepMash()
@@ -85,7 +85,7 @@ class TestAll(unittest.TestCase):
         sm.add_step(type="rest",time="10min")
         self.assertRegexpMatches( str(sm), r'= step mash =' )
         self.assertRegexpMatches( str(sm), r'\*\*\*steps\*\*\*' )
-        self.assertRegexpMatches( str(sm), r'rest -> 1gal @ 123F' )
+        self.assertRegexpMatches( str(sm), r'rest -> 1.00 gal @ 123F' )
 
 # If run from command line, do tests
 if __name__ == '__main__':

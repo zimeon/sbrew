@@ -1,9 +1,14 @@
+from mash import water_grain_volume
 from step_mash import StepMash
 from quantity import Quantity
+from ingredient import Ingredient
 from datetime import timedelta
 
 class DecoctionMash(StepMash):
     """A decoction mash, an extension of a step mash to split/mix decoctions.
+
+    As a specialization of the step mash the steps are a dict of instructions
+    for the step rather than a full recipe.
 
     m =  DecoctionMash()
     m.ingredient( Ingredient('grain','pilsner','5lb') )
@@ -21,14 +26,22 @@ class DecoctionMash(StepMash):
     def split(self,**extra):
         """Split mash to take decoction
 
-        Add 'split' step and returns the new DecoctionMash object
+        Add 'split' step and returns the new DecoctionMash object. The split
+        must be a fraction.
         """
-        extra['type']='split'
         decoction = DecoctionMash(name="decoction")
-        if ('remove' in extra):
-            # Take portion of volume from this mash, put into decoction
-            pass #FIXME
-        extra['decoction']=decoction
+        try:
+            frac = Quantity(extra['remove']).to('fraction') #FIXME - implement volume
+        except Exception as e:
+            raise Exception("Must specify remove fraction when splitting decoction: %s" % (str(e)))
+        extra['frac'] = frac
+        # Take portion of volume from this mash, put into decoction
+        extra['type'] = 'split'
+        extra['decoction'] = decoction
+        for ingredient in self.ingredients:
+            q = ingredient.quantity * frac
+            i = Ingredient( ingredient.type, ingredient.name, q )
+            decoction.ingredient(i)
         self.steps.append(extra)
         return(decoction)
 
@@ -37,13 +50,13 @@ class DecoctionMash(StepMash):
 
         Add a 'mix' step that integrates the decoction mash into this mash
         """
-        extra['type']='mix'
+        extra['type'] = 'mix'
+        extra['decoction'] = decoction
         self.steps.append(extra)
- 
+
     def __str__(self):
         # Use superclass str() but don't try to render steps
         s = super(DecoctionMash,self).__str__(skip_steps=1)
-        # Now render the steps in our own special way
         s += '***steps***\n'
         s += self.steps_str()
         return(s)
@@ -72,6 +85,7 @@ class DecoctionMash(StepMash):
             stages_started[mash]=0
         s += '\n'
         # Keep looking at all lists of stages to find next time, exit when all done
+        ditto = {}
         while True:
             # Find lowest time in nexts
             t = timedelta(days=9999) #big
@@ -92,8 +106,14 @@ class DecoctionMash(StepMash):
                             stages_next[mash]=stages_iter[mash].next()
                         except StopIteration:
                             stages_next[mash]=None
+                        if (mash in ditto):
+                            del ditto[mash]
                     elif (stages_started[mash]>0):
-                        state = '    -ditto-'
+                        if (mash in ditto):
+                            state = '    -ditto-'
+                        else:
+                            state = self.stage_state_str(stages_next[mash])
+                        ditto[mash] = 1
                     else:
                         state = '' # '-not-started-'
                 else:
@@ -116,11 +136,16 @@ class DecoctionMash(StepMash):
     def find_stages(self, stages, mash_name='_main', start_time=timedelta()):
         """Create list for this mash's stages in main stages dict
 
+        The stages dict has a set of stages for the main mash ('_main') and
+        for any decoctions. The goal is to work these out with the same set of 
+        time boundaries so that they can be displayed in parallel.
         """
         stage=[]
         stages[mash_name]=stage
-        #
+        # running variables
         t = start_time
+        water = self.total_type('water','gal') #ingredients only
+        print "find_stages: %s %s" % (mash_name, str(water))
         vol = Quantity('0gal')
         temp = Quantity()
         mix_time = None
@@ -131,11 +156,14 @@ class DecoctionMash(StepMash):
             if (type == 'mix'):
                 if (t < mix_time):
                     t = mix_time
+            elif (type == 'infuse'):
+                water += step['volume']
             # Current state
+            # FIXME - following assumes all grains present in recipe
+            vol = water_grain_volume( water, self.total_grains() )  
             if (num>1):
-                stage.append({'type': 'state', 'time': t, 'volume': vol, 'temp': temp})
-            if ('volume' in step):
-                vol=step['volume']
+                stage.append({'type': 'state', 'time': t, 'volume': vol, 
+                              'water': water, 'temp': temp})
             if ('temp' in step):
                 temp=step['temp']
             # Action of this step
@@ -146,10 +174,20 @@ class DecoctionMash(StepMash):
                 t += self.parsetime(step['time']) 
             if (type == 'split'):
                 mix_time = t + step['decoction'].total_time()
-                decoction_name = ( step['name'] if ('name' in step) else 'decoction' )      
+                decoction_name = ( step['name'] if ('name' in step) else 'decoction' )
+                decoction_water = water * step['frac']
+                water = water - decoction_water
+                print "deco water: %s" % decoction_water
+                step['decoction'].ingredient('water','decoction',decoction_water)
                 step['decoction'].find_stages(stages, decoction_name, t)
+            elif (type == 'mix'):
+                if (t < mix_time):
+                    t = mix_time
+                water += step['decoction'].total_water()
+                print "mixing: %s %s %s" % (mash_name, str(t),str(step['decoction'].total_water()))
         # add final state
-        stage.append({'type': 'state', 'time': t, 'volume': vol, 'temp': temp})
+        stage.append({'type': 'state', 'time': t, 'volume': vol, 
+                      'water': water, 'temp': temp})
         # no return val, data left in stage 
 
     def total_time(self):
