@@ -1,11 +1,28 @@
 """Test code for sbrew.boil"""
 
+import re
 import unittest
 
 from sbrew.quantity import Quantity
 from sbrew.property import Property
 from sbrew.boil import tinseth_utilization,ibu_from_boil,Boil
 from sbrew.recipe import Recipe, MissingParam
+import sys, StringIO, contextlib
+
+# From http://stackoverflow.com/questions/2654834/capturing-stdout-within-the-same-process-in-python
+class Data(object):
+    pass
+
+@contextlib.contextmanager
+def capture_stdout():
+    old = sys.stdout
+    capturer = StringIO.StringIO()
+    sys.stdout = capturer
+    data = Data()
+    yield data
+    sys.stdout = old
+    data.result = capturer.getvalue()
+
 
 class TestAll(unittest.TestCase):
 
@@ -48,7 +65,15 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( b.property('boil_start_volume').to('gal'), 7.0 )
         self.assertAlmostEqual( b.property('start_gravity').to('sg'), 1.070 )
 
-    def test05_solve(self):
+    def test05_import_backward(self):
+        b = Boil()
+        r = Recipe(start=b)
+        self.assertFalse( b.has_property('OG') )
+        r.property('OG', '1.055sg')
+        b.import_backward()
+        self.assertAlmostEqual( b.property('OG').to('sg'), 1.055 )
+
+    def test06_solve(self):
         b1 = Boil()
         self.assertRaises( MissingParam, b1.solve )
         b1.property('boil_start_volume','6.5gal')
@@ -70,6 +95,13 @@ class TestAll(unittest.TestCase):
         b2.ingredient('hops','cascade','2oz',time='60min',aa='4.5%AA')
         b2.solve()
         self.assertAlmostEqual( b2.property('IBU').to('IBU'), 22.677, places=3 )
+        # hop defaults
+        with capture_stdout() as capturer:
+            b2.ingredient('hops','cascade','2oz')
+            b2.solve()
+        self.assertTrue( re.search(r'Warning  - no time specified for cascade hops', capturer.result) )
+        self.assertTrue( re.search(r'Warning  - no AA specified for cascade hops', capturer.result) )
+        self.assertAlmostEqual( b2.property('IBU').to('IBU'), 47.8737, places=3 )      
         # backward
         b3 = Boil()
         b3.property('OG','1.065sg')
@@ -80,6 +112,30 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( b3.property('boil_end_volume').to('gal'), 6.0 )
         self.assertAlmostEqual( b3.property('boil_start_volume').to('gal'), 6.5 )
         self.assertAlmostEqual( b3.property('start_gravity').to('sg'), 1.060 )
+        # backward 2
+        b3 = Boil()
+        b3.property('OG','1.065sg')
+        b3.property('boil_end_volume','6gal')
+        b3.property('boil_rate','0.5gal/h')
+        b3.property('duration','60min')
+        b3.solve()
+        self.assertAlmostEqual( b3.property('wort_volume').to('gal'), 5.5 )
+        self.assertAlmostEqual( b3.property('boil_start_volume').to('gal'), 6.5 )
+        self.assertAlmostEqual( b3.property('start_gravity').to('sg'), 1.060 )        
+
+    def test09_solve_volume_backward(self):
+        b = Boil()
+        self.assertRaises( Exception, b.solve_volume_backward, 1.0 )
+        # 
+        b.property('boil_end_volume', '5.0gal')
+        b.property('dead_space', '0.0gal')
+        self.assertRaises( MissingParam, b.solve_volume_backward, 0.0 )
+        b.property('duration','0min')
+        self.assertRaises( MissingParam, b.solve_volume_backward, 0.0 )
+        b.property('OG','1.040sg')
+        b.solve_volume_backward( 0.0)
+        self.assertAlmostEqual( b.property('wort_volume').to('gal'), 5.0 )
+        self.assertAlmostEqual( b.property('boil_start_volume').to('gal'), 5.0 )
 
     def test08_points_from_sugars(self):
         b = Boil()
@@ -90,6 +146,9 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( b.points_from_sugars(), 57.5 )
         b.ingredient('maltose','sugar3', '1lb' ) # FIXME - add other sugars
         self.assertAlmostEqual( b.points_from_sugars(), 57.5 )
+        b = Boil()
+        b.ingredient('dme','dme1', '1lb' ) 
+        self.assertAlmostEqual( b.points_from_sugars(), 43.0 )
  
     def test09_ibu_from_addition(self):
         b = Boil()
@@ -102,7 +161,20 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( b.ibu_from_addition( Quantity('1oz'), Quantity('3%AA'), Quantity('90min')),
                                 60.7383, places=2 )
 
-    def test10_end_state_str(self):
+    def test10_color(self):
+        b = Boil()
+        b.property('MCU', '40MCU')
+        b.property('boil_start_volume', '6gal')
+        b.property('boil_end_volume', '5gal')
+        b.color()
+        self.assertAlmostEqual( b.property('color').to('SRM'), 21.23197530 )
+        b.property('MCU', '40MCU')
+        b.property('boil_start_volume', '5gal')
+        b.property('boil_end_volume', '5gal')
+        b.color()
+        self.assertAlmostEqual( b.property('color').to('SRM'), 18.73613399 )
+
+    def test11_end_state_str(self):
         b = Boil()
         self.assertEqual( b.end_state_str(), '? gal' )
         b.property( 'wort_volume', '6gal' )

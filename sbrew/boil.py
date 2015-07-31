@@ -187,7 +187,7 @@ class Boil(Recipe):
             # scale MCU based on boil-down, then use formula
             mcu = self.property('MCU').to('MCU') * self.property('boil_start_volume').to('gal') / self.property('boil_end_volume').to('gal') 
             srm = 1.4922 * ( mcu ** 0.6859 )
-            self.property('SRM',Quantity(srm,'SRM'))
+            self.property('color',Quantity(srm,'SRM'))
 
     def end_state_str(self):
         #self.solve()
