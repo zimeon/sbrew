@@ -1,5 +1,6 @@
 """Test code for sbrew.batch_sparge"""
 
+import re
 import unittest
 
 from sbrew.quantity import Quantity
@@ -71,6 +72,17 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( points[2], 0.125 )
         self.assertAlmostEqual( points[3], 0.0625 )
         self.assertAlmostEqual( points[4], 0.03125 )
+        # First extract > boil volume -> Exception
+        bs = BatchSparge()
+        bs.v_dead = Quantity('0.0gal')
+        bs.extracts = 2
+        self.assertRaises( Exception, bs.extractions_calculated_forward, 1.0001,0.0,1.0 )
+        self.assertRaises( Exception, bs.extractions_calculated_forward, 1.0003,0.0002,1.0 )
+        self.assertRaises( Exception, bs.extractions_calculated_forward, 1.5,0.4999,1.0 )
+        bs.extracts = 10
+        self.assertRaises( Exception, bs.extractions_calculated_forward, 1.0003,0.0002,1.0 )
+        bs.v_dead = Quantity('1.0gal')
+        self.assertRaises( Exception, bs.extractions_calculated_forward, 2.0002,0.0,1.0 )
   
     def test02_solve(self):
         bs = BatchSparge()
@@ -105,4 +117,15 @@ class TestAll(unittest.TestCase):
         bs.solve_from_mash_and_desired_volume()
         self.assertAlmostEqual( bs.property('wort_gravity').quantity.value, 1.04507432 )
         self.assertAlmostEqual( bs.property('wort_volume').quantity.value, 6.00 )
+        # single sparge
+        bs = BatchSparge()
+        bs.property('boil_start_volume','6gal')
+        bs.property('water','5gal')
+        bs.property('grain','8lb')
+        bs.property('total_points','300points')
+        bs.extracts = 1
+        bs.solve_from_mash_and_desired_volume()
+        self.assertAlmostEqual( bs.property('wort_gravity').quantity.value,  1.0365 )
+        self.assertAlmostEqual( bs.property('wort_volume').quantity.value, 3.65 )
+        self.assertTrue( re.search(r'efficiency 73.0%', bs.extra_info) )      
 

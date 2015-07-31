@@ -16,7 +16,7 @@ class BatchSparge(Lauter):
 
     grain_water_retention - the volume of water, per unit mass of grain, 
       that is left in the grain when the water is drained from a mash.
-      The usual first approximation is 0.5qt/lb.
+      The usual first approximation is ~0.55qt/lb.
       
     Provides a means to calculate backwards or forwards. Going 
     from desired outcome we have:
@@ -49,13 +49,17 @@ class BatchSparge(Lauter):
         self.extracts = extracts
 
     def extractions_calculated_forward(self, v_water, v_in_grain, v_wort):
-        """Calculate volumes and points for each of self.extracts extractions calculated forward
+        """Calculate volumes and points for the set of extractions calculated forward
 
         Assumes that v_water, v_in_grain, v_wort are values in gallons.
 
-          v_water - volume of water in grain at start of sparge
-          v_in_grain - volume of water stuck in grain
+          v_water - total volume of water in mash at start of sparge
+          v_in_grain - volume of water stuck in grain after draining
           v_wort - total runnings to be collected (hence volume at start of boil)
+
+        and relies upon settings:
+
+          self.extracts - the number of extracts (default 2)
 
         and uses:
 
@@ -81,21 +85,22 @@ class BatchSparge(Lauter):
         p_rest = (1-p_first)
         if (v_rest<0.0):
             raise Exception("Requested boil volume is less than first runnings")
-        v_each = v_rest / (self.extracts-1)
         vols = [ v_first ]
         points = [ p_first ]
-        for n in range(1,self.extracts):
-            # add and sparge v_each for remaining sparges
-            if (v_rest<0.000001):
-                p_this = 0.0
-                p_rest = 0.0
-            else:
-                # assume remaining points equally distributed
-                frac_drained = v_each/(v_each+v_stuck)
-                p_this = p_rest * frac_drained
-                p_rest = p_rest * (1-frac_drained)
-            vols.append(v_each)
-            points.append(p_this)
+        if (self.extracts>1):
+            v_each = v_rest / (self.extracts-1)
+            for n in range(1,self.extracts):
+                # add and sparge v_each for remaining sparges
+                if (v_rest<0.000001):
+                    p_this = 0.0
+                    p_rest = 0.0
+                else:
+                    # assume remaining points equally distributed
+                    frac_drained = v_each/(v_each+v_stuck)
+                    p_this = p_rest * frac_drained
+                    p_rest = p_rest * (1-frac_drained)
+                vols.append(v_each)
+                points.append(p_this)
         return(vols,points)
 
     def solve(self):
