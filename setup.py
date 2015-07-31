@@ -16,6 +16,8 @@ class Coverage(Command):
     def run(self):
         os.system("coverage run --source=sbrew setup.py test")
         os.system("coverage report")
+        os.system("coverage html")
+        print "See htmlcov/index.html for details."
 
 setup(
     name='sbrew',
