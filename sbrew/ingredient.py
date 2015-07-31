@@ -1,5 +1,5 @@
 from quantity import Quantity
-from property import Property,NoProperty
+from property import Property, NoProperty, MissingProperty
 import re
 
 class Ingredient:
@@ -39,14 +39,14 @@ class Ingredient:
         otherwise get.
 
         Returns None or the value of default is there is no such property.
-        If default is not set then a MissingParam exception is raised.
+        If default is not set then a MissingProperty exception is raised.
         """
         if (not isinstance(p,Property)):
             if (quantity is None):
                 q = self.properties.get(p)
                 if (q is None):
                     if (default == NoProperty):
-                        raise Exception("%s has no property %s (has %s)" % (self.fullname,p,self.properties.keys()))
+                        raise MissingProperty(self.name,p,self.properties.keys())
                     elif (default is None):
                         # request it to return None in this case that property does not exist
                         return None
@@ -57,10 +57,11 @@ class Ingredient:
             else:
                 # set with values given
                 name = p
-                p = Property(name,quantity,unit,**kwargs)
+                p = Property(name,quantity,unit)
         else:
             name = p.name
         self.properties[name]=p
+        return(p)
 
     def has_properties(self,*args):
         """True if recipe has the properties listed, else false"""

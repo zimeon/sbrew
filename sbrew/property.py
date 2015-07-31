@@ -6,6 +6,25 @@ class NoProperty(object):
     def __str__(self):
         return('NoProperty')
 
+
+class MissingProperty(Exception):
+    """Exception because of missing property"""
+    def __init__(self, of=None, name=None, existing=None):
+        self.of = of
+        self.name = name
+        self.existing = existing
+
+    def __str__(self):
+        msg = "Missing property"
+        if (self.name):
+            msg += " %s" % (self.name)
+        if (self.of):
+            msg += " of %s" % (self.of)
+        if (self.existing):
+            msg += " (have %s)" % (self.existing)
+        return(msg)
+
+
 class Property:
     """Representation of one property
 
@@ -47,7 +66,7 @@ class Property:
         return(s)
 
     def __str__(self):
-        """Human readable string version of object
+        """Human readable string version of Property
 
         Default form is "name     quantity"
         """

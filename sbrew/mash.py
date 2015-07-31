@@ -1,5 +1,6 @@
-from recipe import Recipe,MissingParam
+from recipe import Recipe, MissingParam
 from ingredient import Ingredient
+from property import MissingProperty
 from quantity import Quantity
 
 class Mash(Recipe):
@@ -113,6 +114,8 @@ class Mash(Recipe):
         except AttributeError:
             mcu = 0.0
         except MissingParam:
+            mcu = 0.0
+        except MissingProperty:
             mcu = 0.0
         if (mcu>0.0):
             # set property only if we have a real value

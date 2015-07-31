@@ -1,5 +1,5 @@
 from ingredient import Ingredient
-from property import Property,NoProperty
+from property import Property, NoProperty, MissingProperty
 
 class MissingParam(Exception):
     """Class for exception in solve because of missing parameter"""
@@ -285,10 +285,10 @@ class Recipe(object):
                         this_solved+=1
                     except LookupError as e:
                         print "solve: lookuperror in %s (%s)" % (step.fullname, str(e))
-                        pass
                     except MissingParam as e:
                         print "solve: missing parameter(s) in %s (%s)" % (step.fullname, str(e))
-                        pass
+                    except MissingProperty as e:
+                        print "solve: missing property in %s (%s)" % (step.fullname, str(e))
                 else:
                     this_solved+=1
             if (this_solved == last_solved):
