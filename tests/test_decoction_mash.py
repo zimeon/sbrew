@@ -3,6 +3,7 @@
 import unittest
 from sbrew.decoction_mash import DecoctionMash
 from sbrew.recipe import MissingParam
+from sbrew.quantity import Quantity
 
 class TestAll(unittest.TestCase):
 
@@ -20,8 +21,6 @@ class TestAll(unittest.TestCase):
         self.assertEqual( len(dm.steps), 1 )
         dm.add_step('rest')
         self.assertEqual( len(dm.steps), 2 )
-        dm.mix(deco)
-        self.assertEqual( len(dm.steps), 3 )
         # bad split
         self.assertRaises( MissingParam, DecoctionMash().split )
         # check ingredients split
@@ -34,13 +33,28 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual( dm1.ingredient('b','bb').to('gal'), 1.5 ) #FIX - should really split
         self.assertAlmostEqual( deco1.ingredient('b','bb').to('gal'), 0.3 )
 
+    def test_03_infuse(self):
+        # FIXME - not sure that water infusions are handled properly
+        # FIXME - for now just check that water in description is right
+        dm = DecoctionMash()
+        dm.ingredient( 'grain', 'pilsner', '5lb' )
+        dm.ingredient( 'water', 'strike', '5gal' )
+        self.assertEqual( len(dm.steps), 0 )
+        dm.add_step('rest', time="10min" )
+        dm.add_step('infuse', volume=Quantity('1gal') )
+        self.assertRegexpMatches( dm.steps_str(), r'0:10:00 | 6.39 gal' )
+        self.assertEqual( len(dm.steps), 2 )
+        dm.add_step('rest', time="10min" )
+        dm.add_step('infuse', volume=Quantity('1gal') )
+        self.assertEqual( len(dm.steps), 4 )
+        self.assertRegexpMatches( dm.steps_str(), r'0:20:00 | 7.39 gal' )
 
-    def test_03_str(self):
+    def test_04_str(self):
         dm = DecoctionMash()
         self.assertRegexpMatches( str(dm), r'= decoction mash =' )
         self.assertRegexpMatches( str(dm), r'\*\*\*steps\*\*\*' )
 
-    def test_04_steps_str(self):
+    def test_05_steps_str(self):
         dm = DecoctionMash()
         self.assertRegexpMatches( dm.steps_str(), r'0:00:00 | 0.00 gal @ QuantityNotDefined' )
         dm.add_step('rest',time='30min')

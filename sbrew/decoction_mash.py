@@ -150,7 +150,7 @@ class DecoctionMash(StepMash):
         print "find_stages: %s %s" % (mash_name, str(water))
         vol = Quantity('0gal')
         temp = Quantity()
-        mix_time = None
+        mix_time = Quantity('0min')
         num = 0;
         for step in self.steps:
             num += 1
@@ -183,8 +183,6 @@ class DecoctionMash(StepMash):
                 step['decoction'].ingredient('water','decoction',decoction_water)
                 step['decoction'].find_stages(stages, decoction_name, t)
             elif (type == 'mix'):
-                if (t < mix_time):
-                    t = mix_time
                 water += step['decoction'].total_water()
                 print "mixing: %s %s %s" % (mash_name, str(t),str(step['decoction'].total_water()))
         # add final state
