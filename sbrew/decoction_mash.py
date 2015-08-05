@@ -1,5 +1,6 @@
 from mash import water_grain_volume
 from step_mash import StepMash
+from recipe import MissingParam
 from quantity import Quantity
 from ingredient import Ingredient
 from datetime import timedelta
@@ -33,13 +34,14 @@ class DecoctionMash(StepMash):
         try:
             frac = Quantity(extra['remove']).to('fraction') #FIXME - implement volume
         except Exception as e:
-            raise Exception("Must specify remove fraction when splitting decoction: %s" % (str(e)))
+            raise MissingParam("Must specify remove fraction when splitting decoction: %s" % (str(e)))
         extra['frac'] = frac
         # Take portion of volume from this mash, put into decoction
         extra['type'] = 'split'
         extra['decoction'] = decoction
         for ingredient in self.ingredients:
             q = ingredient.quantity * frac
+            #ingredient.quantity -= q  #FIXME - should really split and mix in
             i = Ingredient( ingredient.type, ingredient.name, q )
             decoction.ingredient(i)
         self.steps.append(extra)

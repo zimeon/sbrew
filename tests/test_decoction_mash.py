@@ -2,6 +2,7 @@
 
 import unittest
 from sbrew.decoction_mash import DecoctionMash
+from sbrew.recipe import MissingParam
 
 class TestAll(unittest.TestCase):
 
@@ -21,6 +22,18 @@ class TestAll(unittest.TestCase):
         self.assertEqual( len(dm.steps), 2 )
         dm.mix(deco)
         self.assertEqual( len(dm.steps), 3 )
+        # bad split
+        self.assertRaises( MissingParam, DecoctionMash().split )
+        # check ingredients split
+        dm1 = DecoctionMash()
+        dm1.ingredient('a','aa','1kg')
+        dm1.ingredient('b','bb','1.5gal')
+        deco1=dm1.split(remove="20%")
+        self.assertAlmostEqual( dm1.ingredient('a','aa').to('kg'), 1.0 ) #FIX - should really split
+        self.assertAlmostEqual( deco1.ingredient('a','aa').to('kg'), 0.2 )
+        self.assertAlmostEqual( dm1.ingredient('b','bb').to('gal'), 1.5 ) #FIX - should really split
+        self.assertAlmostEqual( deco1.ingredient('b','bb').to('gal'), 0.3 )
+
 
     def test_03_str(self):
         dm = DecoctionMash()
