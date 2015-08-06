@@ -4,7 +4,7 @@ import unittest
 
 from sbrew.quantity import Quantity
 from sbrew.property import Property
-from sbrew.recipe import Recipe
+from sbrew.recipe import Recipe, MissingParam
 
 class TestAll(unittest.TestCase):
 
@@ -66,24 +66,37 @@ class TestAll(unittest.TestCase):
         pass
 
     def test09_property(self):
-        pass
-        
+        r = Recipe()
+        r.property( Property('prop_a','1.123sg') )
+        self.assertAlmostEqual( r.properties['prop_a'].quantity.value, 1.123 )
+        r.property( 'prop_b', '1F' ) 
+        self.assertAlmostEqual( r.properties['prop_b'].quantity.value, 1.0 )
+       
     def test10_has_properties(self):
         pass
         
     def test11_has_property(self):
         pass
-        
-    def test12_add(self):
+    
+    def test12_properties_str(self):
+        r = Recipe()
+        r.property( 'prop_a', '1F' )
+        r.property( 'prop_b', '1.123sg' )
+        self.assertEqual( r.properties_str(), 'prop_a, prop_b' )
+
+    def test13_add(self):
         pass
         
-    def test13_import_property(self):
+    def test14_import_property(self):
         pass
         
-    def test14_set_output(self):
-        pass
+    def test15_set_output(self):
+        r = Recipe()
+        r.set_output('abc')
+        self.assertEqual( r.output, 'abc' )
+        self.assertRaises( Exception, r.set_output, 'def' )
         
-    def test15_solve(self):
+    def test16_solve(self):
         r = Recipe()
         r.solve()
         r1 = Recipe()
@@ -92,9 +105,17 @@ class TestAll(unittest.TestCase):
         r.add(r2)
         r.solve()
 
-    def test16_end_state_str(self):
+    def test17_end_state_str(self):
         r = Recipe()
         self.assertEqual( r.end_state_str(), '' )
+
+
+    def test101_missing_param(self):
+        mp = MissingParam()
+        self.assertEqual( str(mp), 'Missing parameter exception' )
+        mp = MissingParam('ooops')
+        self.assertEqual( str(mp), 'ooops' )
+
 
 # If run from command line, do tests
 if __name__ == '__main__':

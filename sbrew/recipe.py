@@ -3,7 +3,7 @@ from property import Property, NoProperty, MissingProperty
 
 class MissingParam(Exception):
     """Class for exception in solve because of missing parameter"""
-    def __init__(self, msg):
+    def __init__(self, msg=None):
         self.msg = msg
 
     def __str__(self):
@@ -151,7 +151,10 @@ class Recipe(object):
         Returns None or the value of default is there is no such property.
         If default is not set then a MissingParam exception is raised.
         """
-        if (not isinstance(p,Property)):
+        if (isinstance(p,Property)):
+            name = p.name
+        else:
+            # need to create a Property instance
             if (quantity is None):
                 q = self.properties.get(p)
                 if (q is None):
@@ -168,8 +171,7 @@ class Recipe(object):
                 # set with values given
                 name = p
                 p = Property(name,quantity,unit,**kwargs)
-        else:
-            name = p.name
+        # finally set named property 
         self.properties[name]=p
 
     def has_properties(self,*args):
@@ -237,7 +239,7 @@ class Recipe(object):
                 return True
         return False
 
-    def set_output(self,output):
+    def set_output(self, output):
         """Set connection to recipe for which output of this recipe is and input
 
         An output may only go to one other recipe so it is an error 
