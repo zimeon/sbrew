@@ -37,7 +37,7 @@ f = Ferment(start=b)
 f.ingredient('yeast','US-05 (Safale)','1pack')
 #f.property('OG','1.069sg')
 #f.property('ABV','8%ABV')
-f.property('atten','80%atten')
+f.property('atten','85%atten')
 r.add(f)
 
 r.solve()
