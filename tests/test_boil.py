@@ -5,7 +5,7 @@ import unittest
 
 from sbrew.quantity import Quantity
 from sbrew.property import Property
-from sbrew.boil import tinseth_utilization,ibu_from_boil,Boil
+from sbrew.boil import tinseth_utilization,ibu_from_boil,weight_for_ibu_from_boil,Boil
 from sbrew.recipe import Recipe, MissingParam
 import sys, StringIO, contextlib
 
@@ -47,6 +47,15 @@ class TestAll(unittest.TestCase):
                             Quantity('60min'))
         self.assertAlmostEqual( ibu, 17.2998, places=3 )
 
+    def test_02a_weight_for_ibu_from_boil(self):
+        weight = weight_for_ibu_from_boil(Quantity('10IBU'),
+                                          Quantity('5%AA'),
+                                          Quantity('5gal'),
+                                          Quantity('1.050sg'),
+                                          Quantity('60min'))
+        self.assertAlmostEqual( weight.to('oz'), 0.57804 , places=3 )
+
+        
     def test03_init(self):
         b = Boil()
         self.assertEqual( b.name, 'boil' )

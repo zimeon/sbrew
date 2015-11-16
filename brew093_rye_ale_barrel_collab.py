@@ -11,10 +11,10 @@ r.name="Rye Ale Barrel Sour Collaboration"
 # ithaca water
 
 m = InfusionMash()
-m.ingredient('grain','german pilsener','10.75lb',color='2L')
+m.ingredient('grain','german pilsener','12.75lb',color='2L')
 m.ingredient('grain','rye malt','3.75lb',color='3.5L')
 m.ingredient('misc','rice hulls','3oz')
-m.ingredient('water','strike','5.7gal')
+m.ingredient('water','strike','6.0gal')
 m.property('temp','150F')
 m.property('t_mashtun','68F')
 r.add(m)

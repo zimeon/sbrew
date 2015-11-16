@@ -33,6 +33,7 @@ def tinseth_utilization(gravity,time):
     ft = ( 1.0 - math.exp(-0.04 * t)) / 4.15
     return(fg*ft)
 
+
 def ibu_from_boil(weight,aa,volume,gravity,time):
     """IBUs from a boiling hop addition
 
@@ -44,6 +45,16 @@ def ibu_from_boil(weight,aa,volume,gravity,time):
     aau = weight.to('oz') * aa.to('%AA')
     u = tinseth_utilization(gravity,time)
     return( aau * u * 75 / volume.to('gal') )
+
+
+def weight_for_ibu_from_boil(ibu,aa,volume,gravity,time):
+    """Weight of hops required to get specified number of IBUs from boiling hop addition
+
+    Simply uses ibu_from_boil to get IBU for 1oz and scales.
+    """
+    ibu_per_oz = ibu_from_boil(Quantity('1oz'),aa,volume,gravity,time)
+    return( Quantity( ibu.to('IBU')/ibu_per_oz, 'oz' ) )
+
 
 class Boil(Recipe):
     """A boil is a simple recipe with no sub-steps.
@@ -107,8 +118,14 @@ class Boil(Recipe):
                     aa = i.properties['aa'].quantity
                 else:
                     print "Warning  - no AA specified for %s hops, assuming %s" % (i.name,aa)
-                ibu = self.ibu_from_addition(i.quantity,aa,t)
-                i.properties['IBU']=Property('IBU',Quantity(ibu,'IBU'))
+                if (i.quantity.unit == 'IBU'):    
+                    weight = weight_for_ibu_from_boil(i.quantity,aa,self.property('boil_end_volume'),self.property('OG'),t)
+                    ibu = i.quantity.to('IBU')
+                    i.properties['IBU']=Property('IBU',i.quantity)
+                    i.quantity = Quantity( weight, 'oz' )
+                else: 
+                    ibu = self.ibu_from_addition(i.quantity,aa,t)
+                    i.properties['IBU']=Property('IBU',Quantity(ibu,'IBU'))
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu,'IBU') )
         self.color()
