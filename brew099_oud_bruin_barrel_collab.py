@@ -4,26 +4,26 @@ from sbrew import *
 
 r = Recipe()
 r.name="Oud Bruin Barrel Sour Collaboration"
-
-# inspired by
-# <http://www.themadfermentationist.com/2011/01/sour-brown-barrel-day-3.html>
-# (or p312 of he American Sours book).
+r.description="""Oud Bruin inspired by
+<http://www.themadfermentationist.com/2011/01/sour-brown-barrel-day-3.html>
+(or p312 of the "American Sour Beers" book). Will not try addition of
+Bourbon soaked chips but will combine into funky 10gal barrel."""
 
 # ithaca water
 
 m = InfusionMash()
-m.ingredient('grain','marris otter','79.5%',color='4L')
-m.ingredient('grain','dark munich','13%',color='9L')
-m.ingredient('grain','crystal 90L','3%', color='90L')
-m.ingredient('grain','melonoidin','3%', color='30L')
-m.ingredient('grain','chocolate','1.5%', color='225L') #crisp
-m.ingredient('water','strike','5.8gal')
-m.property('total_grain','15lb')
-m.property('temp','150F')
+m.ingredient('grain','marris otter','12lb',color='4L') # T-F Marris Otter
+m.ingredient('grain','dark munich','2lb',color='15L') # Avangard Malz (German) 15L
+m.ingredient('grain','crystal 120L','8oz', color='120L') # Briess Caramel(Crystal) 120L
+m.ingredient('grain','biscuit','8oz', color='22L') # Dingemans Biscuit 18-27L, sub for Melanoidin 30L
+m.ingredient('grain','chocolate','4oz', color='400L') # Simpson's Chocolate
+m.ingredient('water','strike','5.4gal')
+#m.property('total_grain','15.25lb')
+m.property('temp','155F')
 m.property('t_mashtun','68F')
 r.add(m)
 
-s = BatchSparge(start=m)
+s = BatchSparge(start=m, extracts=3)
 s.property('wort_volume','7.0gal')
 r.add(s)
 
