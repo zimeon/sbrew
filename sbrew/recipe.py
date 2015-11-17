@@ -31,6 +31,7 @@ class Recipe(object):
     def __init__(self, name=None, verbose=False, debug=False, 
                  start=None, **kwargs):
         self.name=name or self.DEFAULT_NAME
+        self.description=None
         self.verbose=verbose
         self.debug=debug
         # Local data for this recipe
@@ -82,6 +83,8 @@ class Recipe(object):
             str_list.append("\n")
             str_list.append( self._str_line_num(kwargs) +
                              "== " + self.name_with_default + " ==\n")
+            if (self.description):
+                str_list.append("\n" + self.description + "\n\n")
             for step in self.steps:
                 str_list.append(step.__str__(**kwargs))
         if (len(self.ingredients)>0):
