@@ -33,7 +33,9 @@ setup(
     description='Simeon\'s Brewing Calculations',
     long_description=open('README.md').read(),
     url='http://github.com/zimeon/sbrew',
-    install_requires=[],
+    install_requires=[
+        'scipy',
+    ],
     test_suite="tests",
     cmdclass={
         'coverage': Coverage,
