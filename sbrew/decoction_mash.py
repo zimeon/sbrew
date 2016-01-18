@@ -14,6 +14,17 @@ class DecoctionMash(StepMash):
     m =  DecoctionMash()
     m.ingredient( Ingredient('grain','pilsner','5lb') )
     m.ingredient( Ingredient('grain','wheat malt','5lb') )
+    m.add_step('infuse',volume='3.6gal',temp='108F')
+    m.add_step('heat',temp='122F',time='10min')
+    m.add_step('rest',time='15min')
+    d1=m.split(time='5min',remove='40%')
+    d1.add_step('heat',temp='160F',time='15min')
+    d1.add_step('rest',time='15min')
+    d1.add_step('heat',temp='212F',time='15min')
+    d1.add_step('boil',time='20min')
+    m.mix(decoction=d1,time='10min')
+    m.add_step('adjust',temp='147F')
+    m.add_step('rest',time='20min')
     print m
     """
 
@@ -97,12 +108,16 @@ class DecoctionMash(StepMash):
                 if (stages_next[mash] and stages_next[mash]['time']<t):
                     t = stages_next[mash]['time']
             # Output all things that happen at time t
-            s += "{0:s} ".format(t)
+            state_line = "%7s " % t
+            step_line  = "        "
+            step_type = ''
             for mash in mashes:
                 state = ''
                 if (stages_next[mash]):
                     if (stages_next[mash]['time']<=t):
                         state = self.stage_state_str(stages_next[mash])
+                        if ('type' in stages_next[mash]):
+                            step_type = stages_next[mash]['type']
                         stages_started[mash]+=1
                         try:
                             stages_next[mash]=stages_iter[mash].next()
@@ -112,7 +127,7 @@ class DecoctionMash(StepMash):
                             del ditto[mash]
                     elif (stages_started[mash]>0):
                         if (mash in ditto):
-                            state = '    -ditto-'
+                            state = '|'
                         else:
                             state = self.stage_state_str(stages_next[mash])
                         ditto[mash] = 1
@@ -120,8 +135,9 @@ class DecoctionMash(StepMash):
                         state = '' # '-not-started-'
                 else:
                     state = '' # '-end-'
-                s += "| {0:27s} ".format(state)
-            s += '\n'
+                state_line += "  %-27s " % state
+                step_line  += "  %-27s " % ('| '+step_type)
+            s += state_line + '\n' + step_line+ "\n"
             # Are we done? All iterators used up
             not_none=0;
             for mash in mashes:
@@ -140,7 +156,8 @@ class DecoctionMash(StepMash):
 
         The stages dict has a set of stages for the main mash ('_main') and
         for any decoctions. The goal is to work these out with the same set of 
-        time boundaries so that they can be displayed in parallel.
+        time boundaries so that they can be displayed in parallel. All times
+        are measured from the start_time (0 if not given).
         """
         stage=[]
         stages[mash_name]=stage
@@ -164,7 +181,7 @@ class DecoctionMash(StepMash):
             # FIXME - following assumes all grains present in recipe
             vol = water_grain_volume( water, self.total_grains() )  
             if (num>1):
-                stage.append({'type': 'state', 'time': t, 'volume': vol, 
+                stage.append({'type': type, 'time': t, 'volume': vol, 
                               'water': water, 'temp': temp})
             if ('temp' in step):
                 temp=step['temp']
@@ -186,7 +203,7 @@ class DecoctionMash(StepMash):
                 water += step['decoction'].total_water()
                 print "mixing: %s %s %s" % (mash_name, str(t),str(step['decoction'].total_water()))
         # add final state
-        stage.append({'type': 'state', 'time': t, 'volume': vol, 
+        stage.append({'type': 'end_state', 'time': t, 'volume': vol, 
                       'water': water, 'temp': temp})
         # no return val, data left in stage 
 
