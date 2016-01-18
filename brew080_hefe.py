@@ -5,8 +5,8 @@ from sbrew import *
 r = Recipe("Warner Weisse")
 
 m = DecoctionMash()
-m.ingredient(Ingredient('grain','marris otter (tf)','37%'))
-m.ingredient(Ingredient('grain','wheat malt (tf)','63%'))
+m.ingredient('grain','marris otter (tf)','37%')
+m.ingredient('grain','wheat malt (tf)','63%')
 m.total_grains(Quantity('9.5lb'))
 m.add_step('infuse',volume='3.6gal',temp='106F')
 m.add_step('heat',temp='122F',time='10min')
@@ -29,13 +29,13 @@ s.property('wort_volume','6.5gal')
 r.add(s)
 
 b = Boil(start=s,duration="60min")
-b.ingredient(Ingredient('hops','hallertau','1oz',time='60min',aa='4.3%AA'))
-b.ingredient(Ingredient('hops','hallertau','0.25oz',time='15min',aa='4.3%AA'))
+b.ingredient('hops','hallertau','1oz',time='60min',aa='4.3%AA')
+b.ingredient('hops','hallertau','0.25oz',time='15min',aa='4.3%AA')
 b.property('boil_end_volume','6.0gal')
 r.add(b)
 
 f = Ferment(start=b)
-f.ingredient(Ingredient('yeast','wyeast 3056 bavarian weizen','1packet'))
+f.ingredient('yeast','wyeast 3056 bavarian weizen','1packet')
 f.property('atten','80.0%atten')
 r.add(f)
 
