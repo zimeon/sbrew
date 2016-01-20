@@ -25,17 +25,19 @@ r.add(s)
 
 b = Boil(start=s)
 b.time=Quantity('60min')
-b.ingredient('hops','fuggles','1.5oz',time=Quantity('60min'),aa=Quantity('5%'))
-b.ingredient('hops','willamette','0.75oz',time=Quantity('5min'),aa=Quantity('5%'))
-b.ingredient('hops','willamette','0.75oz',time=Quantity('0min'),aa=Quantity('5%'))
+b.ingredient('hops','fuggles','1.5oz',time=Quantity('60min'),aa=Quantity('5%AA'))
+b.ingredient('hops','willamette','0.75oz',time=Quantity('5min'),aa=Quantity('5%AA'))
+b.ingredient('hops','willamette','0.75oz',time=Quantity('0min'),aa=Quantity('5%AA'))
 b.ingredient('misc','irish moss','1tsp',time=Quantity('15min'))
 b.property('boil_end_volume', '6.5gal')
 r.add(b)
 
 f = Ferment(start=b)
 f.ingredient('yeast','wyeast 1318 English Ale III','1vial')
+f.property('FG','1.019sg') # measured
 r.add(f)
 
+r.solve()
 print r
 
 
