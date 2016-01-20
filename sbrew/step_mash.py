@@ -24,12 +24,16 @@ class StepMash(Mash):
         recombine decoctions).
         """
         extra['type']=type
+        # Make quantities from time, volume, temp
         if ('time' not in extra):
             extra['time'] = Quantity('0min')
         else:
             extra['time'] = Quantity(extra['time'])
         if ('volume' in extra):
             extra['volume'] = Quantity(extra['volume'])
+        if ('temp' in extra):
+            extra['temp'] = Quantity(extra['temp'])
+        # Known types
         if (type == 'infuse'):
             self.steps.append(extra)
         elif (type == 'rest'):

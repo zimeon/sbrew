@@ -57,8 +57,9 @@ class TestAll(unittest.TestCase):
     def test_05_steps_str(self):
         dm = DecoctionMash()
         self.assertRegexpMatches( dm.steps_str(), r'0:00:00 | 0.00 gal @ QuantityNotDefined' )
+        dm.add_step('infuse',volume='1.0gal',temp='108F')
         dm.add_step('rest',time='30min')
-        deco =dm.split(remove="40%")
+        deco = dm.split(remove="40%")
         deco.add_step('heat',temp='160F',time='15min')
         deco.add_step('rest',time='15min')
         deco.add_step('heat',temp='212F',time='15min')
@@ -70,8 +71,8 @@ class TestAll(unittest.TestCase):
 
     def test_07_stage_state_str(self):
         dm = DecoctionMash()
-        stage = {'volume': '1.1gal', 'temp': '134F'}
-        self.assertRegexpMatches( dm.stage_state_str(stage), r'1.1gal @ 134F' )      
+        stage = {'volume': Quantity('1.1gal'), 'temp': Quantity('134F')}
+        self.assertRegexpMatches( dm.stage_state_str(stage), r'1.10 gal @ 134.0 F' )      
 
     def test_08_find_stages(self):
         dm = DecoctionMash()
@@ -83,15 +84,15 @@ class TestAll(unittest.TestCase):
         stages={}
         dm.find_stages(stages)
         self.assertEqual( len(stages['_main']), 5 )
-        self.assertEqual( stages['_main'][0]['type'], 'state' )
+        self.assertEqual( stages['_main'][0]['type'], 'heat' )
         self.assertEqual( stages['_main'][0]['time'].total_seconds(), 1800 )
-        self.assertEqual( stages['_main'][1]['type'], 'state' )
+        self.assertEqual( stages['_main'][1]['type'], 'rest' )
         self.assertEqual( stages['_main'][1]['time'].total_seconds(), 2700 )
-        self.assertEqual( stages['_main'][2]['type'], 'state' )
+        self.assertEqual( stages['_main'][2]['type'], 'heat' )
         self.assertEqual( stages['_main'][2]['time'].total_seconds(), 3600 )
-        self.assertEqual( stages['_main'][3]['type'], 'state' )
+        self.assertEqual( stages['_main'][3]['type'], 'boil' )
         self.assertEqual( stages['_main'][3]['time'].total_seconds(), 4500 )
-        self.assertEqual( stages['_main'][4]['type'], 'state' )
+        self.assertEqual( stages['_main'][4]['type'], 'end_state' )
         self.assertEqual( stages['_main'][4]['time'].total_seconds(), 5700 )
 
     def test_10_total_time(self):
