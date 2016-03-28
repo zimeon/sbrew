@@ -9,10 +9,12 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install libblas-dev liblapack-dev python-numpy python-scipy
 install:
-  - pip install coveralls
+  - pip install coveralls pep257 restructuredtext_lint
   - python setup.py install
 script:
   - py.test 
+  #- pep257 sbrew
+  - rst-lint README.md
   - coverage run --source=sbrew setup.py test
 after_success:
   - coveralls
