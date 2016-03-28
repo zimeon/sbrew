@@ -12,9 +12,11 @@ install:
   - pip install coveralls pep257 restructuredtext_lint
   - python setup.py install
 script:
-  - python setup.py test
+  - py.test
   #- pep257 sbrew
   - rst-lint README.md
-  - coverage run --source=sbrew setup.py test
+  # It seems that travis has a local version of setuptools which means that
+  # running "coverage ... setup.py test" does not work
+  - coverage run --source=sbrew `which py.test`
 after_success:
   - coveralls
