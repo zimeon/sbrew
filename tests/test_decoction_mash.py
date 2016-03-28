@@ -66,7 +66,7 @@ class TestAll(unittest.TestCase):
         dm.mix(deco)
         # should see two mashes in string
         self.assertRegexpMatches( dm.steps_str(), r'_main\s+|\s+decoction' )
-        self.assertRegexpMatches( dm.steps_str(), r'-ditto-\s+\|\s+0.00 gal @ 160F' )
+        self.assertRegexpMatches( dm.steps_str(), r'-ditto-\s+|\s+0.00 gal @ 160F' )
 
     def test_07_stage_state_str(self):
         dm = DecoctionMash()
@@ -83,15 +83,15 @@ class TestAll(unittest.TestCase):
         stages={}
         dm.find_stages(stages)
         self.assertEqual( len(stages['_main']), 5 )
-        self.assertEqual( stages['_main'][0]['type'], 'state' )
+        self.assertEqual( stages['_main'][0]['type'], 'heat' )
         self.assertEqual( stages['_main'][0]['time'].total_seconds(), 1800 )
-        self.assertEqual( stages['_main'][1]['type'], 'state' )
+        self.assertEqual( stages['_main'][1]['type'], 'rest' )
         self.assertEqual( stages['_main'][1]['time'].total_seconds(), 2700 )
-        self.assertEqual( stages['_main'][2]['type'], 'state' )
+        self.assertEqual( stages['_main'][2]['type'], 'heat' )
         self.assertEqual( stages['_main'][2]['time'].total_seconds(), 3600 )
-        self.assertEqual( stages['_main'][3]['type'], 'state' )
+        self.assertEqual( stages['_main'][3]['type'], 'boil' )
         self.assertEqual( stages['_main'][3]['time'].total_seconds(), 4500 )
-        self.assertEqual( stages['_main'][4]['type'], 'state' )
+        self.assertEqual( stages['_main'][4]['type'], 'end_state' )
         self.assertEqual( stages['_main'][4]['time'].total_seconds(), 5700 )
 
     def test_10_total_time(self):
