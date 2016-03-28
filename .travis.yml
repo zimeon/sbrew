@@ -15,6 +15,6 @@ script:
   - py.test 
   #- pep257 sbrew
   - rst-lint README.md
-  - coverage run --source=sbrew setup.py test
+  #- coverage run --source=sbrew setup.py test
 after_success:
-  - coveralls
+  #- coveralls
