@@ -1,4 +1,4 @@
-from quantity import Quantity
+from .quantity import Quantity
 import re
 
 class NoProperty(object):

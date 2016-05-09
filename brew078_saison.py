@@ -37,6 +37,6 @@ f = Ferment(start=b)
 f.ingredient('yeast','Wyeast 3711 French Saison','1pack')
 r.add(f)
 
-print r
+print(r)
 
 

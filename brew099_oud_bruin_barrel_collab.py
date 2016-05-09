@@ -41,6 +41,6 @@ f.property('atten','85%atten')
 r.add(f)
 
 r.solve()
-print r
+print(r)
 
 

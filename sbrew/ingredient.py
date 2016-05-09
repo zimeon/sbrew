@@ -1,5 +1,5 @@
-from quantity import Quantity
-from property import Property, NoProperty, MissingProperty
+from .quantity import Quantity
+from .property import Property, NoProperty, MissingProperty
 import re
 
 class Ingredient:

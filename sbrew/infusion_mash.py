@@ -1,16 +1,17 @@
-from recipe import Recipe,MissingParam
-from ingredient import Ingredient
-from quantity import Quantity
-from mash import Mash
+"""Infusion Mash as a specialization of Mash."""
+from .recipe import Recipe,MissingParam
+from .ingredient import Ingredient
+from .quantity import Quantity
+from .mash import Mash
 
 class InfusionMash(Mash):
-    """A single step infusion mash
+    """A single step infusion mash.
 
     m =  InfusionMash()
     m.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
     m.ingredient( Ingredient('grain','caravieene belgian','1.25lb') )
     m.ingredient( Ingredient('grain','clear candi sugar','0.87lb') )
-    print m
+    print(m)
     """
 
     DEFAULT_NAME='infusion mash'

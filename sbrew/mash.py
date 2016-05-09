@@ -1,7 +1,8 @@
-from recipe import Recipe, MissingParam
-from ingredient import Ingredient
-from property import MissingProperty
-from quantity import Quantity
+"""Base model for a Mash."""
+from .recipe import Recipe, MissingParam
+from .ingredient import Ingredient
+from .property import MissingProperty
+from .quantity import Quantity
 
 class Mash(Recipe):
     """A mash is a simple recipe with no sub-steps.
@@ -10,7 +11,7 @@ class Mash(Recipe):
     m.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
     m.ingredient( Ingredient('grain','caravieene belgian','1.25lb') )
     m.ingredient( Ingredient('grain','clear candi sugar','0.87lb') )
-    print m
+    print(m)
     """
 
     DEFAULT_NAME='mash'
@@ -58,7 +59,7 @@ class Mash(Recipe):
         total_pct=0.0
         # Want to set total mass, are all grains set as pct?
         if (not self.all_grains_percentage()):
-            print "can't set total as not all pct"
+            print("can't set total as not all pct")
         else:
             for ingredient in self.ingredients:
                 if (ingredient.type == 'grain'):

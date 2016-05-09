@@ -36,6 +36,6 @@ f = Ferment(start=b)
 f.ingredient('yeast','wyeast 1318 English Ale III','1vial')
 r.add(f)
 
-print r
+print(r)
 
 

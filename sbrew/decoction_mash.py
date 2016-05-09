@@ -1,8 +1,9 @@
-from mash import water_grain_volume
-from step_mash import StepMash
-from recipe import MissingParam
-from quantity import Quantity
-from ingredient import Ingredient
+from .mash import water_grain_volume
+from .step_mash import StepMash
+from .recipe import MissingParam
+from .quantity import Quantity
+from .ingredient import Ingredient
+
 from datetime import timedelta
 
 class DecoctionMash(StepMash):
@@ -25,7 +26,7 @@ class DecoctionMash(StepMash):
     m.mix(decoction=d1,time='10min')
     m.add_step('adjust',temp='147F')
     m.add_step('rest',time='20min')
-    print m
+    print(m)
     """
 
     DEFAULT_NAME='decoction mash'
@@ -92,9 +93,9 @@ class DecoctionMash(StepMash):
         stages_started={}
         s = "H:MM:SS "
         for mash in mashes:
-            s += "| {0:27s} ".format(mash)
+            s += "| %-27s " % (mash)
             stages_iter[mash]=iter(stages[mash])
-            stages_next[mash]=stages_iter[mash].next()
+            stages_next[mash]=next(stages_iter[mash])
             stages_started[mash]=0
         s += '\n'
         # Keep looking at all lists of stages to find next time, exit when all done
@@ -104,7 +105,6 @@ class DecoctionMash(StepMash):
             t = timedelta(days=9999) #big
             for mash in mashes:
                 #tt = (str(stages_next[mash]['time']) if stages_next[mash] else 'none')
-                #s += 'test {0:s} has time {1:s}\n'.format(mash,tt)
                 if (stages_next[mash] and stages_next[mash]['time']<t):
                     t = stages_next[mash]['time']
             # Output all things that happen at time t
@@ -120,7 +120,7 @@ class DecoctionMash(StepMash):
                             step_type = stages_next[mash]['type']
                         stages_started[mash]+=1
                         try:
-                            stages_next[mash]=stages_iter[mash].next()
+                            stages_next[mash]=next(stages_iter[mash])
                         except StopIteration:
                             stages_next[mash]=None
                         if (mash in ditto):
@@ -148,7 +148,7 @@ class DecoctionMash(StepMash):
         return(s)
 
     def stage_state_str(self,stage):
-        str = "{0:s} @ {1:s} ".format(stage['volume'],stage['temp'])
+        str = "%s @ %s " % (stage['volume'],stage['temp'])
         return(str)
 
     def find_stages(self, stages, mash_name='_main', start_time=timedelta()):
@@ -164,7 +164,7 @@ class DecoctionMash(StepMash):
         # running variables
         t = start_time
         water = self.total_type('water','gal') #ingredients only
-        print "find_stages: %s %s" % (mash_name, str(water))
+        print("find_stages: %s %s" % (mash_name, str(water)))
         vol = Quantity('0gal')
         temp = Quantity()
         mix_time = Quantity('0min')
@@ -196,12 +196,12 @@ class DecoctionMash(StepMash):
                 decoction_name = ( step['name'] if ('name' in step) else 'decoction' )
                 decoction_water = water * step['frac']
                 water = water - decoction_water
-                print "deco water: %s" % decoction_water
+                print("deco water: %s" % decoction_water)
                 step['decoction'].ingredient('water','decoction',decoction_water)
                 step['decoction'].find_stages(stages, decoction_name, t)
             elif (type == 'mix'):
                 water += step['decoction'].total_water()
-                print "mixing: %s %s %s" % (mash_name, str(t),str(step['decoction'].total_water()))
+                print("mixing: %s %s %s" % (mash_name, str(t),str(step['decoction'].total_water())))
         # add final state
         stage.append({'type': 'end_state', 'time': t, 'volume': vol, 
                       'water': water, 'temp': temp})

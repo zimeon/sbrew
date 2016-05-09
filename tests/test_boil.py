@@ -1,13 +1,19 @@
-"""Test code for sbrew.boil"""
+"""Test code for sbrew.boil."""
 
+import contextlib
+try:  # python 2
+    # although StringIO exists as io.StringIO in python 3, must use this one:
+    from StringIO import StringIO
+except:  # python 3
+    from io import StringIO
 import re
+import sys
 import unittest
 
 from sbrew.quantity import Quantity
 from sbrew.property import Property
-from sbrew.boil import tinseth_utilization,ibu_from_boil,weight_for_ibu_from_boil,Boil
+from sbrew.boil import tinseth_utilization, ibu_from_boil, weight_for_ibu_from_boil, Boil
 from sbrew.recipe import Recipe, MissingParam
-import sys, StringIO, contextlib
 
 # From http://stackoverflow.com/questions/2654834/capturing-stdout-within-the-same-process-in-python
 class Data(object):
@@ -16,7 +22,7 @@ class Data(object):
 @contextlib.contextmanager
 def capture_stdout():
     old = sys.stdout
-    capturer = StringIO.StringIO()
+    capturer = StringIO()
     sys.stdout = capturer
     data = Data()
     yield data
@@ -27,16 +33,25 @@ def capture_stdout():
 class TestAll(unittest.TestCase):
 
     def test01_tinseth_utilization(self):
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.050sg'),Quantity('60min')), 0.230664077 )
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.050sg'),Quantity('600min')), 0.253677148 )
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.001sg'),Quantity('60min')), 0.35828726 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.050sg'),
+                                                   Quantity('60min')), 0.230664077 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.050sg'),
+                                                   Quantity('600min')), 0.253677148 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.001sg'),
+                                                   Quantity('60min')), 0.35828726 )
         # Examples from Palmer, "How To Brew", 2006, p 58
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.040sg'),Quantity('15min')), 0.125, places=3 )
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.040sg'),Quantity('60min')), 0.252, places=3 )
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.040sg'),Quantity('90min')), 0.270, places=3 )
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.080sg'),Quantity('15min')), 0.087, places=3 )
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.080sg'),Quantity('60min')), 0.176, places=3 )
-        self.assertAlmostEqual( tinseth_utilization(Quantity('1.080sg'),Quantity('90min')), 0.188, places=3 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.040sg'),
+                                                   Quantity('15min')), 0.125, places=3 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.040sg'),
+                                                   Quantity('60min')), 0.252, places=3 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.040sg'),
+                                                   Quantity('90min')), 0.270, places=3 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.080sg'),
+                                                   Quantity('15min')), 0.087, places=3 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.080sg'),
+                                                   Quantity('60min')), 0.176, places=3 )
+        self.assertAlmostEqual(tinseth_utilization(Quantity('1.080sg'),
+                                                   Quantity('90min')), 0.188, places=3 )
 
     def test02_ibu_from_boil(self):
         # Do calc from http://www.howtobrew.com/section1/chapter5-5.html
@@ -196,4 +211,3 @@ class TestAll(unittest.TestCase):
 # If run from command line, do tests
 if __name__ == '__main__':
     unittest.main()
-

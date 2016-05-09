@@ -36,6 +36,6 @@ f.property('temp','66F')
 r.add(f)
 
 r.solve()
-print r
+print(r)
 
 

@@ -34,6 +34,6 @@ f.property('FG','1.012sg')
 r.add(f)
 
 r.solve()
-print r
+print(r)
 
 

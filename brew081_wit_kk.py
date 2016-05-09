@@ -37,6 +37,6 @@ beer.property('%ABV_goal','5.0%ABV')
 r.add(beer)
 
 r.solve()
-print r
+print(r)
 
 

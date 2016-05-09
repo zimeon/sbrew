@@ -2,6 +2,7 @@ sudo: true
 language: python
 python:
   - "2.7"
+  - "3.5"
 # The system_site_packages is necessary so that scipy from the apt-get will be seen
 virtualenv:
   system_site_packages: true

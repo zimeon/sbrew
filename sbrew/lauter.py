@@ -1,9 +1,10 @@
-from recipe import Recipe
-from ingredient import Ingredient
-from quantity import Quantity
+"""Base model for Lauter process."""
+from .recipe import Recipe
+from .ingredient import Ingredient
+from .quantity import Quantity
 
 class Lauter(Recipe):
-    """Lauter process: start with mash, extract wort
+    """Lauter process: start with mash, extract wort.
 
     Input is a Mash object of some type. Import parameters:
       total_grain - (dry) mass of grain in mash
@@ -19,24 +20,27 @@ class Lauter(Recipe):
     DEFAULT_NAME = 'lauter'
 
     def __init__(self, **kwargs):
+        """Initialize Lauter object."""
         super(Lauter, self).__init__(**kwargs)
         self.extra_info=None # extra info for end_state_str
 
     def import_forward(self):
-        """Import properties from previous step where available"""
+        """Import properties from previous step where available."""
         self.import_property('total_grain','grain')
         self.import_property('total_water','water')
         self.import_property('total_points','total_points')
         self.import_property('MCU')
 
     def import_backward(self):
+        """Import properties from next step where available."""
         pass
 
     def solve(self):
-        """Blank, exception"""
+        """Blank, exception."""
         raise Exception("Need to override Lauter solve()")
 
     def end_state_str(self):
+        """Return string describing end state of step."""
         s = ''
         wv = self.property('wort_volume',default=None)
         if (wv is not None):

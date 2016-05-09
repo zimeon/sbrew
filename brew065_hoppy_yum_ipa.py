@@ -38,6 +38,6 @@ f.ingredient('yeast','wyeast 1056 American Ale','2vial')
 r.add(f)
 
 r.solve()
-print r
+print(r)
 
 

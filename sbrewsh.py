@@ -13,7 +13,7 @@ def parse_input(i, lastval=None):
     try:
         c = eval(i, globals(), {'c':lastval} )
     except Exception as e:
-        print str(e)
+        print(str(e))
         c = lastval
     return(c)
 
@@ -21,19 +21,19 @@ def parse_input(i, lastval=None):
 r = Recipe()
 r.name = 'untitled'
 
-print r
+print(r)
 c = None
 while (1):
     i = raw_input(prompt[input_mode])
     c = parse_input(i, lastval=c)
-    print "c = " + str(c)
+    print("c = " + str(c))
     if (i == 'q' or i=='quit'):
         break
     elif (i in prompt.keys()):
         input_mode = i
     elif (i == 'help'):
-        print "sbrewsh - sbrew shell\n q - quit\n sb - sbrew input\n py - python input\n help - this help\n"
-print "sbrew go bye bye"
+        print("sbrewsh - sbrew shell\n q - quit\n sb - sbrew input\n py - python input\n help - this help\n")
+print("sbrew go bye bye")
 
 
     

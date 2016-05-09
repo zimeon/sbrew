@@ -1,5 +1,5 @@
-from ingredient import Ingredient
-from property import Property, NoProperty, MissingProperty
+from .ingredient import Ingredient
+from .property import Property, NoProperty, MissingProperty
 
 class MissingParam(Exception):
     """Class for exception in solve because of missing parameter"""
@@ -50,7 +50,7 @@ class Recipe(object):
 
         Makes bi-directional link between the two recipes.
         """
-        print "connecting %s output to %s input" % (input_recipe.fullname,input_recipe.fullname)
+        print("connecting %s output to %s input" % (input_recipe.fullname,input_recipe.fullname))
         self.inputs.append(input_recipe)
         input_recipe.set_output(self)
         self.import_forward() #FIXME - do we want/need this? Should it be done just at solve() time?
@@ -113,19 +113,20 @@ class Recipe(object):
             return('')
 
     def __add__(self, other):
-        """Add two partial recipes togerther, returning a new recipe
+        """Add two partial recipes together, returning a new recipe.
 
         The steps of the second follow those of the first. The ingredients
         are combined. The properties of the second override those of the
         first.
         """
-        sum=Recipe()
-        sum.steps+=self.steps
-        sum.steps+=other.steps
-        sum.name= self.fullname + " + " + other.fullname
-        sum.ingredients+=self.ingredients
-        sum.ingredients+=other.ingredients
-        sum.properties=dict( self.properties.items() + other.properties.items() )
+        sum = Recipe()
+        sum.steps += self.steps
+        sum.steps += other.steps
+        sum.name = self.fullname + " + " + other.fullname
+        sum.ingredients += self.ingredients
+        sum.ingredients += other.ingredients
+        sum.properties = self.properties.copy()
+        sum.properties.update(other.properties)
         return(sum)
 
     def ingredient(self,i,name=None,quantity=None,unit=None,*properties,**kv_properties):
@@ -226,19 +227,19 @@ class Recipe(object):
                 if (name in i.properties):
                     self.property( new_name, i.property(name) )
                     if (self.verbose):
-                        print "imported %s and %s" % (name, new_name) 
+                        print("imported %s and %s" % (name, new_name))
                     return True
         elif (source=='output'):
             if (self.output and name in self.output.properties):
                 self.property( new_name, self.output.property(name) )
                 if (self.verbose):
-                    print "imported %s and %s" % (name, new_name) 
+                    print("imported %s and %s" % (name, new_name))
                 return True
         else: #source is an input Recipe instance
             if (name in source.properties):
                 self.property( new_name, source.property(name) )
                 if (self.verbose):
-                    print "imported %s and %s" % (name, new_name) 
+                    print("imported %s and %s" % (name, new_name))
                 return True
         return False
 
@@ -277,7 +278,7 @@ class Recipe(object):
         attempt = 0
         for i in range(0,num_steps):
             attempt += 1
-            print "Trying to solve, run %d ..." % (attempt)
+            print("Trying to solve, run %d ..." % (attempt))
             this_solved = 0 # number of steps solved this iteration
             for step in self.steps:
                 if (step not in solved):
@@ -285,15 +286,15 @@ class Recipe(object):
                         step.import_forward()
                         step.import_backward()
                         step.solve()
-                        print "solve: solved %s" % (step.fullname)
+                        print("solve: solved %s" % (step.fullname))
                         solved.add(step)
                         this_solved+=1
                     except LookupError as e:
-                        print "solve: lookuperror in %s (%s)" % (step.fullname, str(e))
+                        print("solve: lookuperror in %s (%s)" % (step.fullname, str(e)))
                     except MissingParam as e:
-                        print "solve: missing parameter(s) in %s (%s)" % (step.fullname, str(e))
+                        print("solve: missing parameter(s) in %s (%s)" % (step.fullname, str(e)))
                     except MissingProperty as e:
-                        print "solve: missing property in %s (%s)" % (step.fullname, str(e))
+                        print("solve: missing property in %s (%s)" % (step.fullname, str(e)))
                 else:
                     this_solved+=1
             if (this_solved == last_solved):
@@ -301,14 +302,14 @@ class Recipe(object):
                 break
             last_solved = this_solved
         # Did we finish?
-        print "Out of %d steps, solved %d" % (num_steps,len(solved))
+        print("Out of %d steps, solved %d" % (num_steps,len(solved)))
         if (num_steps != len(solved)):
             if (self.debug):
                 raise Exception("Failed to solve recipe")
             else:
-                print "Failed to solve recipe (look at messages above)"
+                print("Failed to solve recipe (look at messages above)")
         else:
-            print "Solved recipe"
+            print("Solved recipe")
 
     def end_state_str(self):
         """String describing the end state of this recipe step

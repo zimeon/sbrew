@@ -1,9 +1,10 @@
-from quantity import Quantity
-from lauter import Lauter
-from recipe import MissingParam
+"""Model for Batch Sparge as specialization of Lauter."""
+from .quantity import Quantity
+from .lauter import Lauter
+from .recipe import MissingParam
 
 class BatchSparge(Lauter):
-    """Batch sparge, a special type of lauter with two or more extracts
+    """Batch sparge, a special type of lauter with two or more extracts.
 
     There are two properties that are essential to calculating
     how a batch sparge will work:
@@ -34,7 +35,7 @@ class BatchSparge(Lauter):
     DEFAULT_NAME='batch sparge'
 
     def __init__(self, extracts=2, **kwargs):
-        """Initialize BatchSparge object as type of Lauter
+        """Initialize BatchSparge object as type of Lauter.
 
         Key properties required:
            wort_volume - the desired wort volume
@@ -49,7 +50,7 @@ class BatchSparge(Lauter):
         self.extracts = extracts
 
     def extractions_calculated_forward(self, v_water, v_in_grain, v_wort):
-        """Calculate volumes and points for the set of extractions calculated forward
+        """Calculate volumes and points for the set of extractions calculated forward.
 
         Assumes that v_water, v_in_grain, v_wort are values in gallons.
 
@@ -104,8 +105,7 @@ class BatchSparge(Lauter):
         return(vols,points)
 
     def solve(self):
-        """Solve based on what is known
-        """
+        """Solve based on what is known."""
         if (self.has_properties('grain','water','total_points','wort_volume') or
             self.has_properties('grain','water','total_points','boil_start_volume')):
             return( self.solve_from_mash_and_desired_volume() )
@@ -113,7 +113,7 @@ class BatchSparge(Lauter):
             raise MissingParam("Bad properties to solve batch sparge (have %s)" % self.properties_str())
 
     def solve_from_mash_and_desired_volume(self):
-        """Solve to get gravity of extracted wort
+        """Solve to get gravity of extracted wort.
 
         Must know the results of the mash (volume and total points)
         and also the desired volume (wort_volume). Will assume an 

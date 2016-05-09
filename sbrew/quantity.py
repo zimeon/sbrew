@@ -220,8 +220,8 @@ class Quantity:
                 if (not (f in Quantity.ALL_CONV[t])):
                     Quantity.ALL_CONV[t][f]= 1.0 / Quantity.ALL_CONV[f][t] #inverse
         # Now expand tree by repeatedly adding two-step paths as one
-        for s in Quantity.ALL_CONV.keys():
-            for m in Quantity.ALL_CONV[s].keys():
+        for s in list(Quantity.ALL_CONV.keys()):
+            for m in list(Quantity.ALL_CONV[s].keys()):
                 for e in Quantity.ALL_CONV[m]:
                     if (not (e in Quantity.ALL_CONV[s])):
                         Quantity.ALL_CONV[s][e] = Quantity.ALL_CONV[s][m] * Quantity.ALL_CONV[m][e]

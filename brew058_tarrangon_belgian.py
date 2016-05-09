@@ -22,12 +22,12 @@ hc_rest=hc_grain+hc_mashtun
 m.property('temp','150F')
 m.property('t_mashtun','70F')
 t_strike=Quantity( (((hc_water+hc_rest).value*150 - hc_rest.value*70) / hc_water.value), 'F')
-print "V_strike     = " + str(volume_water)
-print "T_strike     = " + str(t_strike)
-print m
+print("V_strike     = " + str(volume_water))
+print("T_strike     = " + str(t_strike))
+print(m)
 m.solve()
 r.add(m)
-print "Total grains = " + str(m.total_grains())
+print("Total grains = " + str(m.total_grains()))
 
 s = BatchSparge(start=m)
 s.property('boil_start_volume','6.5gal')
@@ -48,9 +48,9 @@ f.ingredient(Ingredient('yeast','white labs WLP550 Belgian Ale','1vial'))
 r.add(f)
 
 r.solve()
-print r
+print(r)
 
 carb_temp=Quantity('68F')
 carb_vols=Quantity('3volumes')
 psi = psi_required(carb_temp,carb_vols)
-print "Carbonation: %s @ %s requires %s CO2" % (carb_vols,carb_temp,psi)
+print("Carbonation: %s @ %s requires %s CO2" % (carb_vols,carb_temp,psi))

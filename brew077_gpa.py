@@ -35,6 +35,6 @@ f = Ferment(start=b)
 f.ingredient('yeast','us-05','1packet')
 r.add(f)
 
-print r
+print(r)
 
 

@@ -34,6 +34,6 @@ r.add(f)
 
 r.solve()
 
-print r
+print(r)
 
 
