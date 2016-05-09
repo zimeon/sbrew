@@ -1,12 +1,16 @@
-"""Model for physical quantities -- value and unit"""
+"""Model for physical quantities -- value and unit."""
 import re
 import numpy
 
+
 class ConversionError(Exception):
-    pass;
+    """Class to represent error in conversion."""
+
+    pass
+
 
 class Quantity:
-    """Base class for all quantities
+    """Base class for all quantities.
 
     Qantities have a value and a unit. Without a unit a quantity is dimensionless.
     """
@@ -61,7 +65,7 @@ class Quantity:
     ALL_CONV = None
 
     def __init__(self, value=None, unit=None):
-        """Create a Quantity
+        """Initialize a Quantity.
 
         May be initialized in a number of ways:
         1) empty: qty = Quantity()
@@ -91,6 +95,7 @@ class Quantity:
             self.unit = unit
 
     def __str__(self):
+        """Return human readable string of Quantity."""
         if (self.value is None):
             return("? " + str(self.unit))
         elif (self.unit is None):
@@ -101,6 +106,7 @@ class Quantity:
             return(str(self.value) + " " + str(self.unit))
 
     def __repr__(self):
+        """Return simpler representation, useful for debugging."""
         if (self.value is None):
             return("QuantityNotDefined")
         elif (self.unit is None):
@@ -110,7 +116,7 @@ class Quantity:
 
     @staticmethod
     def canonical_unit(unit):
-        """Convert unit string to canonical form if recognized but in another form"""
+        """Convert unit string to canonical form if recognized but in another form."""
         if (unit in Quantity.CANONICAL_UNIT):
             return Quantity.CANONICAL_UNIT[unit]
         return unit
@@ -146,7 +152,7 @@ class Quantity:
             return(self.value * self.find_conversion(self.unit,new_unit))
 
     def temp_to(self, new_unit):
-        """Temperature conversion method"""
+        """Temperature conversion method."""
         if (self.unit == 'F' and new_unit == 'C'):
             return((self.value-32.0)*5.0/9.0)
         elif (self.unit == 'C' and new_unit == 'F'):
@@ -155,7 +161,7 @@ class Quantity:
             raise ConversionError("unknown temperature conversion")
 
     def convert_to(self,new_unit):
-        """Convert internal value to the new unit
+        """Convert internal value to the new unit.
 
         Piggbybacks on the to() method but changes the internal
         representation. Returns self.
@@ -167,27 +173,24 @@ class Quantity:
         return(self)
 
     def __add__(self,other):
-        """Add two quantities, return result in units of first.
-        """
+        """Add two quantities, return result in units of first."""
         sum=self.value+other.to(self.unit)
         return(Quantity(sum,self.unit))
 
     def __sub__(self,other):
-        """Subtract one quantity from another, return result in units of first.
-        """
+        """Subtract one quantity from another, return result in units of first."""
         sum=self.value-other.to(self.unit)
         return(Quantity(sum,self.unit))
 
     def __mul__(self,frac):
-        """Mulitply quantity by a fraction, return new quantity as result.
-        """
+        """Mulitply quantity by a fraction, return new quantity as result."""
         return(Quantity(self.value*frac,self.unit))
 
     __rmul__ = __mul__
 
     @staticmethod
     def find_conversion(from_unit,to_unit):
-        """Function to see whether we can fo from_unit->to_unit
+        """Function to see whether we can fo from_unit->to_unit.
 
         Raises and exception if not, otherwise returns factor that the value
         in from_unit is multiplied by to get a value in to_unit
@@ -195,7 +198,7 @@ class Quantity:
         if (from_unit==to_unit):
             return(1.0);
         if (Quantity.ALL_CONV is None):
-            Quantity.build_ALL_CONV()
+            Quantity._build_ALL_CONV()
         if (not (from_unit in Quantity.ALL_CONV)):
             raise ConversionError('unknown original unit in conversion requested from %s to %s' % (from_unit, to_unit))
         if (not (to_unit in Quantity.ALL_CONV)):
@@ -205,7 +208,7 @@ class Quantity:
         return(Quantity.ALL_CONV[from_unit][to_unit])
 
     @staticmethod
-    def build_ALL_CONV():
+    def _build_ALL_CONV():
         # Expand tree of all CONVERSIONS (include sanity check to 
         # avoid possible cycles)
         #
@@ -234,7 +237,7 @@ class Quantity:
     c_data = [-0.0005,0.0,0.001,0.002,0.003,0.005,0.007,0.008,0.009,0.010]
 
     def hydrometer_correction(self, temp='60F'):
-        # get specific gravity correction
+        """Return specific gravity correction at given temperature."""
         tval = Quantity(temp).to('F')
         # barf if outside range
         if (tval<self.t_data[0] or tval>self.t_data[-1]):
@@ -242,8 +245,3 @@ class Quantity:
         correction = numpy.interp(tval,self.t_data,self.c_data)
         sg = self.to('sg') + correction
         return Quantity(sg,'sg')
-
-#############################################################################
-# Functions use for specific conversions
-#
-

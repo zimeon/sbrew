@@ -1,9 +1,11 @@
+"""An Ingredient, has Quantity and possible Property values too."""
+
 from .quantity import Quantity
 from .property import Property, NoProperty, MissingProperty
 import re
 
 class Ingredient:
-    """Representation of one ingredient
+    """Representation of one ingredient.
 
       i = Ingredient('grain','belgian pilsner','9.75lb')
       i = Ingredient('grain','belgian pilsner',9.75,'lb')
@@ -18,6 +20,7 @@ class Ingredient:
     """
 
     def __init__(self, type, name, quantity=None, unit=None, pct=None, **properties_kv):
+        """Initialize Ingredient."""
         self.type = type
         self.name = name
         self.pct = pct
@@ -32,7 +35,7 @@ class Ingredient:
             self.quantity = Quantity(quantity, unit)
 
     def property(self,p,quantity=None,unit=None,default=NoProperty):
-        """Add/get property to this ingredient
+        """Add/get property to this ingredient.
 
         This is getter and setter for the property p. Perhaps not
         properly pythonic but p=Property and quantity!=None implies set,
@@ -64,18 +67,18 @@ class Ingredient:
         return(p)
 
     def has_properties(self,*args):
-        """True if recipe has the properties listed, else false"""
+        """True if recipe has the properties listed, else false."""
         for property in args:
             if (property not in self.properties):
                 return(False)
         return(True)
 
     def has_property(self,*arg):
-        """Another name for has_properties()"""
+        """Another name for has_properties."""
         return(self.has_properties(*arg))        
 
     def __str__(self):
-        """Human readable string version of object
+        """Human readable string version of object.
 
         Default form is "type name quantity" but also will append information
         from pct and properties

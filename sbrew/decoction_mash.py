@@ -1,3 +1,5 @@
+"""A Decoction Mash."""
+
 from .mash import water_grain_volume
 from .step_mash import StepMash
 from .recipe import MissingParam
@@ -32,12 +34,13 @@ class DecoctionMash(StepMash):
     DEFAULT_NAME='decoction mash'
 
     def __init__(self, **kwargs):
+        """Initialize DecoctionMash as subclass of Mash."""
         super(DecoctionMash,self).__init__(**kwargs)
         self.steps=[]
         self.ingredients=[]
 
     def split(self,**extra):
-        """Split mash to take decoction
+        """Split mash to take decoction.
 
         Add 'split' step and returns the new DecoctionMash object. The split
         must be a fraction.
@@ -60,7 +63,7 @@ class DecoctionMash(StepMash):
         return(decoction)
 
     def mix(self,decoction,**extra):
-        """Mix decoction into this mash
+        """Mix decoction into this mash.
 
         Add a 'mix' step that integrates the decoction mash into this mash
         """
@@ -69,14 +72,17 @@ class DecoctionMash(StepMash):
         self.steps.append(extra)
 
     def __str__(self):
-        # Use superclass str() but don't try to render steps
+        """Summary string without steps.
+
+        Use superclass str() but don't try to render steps.
+        """
         s = super(DecoctionMash,self).__str__(skip_steps=1)
         s += '***steps***\n'
         s += self.steps_str()
         return(s)
 
     def steps_str(self,start_time=timedelta(),n=0,indent=''):
-        """ Write out a time sequence of all steps, including decoctions
+        """Write out a time sequence of all steps, including decoctions.
 
         Goal is to create a useful presentation of all steps on a single 
         timeline, including working out any implied rests because the 
@@ -148,11 +154,12 @@ class DecoctionMash(StepMash):
         return(s)
 
     def stage_state_str(self,stage):
+        """String for state of one stage."""
         str = "%s @ %s " % (stage['volume'],stage['temp'])
         return(str)
 
     def find_stages(self, stages, mash_name='_main', start_time=timedelta()):
-        """Create list for this mash's stages in main stages dict
+        """Create list for this mash's stages in main stages dict.
 
         The stages dict has a set of stages for the main mash ('_main') and
         for any decoctions. The goal is to work these out with the same set of 

@@ -1,15 +1,20 @@
 #!/usr/bin/env python
-#
-# The sbrew-shell... wouldn't it be great if I could
-# use sbrew from a terminal with the same utility that
-# airline agents use their terminals?
-#
+"""The sbrew-shell.
+
+The sbrew-shell... wouldn't it be great if I could
+use sbrew from a terminal with the same utility that
+airline agents use their terminals?
+
+FIXME - Should this be tweaked so we instead use the
+sbrew methods as part of ipython or similar?
+"""
 from sbrew import *
 
 prompt = { 'sb': 'sbsh> ', 'py': '>>> ' }
 input_mode = 'sb'
 
 def parse_input(i, lastval=None):
+    """Parse terminal input."""
     try:
         c = eval(i, globals(), {'c':lastval} )
     except Exception as e:
@@ -34,6 +39,3 @@ while (1):
     elif (i == 'help'):
         print("sbrewsh - sbrew shell\n q - quit\n sb - sbrew input\n py - python input\n help - this help\n")
 print("sbrew go bye bye")
-
-
-    

@@ -1,9 +1,12 @@
+"""Configuration for sbrew."""
 from setuptools import setup, Command
 import os
 # setuptools used instead of distutils.core so that 
 # dependencies can be handled automatically
 
 class Coverage(Command):
+    """Run coverage."""
+
     description = "run coverage"
     user_options = []
 
