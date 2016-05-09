@@ -5,7 +5,6 @@ python:
   - "3.5"
 install:
   - sudo apt-get update
-  - sudo apt-get install libblas-dev liblapack-dev
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
@@ -20,8 +19,9 @@ install:
   - conda update -q conda
   # Useful for debugging any issues with conda
   - conda info -a
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy coveralls pep257 restructuredtext_lint
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy
   - source activate test-environment
+  - pip install coveralls pep257 restructuredtext_lint
   - python setup.py install
 script:
   - py.test
