@@ -33,6 +33,6 @@ f = Ferment()
 f.ingredient('yeast','wyeast 1056 American Ale','2vial')
 r.add(f)
 
-print r
+print(r)
 
 

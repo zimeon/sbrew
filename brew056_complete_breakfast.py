@@ -42,4 +42,4 @@ c.ingredient(Ingredient('coffee','Gimme leftist espresso','800ml'))
 r.add(c)
 
 r.solve()
-print r
+print(r)

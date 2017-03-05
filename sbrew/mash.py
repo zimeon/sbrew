@@ -1,7 +1,9 @@
-from recipe import Recipe, MissingParam
-from ingredient import Ingredient
-from property import MissingProperty
-from quantity import Quantity
+"""Base model for a Mash."""
+
+from .recipe import Recipe, MissingParam
+from .ingredient import Ingredient
+from .property import MissingProperty
+from .quantity import Quantity
 
 class Mash(Recipe):
     """A mash is a simple recipe with no sub-steps.
@@ -10,16 +12,17 @@ class Mash(Recipe):
     m.ingredient( Ingredient('grain','belgian pilsner','9.75lb') )
     m.ingredient( Ingredient('grain','caravieene belgian','1.25lb') )
     m.ingredient( Ingredient('grain','clear candi sugar','0.87lb') )
-    print m
+    print(m)
     """
 
     DEFAULT_NAME='mash'
 
     def __init__(self, **kwargs):
+        """Initialize Mash as subclass of Recipe."""
         super(Mash,self).__init__(**kwargs)
 
     def total_type(self, type, unit=None):
-        """Return total quantity of ingredient with given type
+        """Return total quantity of ingredient with given type.
 
         Will use the units of the first ingredient of the given 
         type found. Will return None is there are no ingredients
@@ -35,7 +38,7 @@ class Mash(Recipe):
         return total
 
     def all_grains_percentage(self):
-        """True if all grain quantities are expressed as a percentage
+        """True if all grain quantities are expressed as a percentage.
 
         This is used to flag the need to calculate back to get weights
         based on parameters specified for a later part of the recipe.
@@ -51,14 +54,13 @@ class Mash(Recipe):
         return(num_pct>0 and num_not_pct==0)
 
     def grain_weights_from_total_and_percentages(self,total_mass=None):
-        """Calculate weight for each grain given overall total
-        """
+        """Calculate weight for each grain given overall total."""
         if (total_mass is None):
             total_mass=self.property('total_grain').quantity
         total_pct=0.0
         # Want to set total mass, are all grains set as pct?
         if (not self.all_grains_percentage()):
-            print "can't set total as not all pct"
+            print("can't set total as not all pct")
         else:
             for ingredient in self.ingredients:
                 if (ingredient.type == 'grain'):
@@ -67,8 +69,7 @@ class Mash(Recipe):
                     ingredient.quantity.value = total_mass.value * ingredient.quantity.value / 100.0
 
     def total_grains(self, total_mass=None):
-        """Return total mass of grains
-        """
+        """Return total mass of grains."""
         if (total_mass):
             self.grain_weights_from_total_and_percentages(total_mass)
         # Now return total mass
@@ -76,7 +77,7 @@ class Mash(Recipe):
         return( mass if mass else Quantity('0lb'))
 
     def total_points(self):
-        """Return total number of points estimated to be in grains if fully converted
+        """Return total number of points estimated to be in grains if fully converted.
 
         FIXME - currently dumb, uses 35.11ppg for MO for all
         """
@@ -87,13 +88,12 @@ class Mash(Recipe):
         return( Quantity(total_points,'points') )
 
     def total_water(self):
-        """Return total volume of water
-        """
+        """Return total volume of water."""
         vol = self.total_type('water')
         return( vol if vol else Quantity('0gal'))
 
     def color_units(self):
-        """Calculate number of mash color units from grain colors (L)
+        """Calculate number of mash color units from grain colors (L).
 
         The number of color units is defined as the grain quantity (lbs) multiplied
         by the color of each grain (L), divided by the total water volume.
@@ -123,17 +123,17 @@ class Mash(Recipe):
         return( Quantity(mcu,'MCU') )
 
     def mash_volume(self):
-        """Return volume of mash including both liquid and grain"""
+        """Return volume of mash including both liquid and grain."""
         return( water_grain_volume( self.total_water(), self.total_grains() ) )
 
     def add_mash(self, mash=None):
-        """Add another mash into this mash
-        """
+        """Add another mash into this mash."""
         self.name = self.name_with_default + ' + ' + mash.name_with_default
         for ingredient in mash.ingredients:
             self.ingredient( ingredient )
 
     def solve(self):
+        """Solve the Mash forward."""
         if (self.all_grains_percentage()):
             if ('total_grain' in self.properties):
                 self.grain_weights_from_total_and_percentages()
@@ -147,6 +147,7 @@ class Mash(Recipe):
         self.color_units()
 
     def end_state_str(self):
+        """Summary tring for end state of Mash."""
         try:
             self.solve()
         except:
@@ -156,10 +157,11 @@ class Mash(Recipe):
         tp = self.property('total_points',default='?points').short_str()
         return('%s, %s, %s' % (tg,tw,tp) )
 
-##### Functions #####
+
+# Functions
 
 def water_grain_volume(water, grain):
-    """Return volume of water and grain
+    """Return volume of water and grain.
 
     See <http://www.howtobrew.com/appendices/appendixD-3.html> for numbers, use 1lb grain
 

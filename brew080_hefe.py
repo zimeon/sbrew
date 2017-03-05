@@ -44,6 +44,6 @@ r.add(f)
 #beer.property('abv','5.0%ABV')
 
 r.solve()
-print r
+print(r)
 
 

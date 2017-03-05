@@ -1,20 +1,27 @@
-from quantity import Quantity
+"""Model for Property."""
+
+from .quantity import Quantity
 import re
 
 class NoProperty(object):
-    """Class used to represent 'no property' default"""
+    """Class used to represent 'no property' default."""
+
     def __str__(self):
+        """Return human readable string."""
         return('NoProperty')
 
 
 class MissingProperty(Exception):
-    """Exception because of missing property"""
+    """Exception because of missing property."""
+
     def __init__(self, of=None, name=None, existing=None):
+        """Initialize MissingPropery exception with optional context."""
         self.of = of
         self.name = name
         self.existing = existing
 
     def __str__(self):
+        """Return human readable string with some context."""
         msg = "Missing property"
         if (self.name):
             msg += " %s" % (self.name)
@@ -26,7 +33,7 @@ class MissingProperty(Exception):
 
 
 class Property:
-    """Representation of one property
+    """Representation of one property.
 
     p1 = Property('temp','122F')
     p2 = Property('temp',123.2,'F')
@@ -36,6 +43,7 @@ class Property:
     """
 
     def __init__(self, name, quantity, unit=None, **extra):
+        """Initialize a Property."""
         self.name = name
         self.extra = {}
         self.extra.update(extra)
@@ -48,11 +56,14 @@ class Property:
             self.quantity = Quantity(quantity, unit)
 
     def to(self,unit):
-        """Shortcut to self.quantity.to(unit)"""
+        """Return the value converted to unit.
+
+        Shortcut to self.quantity.to(unit).
+        """
         return self.quantity.to(unit)
 
     def short_str(self):
-        """Short human readable string representation, excluding extra info
+        """Short human readable string representation, excluding extra info.
 
         Avoid including the property name in cases where it will be obvious 
         from the units of the property.
@@ -66,7 +77,7 @@ class Property:
         return(s)
 
     def __str__(self):
-        """Human readable string version of Property
+        """Human readable string version of Property.
 
         Default form is "name     quantity"
         """

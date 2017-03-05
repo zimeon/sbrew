@@ -44,6 +44,6 @@ f.property('FG','1.011sg',note='as measured')
 r.add(f)
 
 r.solve()
-print r
+print(r)
 
 

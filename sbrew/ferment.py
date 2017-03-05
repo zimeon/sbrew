@@ -1,32 +1,33 @@
-from recipe import Recipe,MissingParam
-from ingredient import Ingredient
-from quantity import Quantity
-from property import Property
+"""Model Fermentation."""
+from .recipe import Recipe,MissingParam
+from .ingredient import Ingredient
+from .quantity import Quantity
+from .property import Property
 
 # Good sources for formulas
 # http://www.primetab.com/formulas.html
 
 class Ferment(Recipe):
-    """A fermentation is a simple recipe with no sub-steps.
-
-    """
+    """A fermentation is a simple recipe with no sub-steps."""
 
     DEFAULT_NAME='ferment'
 
     def __init__(self, **kwargs):
+        """Initialize Ferment object."""
         super(Ferment, self).__init__(**kwargs)
 
     def import_forward(self):
+        """Import properties from previous step."""
         self.import_property('OG')
         self.import_property('IBU')
         self.import_property('SRM')
 
     def import_backward(self):
+        """Import desired properties from next step."""
         self.import_property('FG',source='output')
 
     def solve(self):
-        """ Calculate the ABV and attenuation based on OG and FG
-        """
+        """Calculate the ABV and attenuation based on OG and FG."""
         if ('OG' in self.properties and
             'FG' in self.properties ):
             self.property('ABV', Quantity(self.abv(),'%ABV') )
@@ -48,7 +49,7 @@ class Ferment(Recipe):
 
     
     def abv(self):
-        """ Calculate the ABV and attenuation based on OG and FG
+        """Calculate the ABV and attenuation based on OG and FG.
 
         The Complete Joy of Home Brewing, 3rd ed, p43
         ABW = OG-FG * 105, (where OG and FG in specific gravity)
@@ -57,7 +58,7 @@ class Ferment(Recipe):
         return( (self.property('OG').to('sg') - self.property('FG').to('sg')) * 105 * 1.25 )
 
     def end_state_str(self):
-        """Description of end state of fermantion
+        """Description of end state of fermantion.
 
         Includes the ABV and, if available, the apparent attenuation.
         """

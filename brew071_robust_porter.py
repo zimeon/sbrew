@@ -38,6 +38,7 @@ f.property('FG','1.019sg') # measured
 r.add(f)
 
 r.solve()
-print r
+print(r)
+
 
 

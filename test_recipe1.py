@@ -30,6 +30,6 @@ f.ingredient(Ingredient('yeast','white labs WLP550 belgian ale','1vial'))
 f.ingredient(Ingredient('hops','stryian goldings','2oz'))
 r.add(f)
 
-print r
+print(r)
 
 

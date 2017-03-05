@@ -1,20 +1,25 @@
 #!/usr/bin/env python
 """Run various scripts and check output to provide end-to-end tests"""
 
-import sys
+from io import BytesIO
 import subprocess
+import sys
 import unittest
-from cStringIO import StringIO
+
 
 class TestAll(unittest.TestCase):
 
     def run_script(self,script):
-        """ Run script, collect stdout and check exit code 0 """
+        """Run script, collect stdout and check exit code 0.
+
+        Returns unicode string and not bytes.
+        """
         p = subprocess.Popen([sys.executable,script],
                              stdout=subprocess.PIPE)
         self.assertEqual( p.wait(), 0 )
-        return p.stdout.read()
-        
+        output = p.stdout.read()
+        p.stdout.close()
+        return(output.decode('utf-8'))
         
     def test056(self):
         out = self.run_script('brew056_complete_breakfast.py')

@@ -1,4 +1,5 @@
-"""
+"""Implementation of refractometer calculations.
+
 Sources:
 http://www.primetab.com/formulas.html
 http://byo.com/stories/item/1313-refractometers
@@ -7,10 +8,10 @@ Online calculators:
 
 http://www.northernbrewer.com/refractometer-calculator/
 """
-from quantity import Quantity
+from .quantity import Quantity
 
 def brix_to_starting_gravity(brix):
-    """Brix reading to starting gravity
+    """Brix reading to starting gravity.
 
     Formula was derived from the 69th edition (1988-1989) of the CRC Handbook of 
     Chemistry and Physics, "Concentrative Properties of Aqueous Solutions:
@@ -32,9 +33,10 @@ def brix_to_starting_gravity(brix):
     return( Quantity(sg,'sg') )
 
 def starting_gravity_to_brix(sg):
-    """Starting gravity to expected brix reading (plato)
+    """Starting gravity to expected brix reading (plato).
     
     Reference: Manning, M.P., Understanding Specific Gravity and Extract, Brewing Techniques, 1,3:30-35 (1993)
     
     Plato = -676.67 + 1286.4*sg - 800.47*sg*sg + 190.74*sg*sg*sg
     """
+    raise(Exception("IMPLEMENT ME - FIXME"))

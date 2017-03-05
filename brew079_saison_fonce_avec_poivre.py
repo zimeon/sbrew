@@ -39,6 +39,6 @@ f.ingredient('yeast','Wyeast 3711 French Saison','1cake') #from #78
 f.property('FG','1.005sg')
 r.add(f)
 
-print r
+print(r)
 
 

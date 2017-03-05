@@ -1,9 +1,11 @@
-from mash import Mash
-from quantity import Quantity
+"""Implement Step Mash as specialization of Mash."""
+from .mash import Mash
+from .quantity import Quantity
+
 from datetime import timedelta
 
 class StepMash(Mash):
-    """A step mash where ingredients may be added and temperatures changed
+    """A step mash where ingredients may be added and temperatures changed.
 
     Each step in the mash is recorded as a sub-recipe but, unlike the normal
     case of sub-recipes, the steps are not full recipe objects but a simpler
@@ -13,10 +15,11 @@ class StepMash(Mash):
     DEFAULT_NAME='step mash'
 
     def __init__(self, **kwargs):
+        """Initialize StepMash, pass arguments to Mash superclass."""
         super(StepMash,self).__init__(**kwargs)
 
     def add_step(self, type, **extra):
-        """Add step to the mash process
+        """Add step to the mash process.
 
         In most cases we are doing the same sorts of things as an infusion
         mash, such as heating, waiting, etc. However, the key distinguishing
@@ -45,10 +48,10 @@ class StepMash(Mash):
         elif (type == 'adjust'):
             self.steps.append(extra)
         else:
-            raise Exception('Unknown step type "{0:s}"'.format(type))
+            raise Exception('Unknown step type "%s"' % (type))
 
     def total_water(self):
-        """Add up all water to return total volume
+        """Add up all water to return total volume.
 
         Go through all the step of this mash adding up all water
         additions. Also add water ingredients and any from a 
@@ -64,7 +67,7 @@ class StepMash(Mash):
         return(total_water)
 
     def total_time(self):
-        """Return the total time that this mash takes to complete
+        """Return the total time that this mash takes to complete.
  
         This is just the sum of the times of the individual steps
         in the mash.
@@ -76,7 +79,7 @@ class StepMash(Mash):
         return(t)  
 
     def steps_str(self,start_time=timedelta(),n=0,indent=''):
-        """ Write out a time sequence of all steps, including decoctions
+        """Write out a time sequence of all steps, including decoctions.
 
         Goal is to create a useful presentation of all steps on a single 
         timeline, including working out any implied rests because the 
@@ -93,9 +96,9 @@ class StepMash(Mash):
         stages_started={}
         s = "H:MM:SS "
         for mash in mashes:
-            s += "| {0:27s} ".format(mash)
+            s += "| %-27s " % (mash)
             stages_iter[mash]=iter(stages[mash])
-            stages_next[mash]=stages_iter[mash].next()
+            stages_next[mash]=next(stages_iter[mash])
             stages_started[mash]=0
         s += '\n'
         # Keep looking at all lists of stages to find next time, exit when all done
@@ -104,11 +107,10 @@ class StepMash(Mash):
             t = timedelta(days=9999) #big
             for mash in mashes:
                 #tt = (str(stages_next[mash]['time']) if stages_next[mash] else 'none')
-                #s += 'test {0:s} has time {1:s}\n'.format(mash,tt)
                 if (stages_next[mash] and stages_next[mash]['time']<t):
                     t = stages_next[mash]['time']
             # Output all things that happen at time t
-            s += "{0:s} ".format(t)
+            s += str(t) + ' '
             for mash in mashes:
                 state = ''
                 if (stages_next[mash]):
@@ -116,7 +118,7 @@ class StepMash(Mash):
                         state = self.stage_state_str(stages_next[mash])
                         stages_started[mash]+=1
                         try:
-                            stages_next[mash]=stages_iter[mash].next()
+                            stages_next[mash]=next(stages_iter[mash])
                         except StopIteration:
                             stages_next[mash]=None
                     elif (stages_started[mash]>0):
@@ -125,7 +127,7 @@ class StepMash(Mash):
                         state = '' # '-not-started-'
                 else:
                     state = '' # '-end-'
-                s += "| {0:27s} ".format(state)
+                s += "| %-27s " % (state)
             s += '\n'
             # Are we done? All iterators used up
             not_none=0;
@@ -137,13 +139,12 @@ class StepMash(Mash):
         return(s)
 
     def stage_state_str(self,stage):
-        str = "{0:s} -> {1:s} @ {2:s} ".format(stage['type'],stage['volume'],stage['temp'])
+        """Return string describing this stage."""
+        str = "%s -> %s @ %s " % (stage['type'],stage['volume'],stage['temp'])
         return(str)
 
     def find_stages(self, stages, mash_name='_main', start_time=timedelta()):
-        """Create list for this mash's stages in main stages dict
-
-        """
+        """Create list for this mash's stages in main stages dict."""
         stage=[]
         stages[mash_name]=stage
         #
@@ -172,10 +173,12 @@ class StepMash(Mash):
         # no return val, data left in stage 
 
     def parsetime(self, tstr):
+        """Parse time."""
         tqty = Quantity(tstr).to('min')
         return(timedelta(minutes=tqty))
 
     def __str__(self, **kwargs):
+        """String representation without steps."""
         # Use superclass str() but don't try to render steps
         s = super(StepMash,self).__str__(skip_steps=1)
         if ('skip_steps' not in kwargs):

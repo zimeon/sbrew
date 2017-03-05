@@ -67,7 +67,7 @@ class TestAll(unittest.TestCase):
         dm.mix(deco)
         # should see two mashes in string
         self.assertRegexpMatches( dm.steps_str(), r'_main\s+|\s+decoction' )
-        self.assertRegexpMatches( dm.steps_str(), r'-ditto-\s+\|\s+0.00 gal @ 160F' )
+        self.assertRegexpMatches( dm.steps_str(), r'0.60 gal @ 108.0 F\s+0.80 gal @ 160.0 F' )
 
     def test_07_stage_state_str(self):
         dm = DecoctionMash()
