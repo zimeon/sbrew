@@ -4,6 +4,8 @@
 # Python code
 *.pyc
 build
+dist
 *.egg-info
+.eggs
 .coverage
 .cache
