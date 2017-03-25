@@ -74,7 +74,7 @@ class Recipe(object):
         return(self.name_with_default)
 
     def __str__(self, **kwargs):
-        """Human readable output of this recipe.
+        """Detailed human readable output of this recipe.
 
         A call with kwarg line_numbers will set off printing such that
         all subsequent steps will print line numbers.
@@ -117,6 +117,41 @@ class Recipe(object):
             return('[%03d] ' % (kwargs['line_number']))
         else:
             return('')
+
+    def markdown_narrative(self, **kwargs):
+        """Markdown narrative version of this recipe.
+
+        Less detailed and less strongly formatted than __str__(..) but still
+        do in recipe blocks with ingredients, then select properties in
+        narrative.
+
+        Does not include water in ingredient list (e.g. for strike).
+        """
+        str_list = []
+        if (len(self.steps)==0 or 'skip_steps' in kwargs):
+            str_list.append("## " + self.name_with_default + "\n\n")
+        else:
+            str_list.append("\n# " + self.name_with_default + "\n\n")
+            if (self.description):
+                str_list.append(self.description + "\n\n")
+            for step in self.steps:
+                str_list.append(step.markdown_narrative(**kwargs))
+        if (len(self.ingredients)>0):
+            ingredients_list = []
+            for ingredient in self.ingredients:
+                if (ingredient.type != 'water'):
+                    ingredients_list.append(ingredient.narrative_str())
+            str_list.append("\\\\\n".join(ingredients_list) + "\n\n")
+        #if (len(self.properties)>0):
+        #    str_list.append("Properties:\n")
+        #    for name in sorted(self.properties.keys()):
+        #        if ('type' not in self.properties[name].extra or
+        #            self.properties[name].extra['type']!='system'):
+        #            str_list.append(self._str_line_num(kwargs) +
+        #                            ' ' + str(self.properties[name]) + "\n")
+        str_list.append(self.end_state_narrative())
+        return(''.join(str_list))
+
 
     def __add__(self, other):
         """Add two partial recipes together, returning a new recipe.
@@ -321,10 +356,18 @@ class Recipe(object):
             print("Solved recipe")
 
     def end_state_str(self):
-        """String describing the end state of this recipe step.
+        """String succinctly describing the end state of this recipe step.
 
         Should always return a string, a simple question mark if no unseful information
         is available. Likely to be overridden in all specific implementations of
         Recipe.
         """
         return('')
+
+    def end_state_narrative(self):
+        """String narrative of the step, summarizing the end state.
+
+        If not overidden, will give the end_state_str() simply wrapped.
+        """
+        s = self.end_state_str()
+        return("Results in " + s + ".\n\n" if s else "")
