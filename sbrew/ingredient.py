@@ -5,7 +5,7 @@ from .property import Property, NoProperty, MissingProperty
 import re
 
 
-class Ingredient:
+class Ingredient(object):
     """Representation of one ingredient.
 
       i = Ingredient('grain','belgian pilsner','9.75lb')
@@ -81,13 +81,8 @@ class Ingredient:
         return(self.has_properties(*arg))
 
     def narrative_str(self):
-        """String for use in narrative description.
-
-        Do not include water as an ingredient in this output.
-        """
+        """String for use in narrative description."""
         s = ""
-        if (self.type == 'water'):
-            return(s)
         if (self.quantity):
             s += "{0:10s} ".format(str(self.quantity))
         if (self.pct):
