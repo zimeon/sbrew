@@ -34,7 +34,7 @@ b.property('boil_end_volume', '6.25gal')
 r.add(b)
 
 f = Ferment(start=b)
-f.ingredient('yeast','white labs WL001 cal ale','1starter')
+f.ingredient('yeast','white labs WLP001 cal ale','1starter')
 #f.property('ABV','8%ABV')
 f.property('atten','75%atten')
 r.add(f)
