@@ -1,6 +1,7 @@
 """Model for physical quantities -- value and unit."""
-import re
+import logging
 import numpy
+import re
 
 
 class ConversionError(Exception):
@@ -67,7 +68,7 @@ class Quantity:
 
     ALL_CONV = None
 
-    def __init__(self, value=None, unit=None):
+    def __init__(self, value=None, unit=None, default_unit=None):
         """Initialize a Quantity.
 
         May be initialized in a number of ways:
@@ -76,6 +77,10 @@ class Quantity:
         3) split: qty = Quantity(value, unit)
         4) unit only: qty = Quantity(None, unit)
         5) string: qty = Quantity('1gal') or Quantity('?gal')
+        6) default: qty = Quantity('1.051', default_unit='sg')
+
+        If no explicit unit is specified but a value is passed in, then if that does
+        not include a unit use default_unit instead, issue a warning about the unit used.
         """
         #
         if (value is None):
@@ -86,14 +91,16 @@ class Quantity:
             self.unit = value.unit
         elif (unit is None):
             # try to parse value and unit from string
-            m = re.match(
-                '\s*([-+]?\d+(\.\d*)?|\?)\s*([A-Za-z%][\w/%]*)\s*$', value)
+            m = re.match('\s*([-+]?\d+(\.\d*)?|\?)\s*([A-Za-z%][\w/%]*)\s*$', value)
             if (m):
                 self.value = None if (m.group(1) == '?') else float(m.group(1))
                 self.unit = m.group(3)
             else:
                 self.value = float(value)
                 self.unit = unit
+            if (self.unit is None and default_unit is not None):
+                self.unit = default_unit
+                logging.warn("Using default unit: " + self.__str__())
         else:
             self.value = float(value)
             self.unit = unit
