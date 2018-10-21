@@ -1,8 +1,9 @@
 """Configuration for sbrew."""
 from setuptools import setup, Command
 import os
-# setuptools used instead of distutils.core so that 
+# setuptools used instead of distutils.core so that
 # dependencies can be handled automatically
+
 
 class Coverage(Command):
     """Run coverage."""
@@ -28,7 +29,7 @@ setup(
     packages=['sbrew'],
     scripts=[],
     classifiers=["Development Status :: 3 - Alpha",
-                 "Operating System :: OS Independent", #is this true? know Linux & OS X ok
+                 "Operating System :: OS Independent",  # is this true? know Linux & OS X ok
                  "Programming Language :: Python",
                  "Programming Language :: Python :: 2.7"],
     author='Simeon Warner',

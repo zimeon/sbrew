@@ -114,4 +114,3 @@ class Ingredient(object):
                 prop_strs.append(self.properties[e].short_str())
             s += "  (" + ", ".join(prop_strs) + ")"
         return s
-

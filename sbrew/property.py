@@ -3,6 +3,7 @@
 from .quantity import Quantity
 import re
 
+
 class NoProperty(object):
     """Class used to represent 'no property' default."""
 
@@ -55,7 +56,7 @@ class Property:
         else:
             self.quantity = Quantity(quantity, unit)
 
-    def to(self,unit):
+    def to(self, unit):
         """Return the value converted to unit.
 
         Shortcut to self.quantity.to(unit).
@@ -65,13 +66,13 @@ class Property:
     def short_str(self):
         """Short human readable string representation, excluding extra info.
 
-        Avoid including the property name in cases where it will be obvious 
+        Avoid including the property name in cases where it will be obvious
         from the units of the property.
         """
         s = ""
-        if (self.name != 'time' and 
+        if (self.name != 'time' and
             self.name != 'aa' and
-            self.name != self.quantity.unit):
+                self.name != self.quantity.unit):
             s += self.name + " "
         s += str(self.quantity)
         return(s)
@@ -81,10 +82,10 @@ class Property:
 
         Default form is "name     quantity"
         """
-        s = "{0:18s}  {1:10s}".format(self.name,str(self.quantity))
-        if (len(self.extra)>0):
+        s = "{0:18s}  {1:10s}".format(self.name, str(self.quantity))
+        if (len(self.extra) > 0):
             extras = []
             for e in sorted(self.extra.keys()):
-               extras.append("{0:6s}".format(self.extra[e]))
+                extras.append("{0:6s}".format(self.extra[e]))
             s += "( " + ', '.join(extras) + ")"
         return s

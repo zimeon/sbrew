@@ -30,8 +30,8 @@ s.property('wort_volume', '6.75gal')
 r.add(s)
 
 b = Boil(start=s, duration="60min")
-b.ingredient('hops', 'hallertau', '1.25oz', time='60min', aa='3.1%AA')
-b.ingredient('hops', 'hallertau', '0.25oz', time='15min', aa='3.1%AA')
+b.ingredient('hops', 'hallertau', '12IBU', time='60min', aa='2.7%AA')
+b.ingredient('hops', 'hallertau', '0.25oz', time='15min', aa='2.7%AA')
 # was a bit light, aim for 1.051 OG
 b.ingredient('dme', 'muntons extra light', '0.5lb', time='15min')
 b.property('boil_end_volume', '6.25gal')

@@ -22,10 +22,11 @@ install:
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
   - source activate test-environment
   - conda install anaconda
-  - pip install coveralls pep257 restructuredtext_lint
+  - pip install coveralls pep8 pep257 restructuredtext_lint
   - python setup.py install
 script:
   - py.test
+  - pep8 --ignore=E501 sbrew/*.py tests/*.py *.py
   - pep257 sbrew sbrewsh.py
   - rst-lint README.md
   # It seems that travis has a local version of setuptools which means that

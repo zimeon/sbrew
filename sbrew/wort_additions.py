@@ -2,24 +2,25 @@
 from .recipe import Recipe
 from .quantity import Quantity
 
-EXTRACTS = { 'corn_sugar' : 42.0,
-             'cane_sugar' : 46.0,
-             'ldme': 36.0,
-             'sucrose': 46.0  }
+EXTRACTS = {'corn_sugar': 42.0,
+            'cane_sugar': 46.0,
+            'ldme': 36.0,
+            'sucrose': 46.0}
+
 
 class WortAdditions(Recipe):
     """Non-mashed additions to a wort.
 
     Additions may either by of the types listed in the EXTRACTS dictionary, which
-    each have a ppg value specified, or else may have an explicit ppg value 
+    each have a ppg value specified, or else may have an explicit ppg value
     given.
     """
 
-    DEFAULT_NAME='wort additions'
+    DEFAULT_NAME = 'wort additions'
 
     def __init__(self, **kwargs):
         """Initialize WortAdditions object."""
-        super(WortAdditions, self).__init__(**kwargs)        
+        super(WortAdditions, self).__init__(**kwargs)
 
     def import_forward(self):
         """Import properties."""
@@ -35,8 +36,8 @@ class WortAdditions(Recipe):
         FIXME - should cater for possible MCU additions
         """
         wort_gravity = self.property('start_gravity').to('sg') +\
-                       ( self.total_points().to('points') / self.property('wort_volume').to('gal') / 1000.0 )
-        self.property('wort_gravity', Quantity(wort_gravity,'sg') )
+            (self.total_points().to('points') / self.property('wort_volume').to('gal') / 1000.0)
+        self.property('wort_gravity', Quantity(wort_gravity, 'sg'))
 
     def total_points(self):
         """Calculate total points of the wort additions."""
@@ -47,4 +48,4 @@ class WortAdditions(Recipe):
                 total_points += ingredient.property('ppg').to('ppg') * ingredient.quantity.to('lb')
             else:
                 total_points += EXTRACTS[ingredient.type] * ingredient.quantity.to('lb')
-        return( Quantity(total_points,'points') )
+        return(Quantity(total_points, 'points'))

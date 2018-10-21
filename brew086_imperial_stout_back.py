@@ -3,15 +3,14 @@
 from sbrew import *
 
 r = Recipe()
-r.name = "Brown Porter"
+r.name = "Imperial Stout"
 
 # ithaca water
 
 m = InfusionMash()
-m.ingredient('grain', 'marris otter', '7.5lb', color='4L')
-m.ingredient('grain', 'brown malt (crisp)', '26oz', color='65L')
-m.ingredient('grain', 'carafa I (weyermann)', '8oz', color='350.0L')
-m.ingredient('grain', 'crystal 55', '8oz', color='55L')
+m.ingredient('grain', 'marris otter', '80%', color='4L')
+m.ingredient('grain', 'brown malt (crisp)', '10%', color='65L')
+m.ingredient('grain', 'carafa I (weyermann)', '10%', color='350.0L')
 m.ingredient('water', 'strike', '4.7gal')
 m.property('temp', '150F')
 m.property('t_mashtun', '65F')
@@ -31,8 +30,9 @@ r.add(b)
 
 f = Ferment(start=b)
 f.ingredient('yeast', 'white labs WL001 cal ale', '1starter')
-f.property('FG', '1.012sg')
+f.property('ABV', '8%ABV')
+f.property('atten', '75%atten')
 r.add(f)
 
 r.solve()
-print(r)
+print r
