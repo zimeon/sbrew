@@ -8,11 +8,11 @@ r.name = "Extra Rye Bitter (ERB)"
 # ithaca water
 
 m = InfusionMash()
-m.ingredient('grain', '2-row (Briess)', '4.0lb', color='2L')
+m.ingredient('grain', '2-row (GM)', '4.0lb', color='2L')
 m.ingredient('grain', 'Rye (Briess)', '3.0lb', color='3.7L')
 m.ingredient('grain', 'Marris Otter (TF)', '1.5lb', color='4L')
 m.ingredient('grain', 'Wheat Malt (CMC)', '1.25lb', color='2L')
-m.ingredient('grain', 'Coffee (Simpsons)', '2oz', color='150L')
+m.ingredient('grain', 'Chocolate Malt (Simpsons)', '2oz', color='400L')
 m.ingredient('water', 'strike', '5.0gal')
 m.property('temp', '152F')
 m.property('t_mashtun', '63F')
