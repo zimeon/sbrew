@@ -26,8 +26,8 @@ b = Boil(start=s)
 b.time = Quantity('60min')
 # boil
 b.ingredient('hops', 'Cascade', '1.25oz', time='60min', aa='4.0%AA')
-b.ingredient('hops', 'Cascase', '2.0oz', time='15min', aa='4.0%AA')
-b.ingredient('hops', 'Cascase', '1.0oz', time='0min', aa='4.0%AA')
+b.ingredient('hops', 'Cascade', '2.0oz', time='15min', aa='4.0%AA')
+b.ingredient('hops', 'Cascade', '1.0oz', time='0min', aa='4.0%AA')
 b.property('boil_end_volume', '6.5gal')
 r.add(b)
 
