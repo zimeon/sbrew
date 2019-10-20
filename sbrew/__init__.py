@@ -2,11 +2,6 @@
 
 Simply loads everything at present.
 """
-
-import sys
-if sys.version_info < (3, 5):
-    raise "sbrew requires Python 3"
-
 from .quantity import Quantity
 from .ingredient import Ingredient
 from .property import Property
@@ -23,3 +18,7 @@ from .carbonation import *
 from .beer import Beer
 from .wort_additions import *
 from .mix import *
+
+import sys
+if sys.version_info < (3, 5):
+    raise "sbrew requires Python 3"
