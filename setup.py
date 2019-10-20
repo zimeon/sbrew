@@ -31,7 +31,7 @@ setup(
     classifiers=["Development Status :: 3 - Alpha",
                  "Operating System :: OS Independent",  # is this true? know Linux & OS X ok
                  "Programming Language :: Python",
-                 "Programming Language :: Python :: 2.7"],
+                 "Programming Language :: Python :: 3.5"],
     author='Simeon Warner',
     author_email='simeon.warner@cornell.edu',
     description='Simeon\'s Brewing Calculations',
