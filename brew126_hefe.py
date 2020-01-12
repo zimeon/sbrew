@@ -30,7 +30,7 @@ s.property('wort_volume', '6.75gal')
 r.add(s)
 
 b = Boil(start=s, duration="60min")
-#b.ingredient('hops', 'hallertau', '12IBU', time='60min', aa='2.7%AA')
+# b.ingredient('hops', 'hallertau', '12IBU', time='60min', aa='2.7%AA')
 b.ingredient('hops', 'hallertau', '0.75oz', time='60min', aa='2.7%AA')
 b.ingredient('hops', 'hallertau', '0.65oz', time='60min', aa='3.7%AA')
 b.ingredient('hops', 'hallertau', '0.25oz', time='15min', aa='2.7%AA')
