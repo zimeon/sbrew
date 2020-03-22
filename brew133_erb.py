@@ -32,7 +32,7 @@ b.property('boil_end_volume', '6.5gal')
 r.add(b)
 
 f = Ferment(start=b)
-f.ingredient('yeast', 'WLP023 Butron Ale', '1 PurePitch Package')
+f.ingredient('yeast', 'WLP023 Butron Ale', '1pack')  # PurePitch Package
 f.property('FG', '1.012sg')
 r.add(f)
 
