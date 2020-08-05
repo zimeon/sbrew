@@ -1,7 +1,7 @@
 # sbrew
 
-[![Build status](https://travis-ci.org/zimeon/sbrew.svg?branch=master)](https://travis-ci.org/zimeon/sbrew)
-[![Coverage Status](https://coveralls.io/repos/github/zimeon/sbrew/badge.svg?branch=master)](https://coveralls.io/github/zimeon/sbrew?branch=master)
+[![Build status](https://travis-ci.org/zimeon/sbrew.svg?branch=main)](https://travis-ci.org/zimeon/sbrew)
+[![Coverage Status](https://coveralls.io/repos/github/zimeon/sbrew/badge.svg?branch=main)](https://coveralls.io/github/zimeon/sbrew?branch=main)
 
 Simeon's Homebrew Calculations. 
 
