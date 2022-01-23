@@ -62,8 +62,8 @@ class StepMash(Mash):
         if (self.import_property('total_water', 'start_water')):
             total_water += self.property('start_water')
         for step in self.steps:
-            if ('type' in step and step['type'] == 'infuse' and
-                    'volume' in step):
+            if ('type' in step and step['type'] == 'infuse'
+                    and 'volume' in step):
                 total_water += step['volume']
         return(total_water)
 

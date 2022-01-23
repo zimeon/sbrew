@@ -1,6 +1,6 @@
 """Base model for a Mash."""
 
-from .recipe import Recipe, MissingParam
+from .recipe import Recipe, MissingParam, SolverFailed
 from .ingredient import Ingredient
 from .property import MissingProperty
 from .quantity import Quantity
@@ -151,7 +151,7 @@ class Mash(Recipe):
         """Summary tring for end state of Mash."""
         try:
             self.solve()
-        except:
+        except SolverFailed:
             pass
         tg = self.property('total_grain', default='?lb').short_str()
         tw = self.property('total_water', default='?gal').short_str()

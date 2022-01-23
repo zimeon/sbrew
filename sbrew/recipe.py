@@ -18,6 +18,10 @@ class MissingParam(Exception):
         return('Missing parameter exception')
 
 
+class SolverFailed(Exception):
+    """Class for solve failure."""
+
+
 class Recipe(object):
     """Representation of a complete or partial recipe as a set of steps.
 
@@ -350,7 +354,7 @@ class Recipe(object):
         print("Out of %d steps, solved %d" % (num_steps, len(solved)))
         if (num_steps != len(solved)):
             if (self.debug):
-                raise Exception("Failed to solve recipe")
+                raise SolverFailed("Failed to solve recipe")
             else:
                 print("Failed to solve recipe (look at messages above)")
         else:

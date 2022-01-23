@@ -69,8 +69,8 @@ def psi_required_raw(t, v):
     This formula agrees with the value in the table on p184 of Papazian,
     The Home Brewer's Companion.
     """
-    p = (-16.6999 - 0.0101059 * t + 0.00116512 * t * t +
-         0.173354 * t * v + 4.24267 * v - 0.0684226 * v * v)
+    p = (-16.6999 - 0.0101059 * t + 0.00116512 * t * t
+         + 0.173354 * t * v + 4.24267 * v - 0.0684226 * v * v)
     return(p)
 
 
