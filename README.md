@@ -1,8 +1,5 @@
 # sbrew
 
-[![Build status](https://travis-ci.org/zimeon/sbrew.svg?branch=main)](https://travis-ci.org/zimeon/sbrew)
-[![Coverage Status](https://coveralls.io/repos/github/zimeon/sbrew/badge.svg?branch=main)](https://coveralls.io/github/zimeon/sbrew?branch=main)
-
 Simeon's Homebrew Calculations. 
 
 *WARNING:* While I share this code it is clearly not even nearly ready 
