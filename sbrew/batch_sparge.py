@@ -33,7 +33,7 @@ class BatchSparge(Lauter):
       just 1 in which case we have a simple sparge)
     """
 
-    DEFAULT_NAME = 'batch sparge'
+    DEFAULT_NAME = 'Batch sparge'
 
     def __init__(self, extracts=2, **kwargs):
         """Initialize BatchSparge object as type of Lauter.

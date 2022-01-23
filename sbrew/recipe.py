@@ -84,11 +84,13 @@ class Recipe(object):
             del kwargs['line_numbers']
         str_list = []
         if (len(self.steps) == 0 or 'skip_steps' in kwargs):
-            str_list.append("= " + self.name_with_default + " =\n")
+            str_list.append("\n## " + self.name_with_default + "\n\n")
+            if (self.description):
+                str_list.append(self.description + "\n\n")
         else:
             str_list.append("\n")
             str_list.append(self._str_line_num(kwargs) +
-                            "== " + self.name_with_default + " ==\n")
+                            "# " + self.name_with_default + "\n")
             if (self.description):
                 str_list.append("\n" + self.description + "\n\n")
             for step in self.steps:

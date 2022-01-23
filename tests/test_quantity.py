@@ -94,6 +94,11 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual(q1.value, 2.34)
         self.assertEqual(q1.unit, 'lb')
 
+    def test13_sg_math(self):
+        # Subtraction and addition work in simple sg numbers
+        self.assertAlmostEqual((Quantity("1.060sg") - Quantity("0.010sg")).to('sg'), 1.05)
+        self.assertAlmostEqual((Quantity("1.060sg") + Quantity("0.015sg")).to('sg'), 1.075)
+
     def test20_find_conversion(self):
         self.assertEqual(Quantity.find_conversion('xyz', 'xyz'), 1.0)
         self.assertAlmostEqual(Quantity.find_conversion('g', 'kg'), 0.001)
@@ -109,6 +114,7 @@ class TestAll(unittest.TestCase):
         self.assertAlmostEqual(q.hydrometer_correction('100F').to('sg'), 1.016)
         q = Quantity('1.010sg')
         self.assertAlmostEqual(q.hydrometer_correction('118F').to('sg'), 1.020)
+
 
 # If run from command line, do tests
 if __name__ == '__main__':

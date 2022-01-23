@@ -12,7 +12,7 @@ class TestAll(unittest.TestCase):
 
     def test00_str(self):
         b = Beer()
-        self.assertEqual(str(b), '= beer =\n')
+        self.assertEqual(str(b), '\n## Beer\n\n')
         self.assertEqual(b.end_state_str(), '')
 
     def test01_import_forward(self):

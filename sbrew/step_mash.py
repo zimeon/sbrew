@@ -13,7 +13,7 @@ class StepMash(Mash):
     description (a dict) of the part of the mash process.
     """
 
-    DEFAULT_NAME = 'step mash'
+    DEFAULT_NAME = 'Step mash'
 
     def __init__(self, **kwargs):
         """Initialize StepMash, pass arguments to Mash superclass."""

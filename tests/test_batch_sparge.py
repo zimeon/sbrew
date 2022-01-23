@@ -13,7 +13,7 @@ class TestAll(unittest.TestCase):
 
     def test00_str(self):
         bs = BatchSparge()
-        self.assertEqual(str(bs), '= batch sparge =\n')
+        self.assertEqual(str(bs), '\n## Batch sparge\n\n')
         self.assertEqual(bs.end_state_str(), '')
 
     def test01_extractions_calculated_forward(self):

@@ -32,7 +32,7 @@ class DecoctionMash(StepMash):
     print(m)
     """
 
-    DEFAULT_NAME = 'decoction mash'
+    DEFAULT_NAME = 'Decoction mash'
 
     def __init__(self, **kwargs):
         """Initialize DecoctionMash as subclass of Mash."""

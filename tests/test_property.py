@@ -26,9 +26,9 @@ class TestAll(unittest.TestCase):
         self.assertEqual(Property('temp', '124F').short_str(), 'temp 124.0 F')
 
     def test04_str(self):
-        self.assertRegexpMatches(str(Property('water', '1gal')), r'water\s+1.00 gal')
+        self.assertRegex(str(Property('water', '1gal')), r'water\s+1.00 gal')
         p5 = Property('temp', '126F', therm2='a', therm1='b')
-        self.assertRegexpMatches(str(p5), r'temp\s+126.0 F\s+\( b\s+, a\s+\)')
+        self.assertRegex(str(p5), r'temp\s+126.0 F\s+\( b\s+, a\s+\)')
 
 # If run from command line, do tests
 if __name__ == '__main__':

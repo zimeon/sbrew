@@ -10,7 +10,7 @@ class TestAll(unittest.TestCase):
 
     def test_01_init(self):
         dm = DecoctionMash()
-        self.assertEqual(dm.name, 'decoction mash')
+        self.assertEqual(dm.name, 'Decoction mash')
         dm = DecoctionMash(name='my_deco')
         self.assertEqual(dm.name, 'my_deco')
 
@@ -43,21 +43,21 @@ class TestAll(unittest.TestCase):
         self.assertEqual(len(dm.steps), 0)
         dm.add_step('rest', time="10min")
         dm.add_step('infuse', volume=Quantity('1gal'))
-        self.assertRegexpMatches(dm.steps_str(), r'0:10:00 | 6.39 gal')
+        self.assertRegex(dm.steps_str(), r'0:10:00 | 6.39 gal')
         self.assertEqual(len(dm.steps), 2)
         dm.add_step('rest', time="10min")
         dm.add_step('infuse', volume=Quantity('1gal'))
         self.assertEqual(len(dm.steps), 4)
-        self.assertRegexpMatches(dm.steps_str(), r'0:20:00 | 7.39 gal')
+        self.assertRegex(dm.steps_str(), r'0:20:00 | 7.39 gal')
 
     def test_04_str(self):
         dm = DecoctionMash()
-        self.assertRegexpMatches(str(dm), r'= decoction mash =')
-        self.assertRegexpMatches(str(dm), r'\*\*\*steps\*\*\*')
+        self.assertRegex(str(dm), r'Decoction mash')
+        self.assertRegex(str(dm), r'\*\*\*steps\*\*\*')
 
     def test_05_steps_str(self):
         dm = DecoctionMash()
-        self.assertRegexpMatches(dm.steps_str(), r'0:00:00 | 0.00 gal @ QuantityNotDefined')
+        self.assertRegex(dm.steps_str(), r'0:00:00 | 0.00 gal @ QuantityNotDefined')
         dm.add_step('infuse', volume='1.0gal', temp='108F')
         dm.add_step('rest', time='30min')
         deco = dm.split(remove="40%")
@@ -67,13 +67,13 @@ class TestAll(unittest.TestCase):
         deco.add_step('boil', time='20min')
         dm.mix(deco)
         # should see two mashes in string
-        self.assertRegexpMatches(dm.steps_str(), r'_main\s+|\s+decoction')
-        self.assertRegexpMatches(dm.steps_str(), r'0.60 gal @ 108.0 F\s+0.80 gal @ 160.0 F')
+        self.assertRegex(dm.steps_str(), r'_main\s+|\s+decoction')
+        self.assertRegex(dm.steps_str(), r'0.60 gal @ 108.0 F\s+0.80 gal @ 160.0 F')
 
     def test_07_stage_state_str(self):
         dm = DecoctionMash()
         stage = {'volume': Quantity('1.1gal'), 'temp': Quantity('134F')}
-        self.assertRegexpMatches(dm.stage_state_str(stage), r'1.10 gal @ 134.0 F')
+        self.assertRegex(dm.stage_state_str(stage), r'1.10 gal @ 134.0 F')
 
     def test_08_find_stages(self):
         dm = DecoctionMash()

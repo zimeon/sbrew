@@ -38,12 +38,12 @@ class TestAll(unittest.TestCase):
         self.assertEqual(r.fullname, 'hi')
 
     def test05_str(self):
-        r = Recipe()
-        self.assertEqual(str(r), '= recipe =\n')
+        r = Recipe(name="MY-RECIPE")
+        self.assertRegex(str(r), '\sMY-RECIPE\s')
         r.ingredient('grain', 'special', '10lb')
-        self.assertRegexpMatches(str(r), r'Ingredients:\s+grain\s+special\s+10.0 lb')
+        self.assertRegex(str(r), r'Ingredients:\s+grain\s+special\s+10.0 lb')
         r.property('heat', '20C')
-        self.assertRegexpMatches(str(r), r'Properties:\s+heat\s+20.0 C')
+        self.assertRegex(str(r), r'Properties:\s+heat\s+20.0 C')
 
     def test06_str_line_number(self):
         r = Recipe()

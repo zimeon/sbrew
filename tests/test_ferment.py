@@ -10,7 +10,7 @@ class TestAll(unittest.TestCase):
 
     def test_01_init(self):
         f = Ferment()
-        self.assertEqual(f.name, 'ferment')
+        self.assertEqual(f.name, 'Ferment')
         f = Ferment(name='my_fermentation')
         self.assertEqual(f.name, 'my_fermentation')
 

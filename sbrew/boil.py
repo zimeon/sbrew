@@ -65,7 +65,7 @@ class Boil(Recipe):
     b.ingredient( Ingredient('hops','ekg','2.0') )
     """
 
-    DEFAULT_NAME = 'boil'
+    DEFAULT_NAME = 'Boil'
 
     def __init__(self, name=None, duration=None, **kwargs):
         """Initialize Boil as subclass of Recipe."""
@@ -90,7 +90,7 @@ class Boil(Recipe):
 
         Includes methods for both forward and backward calculations
         """
-        # Do we have any sugar?
+        # Do we have any sugar not at the end?
         total_sugar_points = self.points_from_sugars()
         # Volume - forward
         if (self.has_properties('boil_start_volume', 'start_gravity', 'boil_end_volume')):
@@ -109,6 +109,9 @@ class Boil(Recipe):
         else:
             raise MissingParam("Can't solve boil, have %s properties" % (self.properties.keys()))
         # Bitterness
+        # Do we have any sugar additions at end? Will account for these as OG subtraction
+        og_from_end_sugars = Quantity(0.001 * self.points_from_sugars(at_end_only=True) / self.property('boil_end_volume').to('gal'), 'sg')
+        print("og from sugars at end %s" % (og_from_end_sugars))
         total_ibu = 0.0
         for i in self.ingredients:
             if (i.type == 'hops'):
@@ -123,12 +126,12 @@ class Boil(Recipe):
                 else:
                     print("Warning  - no AA specified for %s hops, assuming %s" % (i.name, aa))
                 if (i.quantity.unit == 'IBU'):
-                    weight = weight_for_ibu_from_boil(i.quantity, aa, self.property('boil_end_volume'), self.property('OG'), t)
+                    weight = weight_for_ibu_from_boil(i.quantity, aa, self.property('boil_end_volume'), self.property('OG').quantity - og_from_end_sugars, t)
                     ibu = i.quantity.to('IBU')
                     i.properties['IBU'] = Property('IBU', i.quantity)
                     i.quantity = Quantity(weight, 'oz')
                 else:
-                    ibu = self.ibu_from_addition(i.quantity, aa, t)
+                    ibu = self.ibu_from_addition(i.quantity, aa, t, og_subtraction=og_from_end_sugars)
                     i.properties['IBU'] = Property('IBU', Quantity(ibu, 'IBU'))
                 total_ibu += ibu
         self.property('IBU', Quantity(total_ibu, 'IBU'))
@@ -175,10 +178,12 @@ class Boil(Recipe):
                                               self.property('boil_start_volume').to('gal')), 'sg')
         print("boi-solve-back-end")
 
-    def points_from_sugars(self):
-        """Return number of points from all sugars additions.
+    def points_from_sugars(self, at_end_only=False):
+        """Return number of points from sugar additions.
 
-        FIXME - add various sugar types
+        If at_end_only is False then includes all sugars.
+
+        If at_end_only is True then includes only sugars with time==0min.
         """
         tot = 0.0
         for i in self.ingredients:
@@ -193,12 +198,24 @@ class Boil(Recipe):
                 pts = i.quantity.to('lb') * 43.0  # 43ppg
             if (pts is not None):
                 i.properties['points'] = Property('points', pts, 'points')
-                tot += pts
+                if 'time' not in i.properties:
+                    i.property('time', Quantity('0min'))
+                    print("Warning  - no time specified for %s addition, assuming added at end, time=0min" % (i.name))
+                if not at_end_only or i.property('time').to('min') < 0.001:
+                    tot += pts
         return(tot)
 
-    def ibu_from_addition(self, weight, aa, time):
-        """IBU from a single hop addition at a particular time in a boil."""
-        return ibu_from_boil(weight, aa, self.property('boil_end_volume'), self.property('OG'), time)
+    def ibu_from_addition(self, weight, aa, time, og_subtraction=None):
+        """IBU from a single hop addition at a particular time in a boil.
+
+        If og_subtraction is set then this amount is subtracted from the gravity
+        used for IBU extraction estimation. Used for account for flame-out
+        additions (sugar, syrup) so as not to underestimate the IBU extraction.
+        """
+        og = self.property('OG').quantity
+        if og_subtraction is not None:
+            og = og - og_subtraction
+        return ibu_from_boil(weight, aa, self.property('boil_end_volume'), og, time)
 
     def color(self):
         """Calculate color after boil based on mash color units (MCU) at start.

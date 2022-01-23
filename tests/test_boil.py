@@ -75,7 +75,7 @@ class TestAll(unittest.TestCase):
 
     def test03_init(self):
         b = Boil()
-        self.assertEqual(b.name, 'boil')
+        self.assertEqual(b.name, 'Boil')
         b = Boil('my boil', '60min')
         self.assertEqual(b.name, 'my boil')
         self.assertAlmostEqual(b.property('duration').quantity.value, 60.0)

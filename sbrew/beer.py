@@ -8,7 +8,7 @@ from .property import Property
 class Beer(Recipe):
     """A placeholder recipe to express final details of beer."""
 
-    DEFAULT_NAME = 'beer'
+    DEFAULT_NAME = 'Beer'
 
     def __init__(self, name=None, **kwargs):
         """Initialize Beer object."""

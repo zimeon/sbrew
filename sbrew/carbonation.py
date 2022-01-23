@@ -13,7 +13,7 @@ class Carbonation(Recipe):
     other can be calculated.
     """
 
-    DEFAULT_NAME = 'carbonation'
+    DEFAULT_NAME = 'Carbonation'
 
     def __init__(self, name=None, duration=None, **kwargs):
         """Initialize Carbonation process."""

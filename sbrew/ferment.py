@@ -11,7 +11,7 @@ from .property import Property
 class Ferment(Recipe):
     """A fermentation is a simple recipe with no sub-steps."""
 
-    DEFAULT_NAME = 'ferment'
+    DEFAULT_NAME = 'Ferment'
 
     def __init__(self, **kwargs):
         """Initialize Ferment object."""

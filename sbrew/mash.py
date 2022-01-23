@@ -16,7 +16,7 @@ class Mash(Recipe):
     print(m)
     """
 
-    DEFAULT_NAME = 'mash'
+    DEFAULT_NAME = 'Mash'
 
     def __init__(self, **kwargs):
         """Initialize Mash as subclass of Recipe."""

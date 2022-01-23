@@ -9,7 +9,7 @@ class TestAll(unittest.TestCase):
 
     def test_01_init(self):
         sm = StepMash()
-        self.assertEqual(sm.name, 'step mash')
+        self.assertEqual(sm.name, 'Step mash')
         sm = StepMash(name='my_step_mash')
         self.assertEqual(sm.name, 'my_step_mash')
 
@@ -52,10 +52,10 @@ class TestAll(unittest.TestCase):
         sm.add_step(type="heat", temp="212F")
         sm.add_step(type="adjust")
         sm.add_step(type="boil")
-        self.assertRegexpMatches(sm.steps_str(), r'0:00:00 \| rest -> 2.00 gal @ 122.0 F')
-        self.assertRegexpMatches(sm.steps_str(), r'0:10:00 \| heat -> 2.00 gal @ 122.0 F')
-        self.assertRegexpMatches(sm.steps_str(), r'0:10:00 \| adjust -> 2.00 gal @ 212.0 F')
-        self.assertRegexpMatches(sm.steps_str(), r'0:10:00 \| state -> 2.00 gal @ 212.0 F')
+        self.assertRegex(sm.steps_str(), r'0:00:00 \| rest -> 2.00 gal @ 122.0 F')
+        self.assertRegex(sm.steps_str(), r'0:10:00 \| heat -> 2.00 gal @ 122.0 F')
+        self.assertRegex(sm.steps_str(), r'0:10:00 \| adjust -> 2.00 gal @ 212.0 F')
+        self.assertRegex(sm.steps_str(), r'0:10:00 \| state -> 2.00 gal @ 212.0 F')
 
     def test_06_stage_state_str(self):
         sm = StepMash()
@@ -84,9 +84,9 @@ class TestAll(unittest.TestCase):
         sm = StepMash()
         sm.add_step(type="infuse", volume='1gal', temp='123F')
         sm.add_step(type="rest", time="10min")
-        self.assertRegexpMatches(str(sm), r'= step mash =')
-        self.assertRegexpMatches(str(sm), r'\*\*\*steps\*\*\*')
-        self.assertRegexpMatches(str(sm), r'rest -> 1.00 gal @ 123.0 F')
+        self.assertRegex(str(sm), r'\sStep mash\s')
+        self.assertRegex(str(sm), r'\*\*\*steps\*\*\*')
+        self.assertRegex(str(sm), r'rest -> 1.00 gal @ 123.0 F')
 
 # If run from command line, do tests
 if __name__ == '__main__':

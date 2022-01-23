@@ -12,7 +12,7 @@ class TestAll(unittest.TestCase):
 
     def test01_init(self):
         m = Mash()
-        self.assertEqual(m.name, 'mash')
+        self.assertEqual(m.name, 'Mash')
         m = Mash(name='my mash')
         self.assertEqual(m.name, 'my mash')
 
@@ -102,8 +102,8 @@ class TestAll(unittest.TestCase):
 
     def test08_str(self):
         m = Mash()
-        self.assertRegexpMatches(str(m), r'= mash =')
-        self.assertRegexpMatches(str(m), r'total_grain 0.0 lb, total_water 0.00 gal, total_points 0.0 points')
+        self.assertRegex(str(m), r'\sMash\s')
+        self.assertRegex(str(m), r'total_grain 0.0 lb, total_water 0.00 gal, total_points 0.0 points')
 
 # If run from command line, do tests
 if __name__ == '__main__':

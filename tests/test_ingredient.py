@@ -11,11 +11,11 @@ class TestAll(unittest.TestCase):
 
     def test00_init(self):
         i = Ingredient('grain', 'belgian pilsner', '9.75lb')
-        self.assertRegexpMatches(str(i), r'grain\s+belgian pilsner\s+9\.75 lb')
+        self.assertRegex(str(i), r'grain\s+belgian pilsner\s+9\.75 lb')
         i2 = Ingredient('grain', 'belgian pilsner', 9.75, 'lb')
-        self.assertRegexpMatches(str(i2), r'grain\s+belgian pilsner\s+9\.75 lb')
+        self.assertRegex(str(i2), r'grain\s+belgian pilsner\s+9\.75 lb')
         i3 = Ingredient('grain', 'us pilsner', Quantity(10.1, 'lb'))
-        self.assertRegexpMatches(str(i3), r'grain\s+us pilsner\s+10\.1 lb')
+        self.assertRegex(str(i3), r'grain\s+us pilsner\s+10\.1 lb')
         # pct
         i4 = Ingredient('grain', 'marris otter', pct=50.9)
         self.assertAlmostEqual(i4.pct, 50.9)
@@ -34,9 +34,9 @@ class TestAll(unittest.TestCase):
 
     def test03_str(self):
         i = Ingredient('grain', 'wheat malt', '6.3lb', temp=Quantity('65F'))
-        self.assertRegexpMatches(str(i), r'grain\s+wheat malt\s+6\.3 lb\s+\(temp 65\.0 F\)')
+        self.assertRegex(str(i), r'grain\s+wheat malt\s+6\.3 lb\s+\(temp 65\.0 F\)')
         i2 = Ingredient('grain', 'belgian pilsner', pct=80.0, temp=Quantity("67F"))
-        self.assertRegexpMatches(str(i2), r'grain\s+belgian pilsner\s+\( 80.0%\)\s+\(temp 67\.0 F\)')
+        self.assertRegex(str(i2), r'grain\s+belgian pilsner\s+\( 80.0%\)\s+\(temp 67\.0 F\)')
 
 # If run from command line, do tests
 if __name__ == '__main__':

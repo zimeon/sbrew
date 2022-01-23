@@ -43,7 +43,7 @@ class TestAll(unittest.TestCase):
         l.property('wort_gravity', '1.099sg')
         self.assertEqual(l.end_state_str(), '12.30 gal wort at 1.099 sg')
         l.extra_info = 'hi mum'
-        self.assertRegexpMatches(l.end_state_str(), '1.099 sg\s+\(hi mum\)')
+        self.assertRegex(l.end_state_str(), '1.099 sg\s+\(hi mum\)')
 
 # If run from command line, do tests
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ class TestAll(unittest.TestCase):
 
     def test00_str(self):
         c = Carbonation()
-        self.assertEqual(str(c), '= carbonation =\n')
+        self.assertEqual(c.name, 'Carbonation')
         self.assertEqual(c.end_state_str(), '')
 
     def test01_import_forward(self):
